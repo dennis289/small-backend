@@ -6,6 +6,8 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth import authenticate, get_user_model
+from rest_framework_simplejwt.tokens import RefreshToken
+
 
 User = get_user_model()
 
@@ -38,10 +40,19 @@ def login(request):
 
     user = authenticate(username=user_obj.username, password=password)
     if user:
+        tokens = get_tokens_for_user(user)  # Generate tokens for the user
         return Response({
             "message": "Login successful",
             "email": user.email,
-            "username": user.username
+            "username": user.username,
+            "access": tokens['access'],
+            "refresh": tokens['refresh']
         }, status=status.HTTP_200_OK)
     else:
         return Response({"error": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)
+def get_tokens_for_user(user):
+    refresh = RefreshToken.for_user(user)
+    return {
+        'refresh': str(refresh),
+        'access': str(refresh.access_token),
+    }
