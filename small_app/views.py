@@ -1,0 +1,47 @@
+from django.shortcuts import render
+from .serializers import *
+from .models import *
+from rest_framework import viewsets
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework import status
+from django.contrib.auth import authenticate, get_user_model
+
+User = get_user_model()
+
+# Create your views here.
+
+# signing up users to the system
+@api_view(['POST'])
+def signup(request):
+    if request.method == 'POST':
+        serializer = userSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=201)
+        return Response(serializer.errors, status=400)
+    else:
+        return Response({"error": "method not allowed"}, status=405)
+    
+@api_view(['POST'])
+def login(request):
+    email = request.data.get('email')
+    password = request.data.get('password')
+
+    if not email or not password:
+        return Response({"error": "Missing email or password"}, status=status.HTTP_400_BAD_REQUEST)
+    print(email, password)
+    try:
+        user_obj = User.objects.get(email=email)
+    except User.DoesNotExist:
+        return Response({"error": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)
+
+    user = authenticate(username=user_obj.username, password=password)
+    if user:
+        return Response({
+            "message": "Login successful",
+            "email": user.email,
+            "username": user.username
+        }, status=status.HTTP_200_OK)
+    else:
+        return Response({"error": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)
