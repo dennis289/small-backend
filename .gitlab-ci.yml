@@ -1,5 +1,20 @@
 name: CI/CD Pipeline 
 
+image: python:3.12
+
 stages:
-  - merge
-  
+  - test
+
+variables:
+  DJANGO_SETTINGS_MODULE: "small_backend.settings"
+  PYTHONUNBUFFERED: "1"
+
+before_script:
+  - pip install --upgrade pip
+  - pip install -r requirements.txt
+
+test: 
+  stage: test
+  script: 
+    - python manage.py migrate
+    - python manage.py test
