@@ -56,3 +56,13 @@ def get_tokens_for_user(user):
         'refresh': str(refresh),
         'access': str(refresh.access_token),
     }
+@api_view(['GET'])
+def get_user_info(request):
+    user = request.user
+    if user.is_authenticated:
+        return Response({
+            "email": user.email,
+            "username": user.username
+        }, status=status.HTTP_200_OK)
+    else:
+        return Response({"error": "User not authenticated"}, status=status.HTTP_401_UNAUTHORIZED)
