@@ -101,3 +101,49 @@ def person_detail(request, pk):
     serializer = PersonsSerializer(person)
     return Response(serializer.data, status=200)
 
+@api_view(['POST','GET','PUT','DELETE'])
+def roles(request):
+    if request.method == 'POST':
+        serializer = RolesSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=201)
+        return Response(serializer.errors, status=400)
+    elif request.method == 'GET':
+        roles = Roles.objects.all()
+        serializer = RolesSerializer(roles, many=True)
+        return Response(serializer.data, status=200)
+    elif request.method == 'PUT':
+        role_id = request.data.get('id')
+        try:
+            role = Roles.objects.get(id=role_id)
+        except Roles.DoesNotExist:
+            return Response({"error": "Role not found"}, status=404)
+        
+        serializer = RolesSerializer(role, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=200)
+        return Response(serializer.errors, status=400)
+    elif request.method == 'DELETE':
+        role_id = request.data.get('id')
+        try:
+            role = Roles.objects.get(id=role_id)
+            role.delete()
+            return Response({"message": "Role deleted successfully"}, status=204)
+        except Roles.DoesNotExist:
+            return Response({"error": "Role not found"}, status=404)
+    else:
+        return Response({"error": "Method not allowed"}, status=405)
+    
+@api_view(['GET'])
+def role_detail(request, pk):
+    try:
+        role = Roles.objects.get(pk=pk)
+    except Roles.DoesNotExist:
+        return Response({"error": "Role not found"}, status=404)
+
+    serializer = RolesSerializer(role)
+    return Response(serializer.data, status=200)
+
+
