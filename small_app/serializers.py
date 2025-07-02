@@ -10,6 +10,7 @@ class userSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         return User.objects.create_user(**validated_data)
     
+<<<<<<< Updated upstream
 class ServiceTimesSerializer(serializers.ModelSerializer):
     class Meta:
         model = ServiceTimes
@@ -58,3 +59,15 @@ class RosterSerializer(serializers.ModelSerializer):
         return roster
 # The serializers above are used to convert model instances into JSON format and vice versa.
 # They define how the data should be represented and validated when creating or updating instances.
+=======
+class PersonsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Persons
+        fields = ['id', 'first_name', 'last_name', 'email', 'phone_number', 'area_of_residence', 'is_producer', 'role']
+
+class RolesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Roles
+        fields = ['id', 'name', 'description']
+        
+>>>>>>> Stashed changes
