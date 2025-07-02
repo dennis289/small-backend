@@ -7,8 +7,8 @@ urlpatterns = [
     path('login/', login, name='login'),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    path('persons', persons, name='persons'),
-    path('persons/<int:pk>', person_detail, name='person_detail'),
-    path('roles', roles, name='roles'),
-    path('roles/<int:pk>', role_detail, name='role_detail'),
+    path('persons/', persons, name='persons'),
+    path('persons/<int:pk>/', person_detail, name='person_detail'),
+    path('roles/', roles, name='roles'),
+    path('roles/<int:pk>/', role_detail, name='role_detail'),
 ]
