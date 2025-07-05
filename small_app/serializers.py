@@ -36,3 +36,10 @@ class ServicesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Services
         fields = ['id', 'name', 'description', 'is_active']
+
+class RostersSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Rosters
+        fields = ['id', 'person', 'service']
+        read_only_fields = ['created_at', 'updated_at']  # Make timestamps read-only
+        

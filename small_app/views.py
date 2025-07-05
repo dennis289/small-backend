@@ -190,3 +190,49 @@ def service_detail(request, pk):
     serializer = ServicesSerializer(service)
     return Response(serializer.data, status=200)
 
+@api_view(['POST','GET','PUT','DELETE'])
+def rosters(request):
+    if request.method == 'POST':
+        serializer = RostersSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=201)
+        return Response(serializer.errors, status=400)
+    elif request.method == 'GET':
+        rosters = Rosters.objects.all()
+        serializer = RostersSerializer(rosters, many=True)
+        return Response(serializer.data, status=200)
+    elif request.method == 'PUT':
+        roster_id = request.data.get('id')
+        try:
+            roster = Rosters.objects.get(id=roster_id)
+        except Rosters.DoesNotExist:
+            return Response({"error": "Roster not found"}, status=404)
+        
+        serializer = RostersSerializer(roster, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=200)
+        return Response(serializer.errors, status=400)
+    elif request.method == 'DELETE':
+        roster_id = request.data.get('id')
+        try:
+            roster = Rosters.objects.get(id=roster_id)
+            roster.delete()
+            return Response({"message": "Roster deleted successfully"}, status=204)
+        except Rosters.DoesNotExist:
+            return Response({"error": "Roster not found"}, status=404)
+    else:
+        return Response({"error": "Method not allowed"}, status=405)
+
+@api_view(['GET'])
+def roster_detail(request, pk):
+    try:
+        roster = Rosters.objects.get(pk=pk)
+    except Rosters.DoesNotExist:
+        return Response({"error": "Roster not found"}, status=404)
+
+    serializer = RostersSerializer(roster)
+    return Response(serializer.data, status=200)
+
+
