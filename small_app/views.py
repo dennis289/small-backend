@@ -235,4 +235,85 @@ def roster_detail(request, pk):
     serializer = RostersSerializer(roster)
     return Response(serializer.data, status=200)
 
+@api_view(['POST','GET','PUT','DELETE'])
+def availability(request):
+    if request.method == 'POST':
+        serializer = AvailabilitySerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=201)
+        return Response(serializer.errors, status=400)
+    elif request.method == 'GET':
+        availabilities = Availability.objects.all()
+        serializer = AvailabilitySerializer(availabilities, many=True)
+        return Response(serializer.data, status=200)
+    elif request.method == 'PUT':
+        availability_id = request.data.get('id')
+        try:
+            availability = Availability.objects.get(id=availability_id)
+        except Availability.DoesNotExist:
+            return Response({"error": "Availability not found"}, status=404)
+        
+        serializer = AvailabilitySerializer(availability, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=200)
+        return Response(serializer.errors, status=400)
+    elif request.method == 'DELETE':
+        availability_id = request.data.get('id')
+        try:
+            availability = Availability.objects.get(id=availability_id)
+            availability.delete()
+            return Response({"message": "Availability deleted successfully"}, status=204)
+        except Availability.DoesNotExist:
+            return Response({"error": "Availability not found"}, status=404)
+    else:
+        return Response({"error": "Method not allowed"}, status=405)
+
+
+
+@api_view(['POST','GET','PUT','DELETE'])
+def assignments(request):
+    if request.method == 'POST':
+        serializer = AssignmentSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=201)
+        return Response(serializer.errors, status=400)
+    elif request.method == 'GET':
+        assignments = Assignment.objects.all()
+        serializer = AssignmentSerializer(assignments, many=True)
+        return Response(serializer.data, status=200)
+    elif request.method == 'PUT':
+        assignment_id = request.data.get('id')
+        try:
+            assignment = Assignment.objects.get(id=assignment_id)
+        except Assignment.DoesNotExist:
+            return Response({"error": "Assignment not found"}, status=404)
+        
+        serializer = AssignmentSerializer(assignment, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=200)
+        return Response(serializer.errors, status=400)
+    elif request.method == 'DELETE':
+        assignment_id = request.data.get('id')
+        try:
+            assignment = Assignment.objects.get(id=assignment_id)
+            assignment.delete()
+            return Response({"message": "Assignment deleted successfully"}, status=204)
+        except Assignment.DoesNotExist:
+            return Response({"error": "Assignment not found"}, status=404)
+    else:
+        return Response({"error": "Method not allowed"}, status=405)
+    
+@api_view(['GET'])
+def assignment_detail(request, pk):
+    try:
+        assignment = Assignment.objects.get(pk=pk)
+    except Assignment.DoesNotExist:
+        return Response({"error": "Assignment not found"}, status=404)
+
+    serializer = AssignmentSerializer(assignment)
+    return Response(serializer.data, status=200)
 

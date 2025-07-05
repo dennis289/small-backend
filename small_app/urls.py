@@ -13,4 +13,9 @@ urlpatterns = [
     path('roles/<int:pk>/', role_detail, name='role_detail'),
     path('services/', services, name='services'),
     path('services/<int:pk>/', service_detail, name='service_detail'),
+    path('rosters/', rosters, name='rosters'),
+    path('rosters/<int:pk>/', roster_detail, name='roster_detail'),
+    path('assignments/', assignments, name='assignments'),
+    path('assignments/<int:pk>/', assignment_detail, name='assignment_detail'),
+    path('availability/', availability, name='availability'),
 ]

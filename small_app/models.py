@@ -49,4 +49,28 @@ class Rosters(models.Model):
 
     def __str__(self):
         return f"{self.person} - {self.service}"
+    
+class Availability(models.Model):
+    person = models.ForeignKey(Persons, on_delete=models.CASCADE)
+    service_time = models.ForeignKey(Services, on_delete=models.CASCADE)
+    date = models.DateField()
+    status = models.CharField(max_length=20, choices=[
+        ('available', 'Available'),
+        ('preferred', 'Preferred'),
+        ('unavailable', 'Unavailable')
+    ])
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ('person', 'service_time', 'date')
+
+    def __str__(self):
+        return f"{self.person} - {self.service_time} on {self.date} ({self.status})"
+
+class Assignment(models.Model):
+    roster = models.ForeignKey(Rosters, on_delete=models.CASCADE)
+    role = models.ForeignKey(Roles, on_delete=models.CASCADE)
+    service_time = models.ForeignKey(Services, on_delete=models.CASCADE)
+    person = models.ForeignKey(Persons, on_delete=models.CASCADE)
 

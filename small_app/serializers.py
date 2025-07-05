@@ -42,4 +42,15 @@ class RostersSerializer(serializers.ModelSerializer):
         model = Rosters
         fields = ['id', 'person', 'service']
         read_only_fields = ['created_at', 'updated_at']  # Make timestamps read-only
+
+class AvailabilitySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Availability
+        fields = ['id', 'person', 'service_time', 'date', 'status']
+        read_only_fields = ['created_at']  # Make created_at read-only
         
+class AssignmentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Assignment
+        fields = ['id', 'roster', 'role', 'service_time', 'person']
+        read_only_fields = ['created_at', 'updated_at']  # Make timestamps read-only
