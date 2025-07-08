@@ -7,6 +7,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth import authenticate, get_user_model
 from rest_framework_simplejwt.tokens import RefreshToken
+from .scheduler import generate_roster
+from datetime import datetime
 
 
 User = get_user_model()
@@ -193,11 +195,32 @@ def service_detail(request, pk):
 @api_view(['POST','GET','PUT','DELETE'])
 def rosters(request):
     if request.method == 'POST':
-        serializer = RostersSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
+        date = request.data.get('date')
+        if not date:
+            return Response({'date': ['This field is required.']}, status=400)
+        try:
+            # Parse ISO 8601 date if necessary
+            try:
+                date = datetime.strptime(date, '%Y-%m-%d').date()
+            except ValueError:
+                return Response({'date': ['Invalid date format. Must be YYYY-MM-DD.']}, status=400)
+
+            # Generate assignments using your scheduler
+            assignments = generate_roster(date)
+            # Create the Roster object
+            roster = Rosters.objects.create(date=date)
+            # Create Assignment objects for this roster
+            for a in assignments:
+                Assignment.objects.create(
+                    roster=roster,
+                    person_id=a['person_id'],
+                    service_id=a['service_time_id'],
+                    role_id=a['role_id']
+                )
+            serializer = RostersSerializer(roster)
             return Response(serializer.data, status=201)
-        return Response(serializer.errors, status=400)
+        except Exception as e:
+            return Response({'error': str(e)}, status=400)
     elif request.method == 'GET':
         rosters = Rosters.objects.all()
         serializer = RostersSerializer(rosters, many=True)

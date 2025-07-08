@@ -1,27 +1,39 @@
 from django.db.models import Q
-from .models import Person, Role, ServiceTime, Availability
+from .models import Services, Roles, Availability, Persons
 from constraint import Problem, AllDifferentConstraint
 from datetime import date
 
 def generate_roster(target_date: date):
-    service_times = ServiceTime.objects.all().order_by('order')
-    required_roles = Role.objects.all()
-    
-    # Get all availabilities for the target date
+    # Fetch all service times and roles
+    service_times = Services.objects.filter(is_active=True).order_by('id')  # Ensure only active services
+    required_roles = Roles.objects.all()
+
+    if not service_times.exists():
+        raise ValueError("No service times defined.")
+    if not required_roles.exists():
+        raise ValueError("No roles defined.")
+
+    # Fetch availabilities for the target date
     availabilities = Availability.objects.filter(
         date=target_date,
         status__in=['available', 'preferred']
     ).select_related('person', 'service_time')
-    
+
+    if not availabilities.exists():
+        raise ValueError("No availabilities found for the selected date.")
+
     # Build a mapping: (person_id, service_time_id) -> status
     availability_map = {}
     for av in availabilities:
         availability_map[(av.person_id, av.service_time_id)] = av.status
 
-    # Get all people who are available/preferred for at least one service time
-    available_people = Person.objects.filter(
+    # Fetch all people who are available/preferred for at least one service time
+    available_people = Persons.objects.filter(
         id__in=[av.person_id for av in availabilities]
     ).distinct().prefetch_related('roles')
+
+    if not available_people.exists():
+        raise ValueError("No people available for the selected date.")
 
     problem = Problem()
     variables = {}
@@ -72,9 +84,10 @@ def generate_roster(target_date: date):
                     [v]
                 )
 
+    # Solve the problem
     solution = problem.getSolution()
     if not solution:
-        raise ValueError("No valid roster configuration found")
+        raise ValueError("No valid roster configuration found. Please check availability and roles.")
 
     # Prepare assignments for serialization (e.g., for API response)
     assignments = []

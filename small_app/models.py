@@ -41,6 +41,7 @@ class Services(models.Model):
 class Rosters(models.Model):
     person = models.ForeignKey(Persons, on_delete=models.CASCADE)
     service = models.ForeignKey(Services, on_delete=models.CASCADE)
+    date = models.DateField(null=False, blank=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
