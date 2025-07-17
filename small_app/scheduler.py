@@ -1,102 +1,117 @@
-from django.db.models import Q
-from .models import Services, Roles, Availability, Persons
-from constraint import Problem, AllDifferentConstraint
+import random
+from .models import *
 from datetime import date
 
 def generate_roster(target_date: date):
-    # Fetch all service times and roles
-    service_times = Services.objects.filter(is_active=True).order_by('id')  # Ensure only active services
-    required_roles = Roles.objects.all()
-
-    if not service_times.exists():
-        raise ValueError("No service times defined.")
-    if not required_roles.exists():
+    print(f"Starting roster generation for date: {target_date}")
+    
+    services = list(Services.objects.filter(is_active=True).order_by('id'))
+    roles = list(Roles.objects.all())
+    if not services:
+        raise ValueError("No services defined.")
+    if not roles:
         raise ValueError("No roles defined.")
-
-    # Fetch availabilities for the target date
-    availabilities = Availability.objects.filter(
-        date=target_date,
-        status__in=['available', 'preferred']
-    ).select_related('person', 'service_time')
-
-    if not availabilities.exists():
-        raise ValueError("No availabilities found for the selected date.")
-
-    # Build a mapping: (person_id, service_time_id) -> status
-    availability_map = {}
-    for av in availabilities:
-        availability_map[(av.person_id, av.service_time_id)] = av.status
-
-    # Fetch all people who are available/preferred for at least one service time
-    available_people = Persons.objects.filter(
-        id__in=[av.person_id for av in availabilities]
-    ).distinct().prefetch_related('roles')
+    
+    # Use Persons directly
+    available_people = Persons.objects.filter(is_present=True).prefetch_related('roles')
 
     if not available_people.exists():
-        raise ValueError("No people available for the selected date.")
+        raise ValueError("No people marked as present for the selected date.")
 
-    problem = Problem()
-    variables = {}
+    # Randomized producer from available producers
+    producer_pool = available_people.filter(is_producer=True)
+    producer = random.choice(list(producer_pool)) if producer_pool.exists() else None
+    if not producer:
+        raise ValueError("No producer available.")
+    
+    eligible_assistants = available_people.exclude(id=producer.id)
+    assistant_producer = random.choice(list(eligible_assistants)) if eligible_assistants.exists() else None
+    if not assistant_producer:
+        raise ValueError("No assistant producer available.")
+    
+    # Fetch special roles
+    hospitality_role = next((r for r in roles if r.name.lower() == "hospitality"), None)
+    social_media_role = next((r for r in roles if r.name.lower() == "social media"), None)
 
-    # For each service time and role, find eligible people
-    for st in service_times:
-        for role in required_roles:
-            var_name = f"{st.id}-{role.id}"
-            candidates = [
-                p.id for p in available_people
-                if role in p.roles.all() and
-                (p.id, st.id) in availability_map
+    ROLE_LABELS = [
+        ("Camera 1", "Videography"),
+        ("Camera 2", "Videography"),
+        ("Projecting", "Projecting"),
+        ("Streaming", "Streaming"),
+        ("Still Images", "Photography"),
+        ("Media Desk", "Media Desk"),
+        ("Time Keeper", "Time keeper")
+    ]
+
+    structured = {
+        "date": str(target_date),
+        "producer": {
+            "id": producer.id,
+            "name": f"{producer.first_name} {producer.last_name}"
+        },
+        "assistant_producer": {
+            "id": assistant_producer.id,
+            "name": f"{assistant_producer.first_name} {assistant_producer.last_name}"
+        },
+        "services": [],
+        "hospitality": [],
+        "social_media": []
+    }
+
+    global_assigned = set([producer.id, assistant_producer.id])
+
+    for service in services:
+        service_assignments = []
+        local_assigned = set(global_assigned)
+
+        for display_name, db_role_name in ROLE_LABELS:
+            db_role = next((r for r in roles if r.name.lower() == db_role_name.lower()), None)
+            if not db_role:
+                continue
+
+            eligible = [
+                p for p in available_people
+                if db_role in p.roles.all() and p.id not in local_assigned
             ]
-            if candidates:
-                problem.addVariable(var_name, candidates)
-                variables[var_name] = (st, role)
 
-    # Each person can only be assigned once per day
-    for person in available_people:
-        person_vars = [v for v in variables if person.id in problem._variables[v]]
-        if person_vars:
-            problem.addConstraint(
-                lambda *assignments, pid=person.id: list(assignments).count(pid) <= 1,
-                person_vars
-            )
+            if not eligible:
+                eligible = [
+                    p for p in available_people
+                    if db_role in p.roles.all()
+                ]
 
-    # Each role in a service time must be assigned to a different person
-    for st in service_times:
-        st_vars = [v for v, (st_obj, _) in variables.items() if st_obj.id == st.id]
-        if len(st_vars) > 1:
-            problem.addConstraint(AllDifferentConstraint(), st_vars)
+            if eligible:
+                random.shuffle(eligible)
+                chosen = eligible[0]
+                service_assignments.append({
+                    "role": display_name,
+                    "name": f"{chosen.first_name} {chosen.last_name}"
+                })
+                local_assigned.add(chosen.id)
+                global_assigned.add(chosen.id)
 
-    # Prefer 'preferred' status if possible
-    for person in available_people:
-        preferred_services = [
-            av.service_time_id for av in availabilities
-            if av.person_id == person.id and av.status == 'preferred'
-        ]
-        if preferred_services:
-            unpreferred_vars = [
-                v for v, (st, _) in variables.items()
-                if st.id not in preferred_services and person.id in problem._variables[v]
-            ]
-            for v in unpreferred_vars:
-                # If possible, avoid assigning this person to unpreferred slots
-                problem.addConstraint(
-                    lambda assignment, pid=person.id: assignment != pid,
-                    [v]
-                )
-
-    # Solve the problem
-    solution = problem.getSolution()
-    if not solution:
-        raise ValueError("No valid roster configuration found. Please check availability and roles.")
-
-    # Prepare assignments for serialization (e.g., for API response)
-    assignments = []
-    for var_name, person_id in solution.items():
-        st_id, role_id = map(int, var_name.split('-'))
-        assignments.append({
-            'service_time_id': st_id,
-            'role_id': role_id,
-            'person_id': person_id
+        structured["services"].append({
+            "service_id": service.id,
+            "service_name": service.description,
+            "assignments": service_assignments
         })
 
-    return assignments
+    # Assign 2 Hospitality
+    if hospitality_role:
+        hospitality_candidates = [
+            p for p in available_people
+            if hospitality_role in p.roles.all() and p.id not in global_assigned
+        ]
+        selected = random.sample(hospitality_candidates, min(2, len(hospitality_candidates)))
+        structured["hospitality"] = [f"{p.first_name} {p.last_name}" for p in selected]
+        global_assigned.update(p.id for p in selected)
+
+    # Assign Social Media to Victor Reuben
+    if social_media_role:
+        victor = available_people.filter(first_name__iexact="Victor", last_name__iexact="Reuben").first()
+        if victor and social_media_role in victor.roles.all():
+            structured["social_media"] = [f"{victor.first_name} {victor.last_name}"]
+            global_assigned.add(victor.id)
+
+    print("Roster generated successfully.")
+    return structured

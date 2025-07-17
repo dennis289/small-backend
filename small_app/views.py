@@ -8,7 +8,7 @@ from rest_framework import status
 from django.contrib.auth import authenticate, get_user_model
 from rest_framework_simplejwt.tokens import RefreshToken
 from .scheduler import generate_roster
-from datetime import datetime
+from datetime import datetime, date, time
 
 
 User = get_user_model()
@@ -192,51 +192,42 @@ def service_detail(request, pk):
     serializer = ServicesSerializer(service)
     return Response(serializer.data, status=200)
 
-@api_view(['POST','GET','PUT','DELETE'])
+@api_view(['POST', 'GET', 'PUT', 'DELETE'])
 def rosters(request):
     if request.method == 'POST':
         date = request.data.get('date')
         if not date:
-            return Response({'date': ['This field is required.']}, status=400)
-        try:
-            # Parse ISO 8601 date if necessary
-            try:
-                date = datetime.strptime(date, '%Y-%m-%d').date()
-            except ValueError:
-                return Response({'date': ['Invalid date format. Must be YYYY-MM-DD.']}, status=400)
+            return Response({'date': ['This field is required.']}, status=status.HTTP_400_BAD_REQUEST)
 
-            # Generate assignments using your scheduler
-            assignments = generate_roster(date)
-            # Create the Roster object
-            roster = Rosters.objects.create(date=date)
-            # Create Assignment objects for this roster
-            for a in assignments:
-                Assignment.objects.create(
-                    roster=roster,
-                    person_id=a['person_id'],
-                    service_id=a['service_time_id'],
-                    role_id=a['role_id']
-                )
-            serializer = RostersSerializer(roster)
-            return Response(serializer.data, status=201)
+        try:
+            date = datetime.strptime(date, '%Y-%m-%d').date()
+        except ValueError:
+            return Response({'date': ['Invalid date format. Use YYYY-MM-DD.']}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            structured_roster = generate_roster(date)
+            return Response(structured_roster, status=status.HTTP_201_CREATED)
         except Exception as e:
-            return Response({'error': str(e)}, status=400)
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
     elif request.method == 'GET':
         rosters = Rosters.objects.all()
         serializer = RostersSerializer(rosters, many=True)
-        return Response(serializer.data, status=200)
+        return Response(serializer.data)
+
     elif request.method == 'PUT':
         roster_id = request.data.get('id')
         try:
             roster = Rosters.objects.get(id=roster_id)
         except Rosters.DoesNotExist:
             return Response({"error": "Roster not found"}, status=404)
-        
+
         serializer = RostersSerializer(roster, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=200)
+            return Response(serializer.data)
         return Response(serializer.errors, status=400)
+
     elif request.method == 'DELETE':
         roster_id = request.data.get('id')
         try:
@@ -245,54 +236,17 @@ def rosters(request):
             return Response({"message": "Roster deleted successfully"}, status=204)
         except Rosters.DoesNotExist:
             return Response({"error": "Roster not found"}, status=404)
-    else:
-        return Response({"error": "Method not allowed"}, status=405)
+
+    return Response({"error": "Method not allowed"}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 @api_view(['GET'])
-def roster_detail(request, pk):
-    try:
-        roster = Rosters.objects.get(pk=pk)
-    except Rosters.DoesNotExist:
-        return Response({"error": "Roster not found"}, status=404)
-
-    serializer = RostersSerializer(roster)
-    return Response(serializer.data, status=200)
-
-@api_view(['POST','GET','PUT','DELETE'])
-def availability(request):
-    if request.method == 'POST':
-        serializer = AvailabilitySerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=201)
-        return Response(serializer.errors, status=400)
-    elif request.method == 'GET':
-        availabilities = Availability.objects.all()
-        serializer = AvailabilitySerializer(availabilities, many=True)
-        return Response(serializer.data, status=200)
-    elif request.method == 'PUT':
-        availability_id = request.data.get('id')
-        try:
-            availability = Availability.objects.get(id=availability_id)
-        except Availability.DoesNotExist:
-            return Response({"error": "Availability not found"}, status=404)
-        
-        serializer = AvailabilitySerializer(availability, data=request.data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=200)
-        return Response(serializer.errors, status=400)
-    elif request.method == 'DELETE':
-        availability_id = request.data.get('id')
-        try:
-            availability = Availability.objects.get(id=availability_id)
-            availability.delete()
-            return Response({"message": "Availability deleted successfully"}, status=204)
-        except Availability.DoesNotExist:
-            return Response({"error": "Availability not found"}, status=404)
-    else:
-        return Response({"error": "Method not allowed"}, status=405)
-
+def get_status(request):
+    # returns the status choices for boolean field
+    choices = [
+        {'id': True, 'name': 'Available'},
+        {'id': False, 'name': 'Unavailable'}
+    ]
+    return Response(choices, status=200)
 
 
 @api_view(['POST','GET','PUT','DELETE'])
@@ -340,3 +294,45 @@ def assignment_detail(request, pk):
     serializer = AssignmentSerializer(assignment)
     return Response(serializer.data, status=200)
 
+@api_view(['POST'])
+def generate_structured_roster(request):
+    try:
+        target_date = request.data.get('date')
+        absent_ids = request.data.get('members', [])
+        is_present = request.data.get('is_present', False)
+
+        if not target_date:
+            return Response({"error": "Date is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # 1. Set attendance based on selected members
+        Persons.objects.update(is_present=True)  # reset everyone to present
+        if not is_present:  # if selected members are absent
+            Persons.objects.filter(id__in=absent_ids).update(is_present=False)
+
+        # 2. Call your roster generator (modified version below)
+        structured = generate_roster(date.fromisoformat(target_date))
+        return Response(structured, status=status.HTTP_200_OK)
+
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+def save_roster(request):
+    try:
+        structured_roster = request.data.get('structured_roster')
+        if not structured_roster:
+            return Response({"error": "Structured roster data is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Save the structured roster to the database
+        for service_data in structured_roster['services']:
+            service, created = Services.objects.get_or_create(time=service_data['time'], defaults={'description': service_data.get('description', '')})
+            for person_data in service_data['assignments']:
+                person = Persons.objects.get(id=person_data['id'])
+                Rosters.objects.create(person=person, service=service, date=date.fromisoformat(structured_roster['date']))
+
+        return Response({"message": "Roster saved successfully."}, status=status.HTTP_201_CREATED)
+
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    return Response({"error": "Method not allowed"}, status=status.HTTP_405_METHOD_NOT_ALLOWED)

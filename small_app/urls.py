@@ -14,8 +14,9 @@ urlpatterns = [
     path('services/', services, name='services'),
     path('services/<int:pk>/', service_detail, name='service_detail'),
     path('rosters/', rosters, name='rosters'),
-    path('rosters/<int:pk>/', roster_detail, name='roster_detail'),
+    path('rosters/save/', save_roster, name='save_roster'),
+    path('rosters/generate/',generate_structured_roster),
     path('assignments/', assignments, name='assignments'),
     path('assignments/<int:pk>/', assignment_detail, name='assignment_detail'),
-    path('availability/', availability, name='availability'),
+    path('availability/status-choices/', get_status, name='status-choices'),
 ]
