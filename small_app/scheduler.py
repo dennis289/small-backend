@@ -62,33 +62,30 @@ def generate_roster(target_date: date):
 
     for service in services:
         service_assignments = []
-        local_assigned = set(global_assigned)
 
         for display_name, db_role_name in ROLE_LABELS:
             db_role = next((r for r in roles if r.name.lower() == db_role_name.lower()), None)
             if not db_role:
                 continue
 
+            # Only consider people who haven't been assigned yet
             eligible = [
                 p for p in available_people
-                if db_role in p.roles.all() and p.id not in local_assigned
+                if db_role in p.roles.all() and p.id not in global_assigned
             ]
-
-            if not eligible:
-                eligible = [
-                    p for p in available_people
-                    if db_role in p.roles.all()
-                ]
 
             if eligible:
                 random.shuffle(eligible)
                 chosen = eligible[0]
                 service_assignments.append({
                     "role": display_name,
-                    "name": f"{chosen.first_name} {chosen.last_name}"
+                    "name": f"{chosen.first_name} {chosen.last_name}",
+                    "person_id": chosen.id
                 })
-                local_assigned.add(chosen.id)
                 global_assigned.add(chosen.id)
+                print(f"Assigned {chosen.first_name} {chosen.last_name} to {display_name} (Service: {service.description})")
+            else:
+                print(f"Warning: No available people for role '{display_name}' in service '{service.description}'")
 
         structured["services"].append({
             "service_id": service.id,
@@ -96,7 +93,7 @@ def generate_roster(target_date: date):
             "assignments": service_assignments
         })
 
-    # Assign 2 Hospitality
+    # Assign 2 Hospitality - ensure no conflicts
     if hospitality_role:
         hospitality_candidates = [
             p for p in available_people
@@ -105,13 +102,26 @@ def generate_roster(target_date: date):
         selected = random.sample(hospitality_candidates, min(2, len(hospitality_candidates)))
         structured["hospitality"] = [f"{p.first_name} {p.last_name}" for p in selected]
         global_assigned.update(p.id for p in selected)
+        print(f"Assigned {len(selected)} people to Hospitality: {[f'{p.first_name} {p.last_name}' for p in selected]}")
 
-    # Assign Social Media to Victor Reuben
+    # Assign Social Media to Victor Reuben - ensure no conflicts
     if social_media_role:
         victor = available_people.filter(first_name__iexact="Victor", last_name__iexact="Reuben").first()
-        if victor and social_media_role in victor.roles.all():
+        if victor and social_media_role in victor.roles.all() and victor.id not in global_assigned:
             structured["social_media"] = [f"{victor.first_name} {victor.last_name}"]
             global_assigned.add(victor.id)
+            print(f"Assigned Victor Reuben to Social Media")
+        else:
+            # Fallback: assign any available person with social media role
+            social_media_candidates = [
+                p for p in available_people
+                if social_media_role in p.roles.all() and p.id not in global_assigned
+            ]
+            if social_media_candidates:
+                chosen = random.choice(social_media_candidates)
+                structured["social_media"] = [f"{chosen.first_name} {chosen.last_name}"]
+                global_assigned.add(chosen.id)
+                print(f"Assigned {chosen.first_name} {chosen.last_name} to Social Media (Victor not available)")
 
-    print("Roster generated successfully.")
+    print(f"Roster generated successfully. Total people assigned: {len(global_assigned)}")
     return structured

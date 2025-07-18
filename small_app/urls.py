@@ -19,4 +19,5 @@ urlpatterns = [
     path('assignments/', assignments, name='assignments'),
     path('assignments/<int:pk>/', assignment_detail, name='assignment_detail'),
     path('availability/status-choices/', get_status, name='status-choices'),
+    path('generate-roster/', generate_and_download_roster, name='generate_roster'),
 ]

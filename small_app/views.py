@@ -9,6 +9,9 @@ from django.contrib.auth import authenticate, get_user_model
 from rest_framework_simplejwt.tokens import RefreshToken
 from .scheduler import generate_roster
 from datetime import datetime, date, time
+from .pdf import export_roster_pdf  # Now available with reportlab installed
+from django.http import HttpResponse
+
 
 
 User = get_user_model()
@@ -336,3 +339,31 @@ def save_roster(request):
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
     return Response({"error": "Method not allowed"}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+
+@api_view(['POST'])
+def generate_and_download_roster(request):
+    try:
+        # Get roster data from request or generate new one
+        roster_data = request.data.get('roster_data')
+        target_date = request.data.get('date')
+        
+        if not roster_data and target_date:
+            # Generate new roster if only date provided
+            roster_data = generate_roster(date.fromisoformat(target_date))
+        elif not roster_data:
+            # Default to today if no data provided
+            roster_data = generate_roster(date.today())
+        
+        # Generate PDF
+        pdf = export_roster_pdf(roster_data)
+        
+        # Create response
+        response = HttpResponse(pdf, content_type='application/pdf')
+        filename = f'roster_{roster_data.get("date", date.today())}.pdf'
+        response['Content-Disposition'] = f'attachment; filename="{filename}"'
+        return response
+        
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
