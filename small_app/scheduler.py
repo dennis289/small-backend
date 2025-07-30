@@ -1,38 +1,51 @@
 import random
-from .models import *
-from datetime import date
+from dataclasses import dataclass, field
+from typing import List, Dict, Optional, Set
+from datetime import date, timedelta
+from django.db.models import QuerySet, Count, Q
+from django.db import transaction
+from .models import Persons, Roles, Services, Assignment, Rosters
 
-def generate_roster(target_date: date):
-    print(f"Starting roster generation for date: {target_date}")
-    
-    services = list(Services.objects.filter(is_active=True).order_by('id'))
-    roles = list(Roles.objects.all())
-    if not services:
-        raise ValueError("No services defined.")
-    if not roles:
-        raise ValueError("No roles defined.")
-    
-    # Use Persons directly
-    available_people = Persons.objects.filter(is_present=True).prefetch_related('roles')
 
-    if not available_people.exists():
-        raise ValueError("No people marked as present for the selected date.")
+@dataclass
+class PersonInfo:
+    """Data class to represent a person's basic information."""
+    id: int
+    name: str
+    first_name: str
+    last_name: str
 
-    # Randomized producer from available producers
-    producer_pool = available_people.filter(is_producer=True)
-    producer = random.choice(list(producer_pool)) if producer_pool.exists() else None
-    if not producer:
-        raise ValueError("No producer available.")
-    
-    eligible_assistants = available_people.exclude(id=producer.id)
-    assistant_producer = random.choice(list(eligible_assistants)) if eligible_assistants.exists() else None
-    if not assistant_producer:
-        raise ValueError("No assistant producer available.")
-    
-    # Fetch special roles
-    hospitality_role = next((r for r in roles if r.name.lower() == "hospitality"), None)
-    social_media_role = next((r for r in roles if r.name.lower() == "social media"), None)
 
+@dataclass
+class RoleAssignment:
+    """Data class to represent a role assignment."""
+    role: str
+    name: str
+    person_id: int
+
+
+@dataclass
+class ServiceAssignment:
+    """Data class to represent assignments for a service."""
+    service_id: int
+    service_name: str
+    assignments: List[RoleAssignment] = field(default_factory=list)
+
+
+@dataclass
+class RosterStructure:
+    """Data class to represent the complete roster structure."""
+    date: str
+    producer: PersonInfo
+    assistant_producer: PersonInfo
+    services: List[ServiceAssignment] = field(default_factory=list)
+    hospitality: List[str] = field(default_factory=list)
+    social_media: List[str] = field(default_factory=list)
+
+
+class RosterGenerator:
+    """Modern roster generator class with effective rotation system."""
+    
     ROLE_LABELS = [
         ("Camera 1", "Videography"),
         ("Camera 2", "Videography"),
@@ -42,86 +55,469 @@ def generate_roster(target_date: date):
         ("Media Desk", "Media Desk"),
         ("Time Keeper", "Time keeper")
     ]
-
-    structured = {
-        "date": str(target_date),
-        "producer": {
-            "id": producer.id,
-            "name": f"{producer.first_name} {producer.last_name}"
-        },
-        "assistant_producer": {
-            "id": assistant_producer.id,
-            "name": f"{assistant_producer.first_name} {assistant_producer.last_name}"
-        },
-        "services": [],
-        "hospitality": [],
-        "social_media": []
-    }
-
-    global_assigned = set([producer.id, assistant_producer.id])
-
-    for service in services:
+    
+    def __init__(self):
+        self.global_assigned: Set[int] = set()
+        self.assignment_history: Dict[int, Dict[str, int]] = {}
+        self.role_assignment_counts: Dict[str, Dict[int, int]] = {}
+    
+    def _load_assignment_history(self, target_date: date, lookback_days: int = 90) -> None:
+        """Load assignment history from the last N days to inform rotation decisions."""
+        start_date = target_date - timedelta(days=lookback_days)
+        
+        # Get all assignments from the lookback period
+        recent_assignments = Assignment.objects.filter(
+            roster__date__gte=start_date,
+            roster__date__lt=target_date
+        ).select_related('person', 'role', 'roster__service')
+        
+        # Reset history tracking
+        self.assignment_history.clear()
+        self.role_assignment_counts.clear()
+        
+        # Build assignment history
+        for assignment in recent_assignments:
+            person_id = assignment.person.id
+            role_name = assignment.role.name.lower()
+            
+            # Track general assignment history per person
+            if person_id not in self.assignment_history:
+                self.assignment_history[person_id] = {}
+            
+            if role_name not in self.assignment_history[person_id]:
+                self.assignment_history[person_id][role_name] = 0
+            
+            self.assignment_history[person_id][role_name] += 1
+            
+            # Track role assignment counts for rotation
+            if role_name not in self.role_assignment_counts:
+                self.role_assignment_counts[role_name] = {}
+            
+            if person_id not in self.role_assignment_counts[role_name]:
+                self.role_assignment_counts[role_name][person_id] = 0
+            
+            self.role_assignment_counts[role_name][person_id] += 1
+        
+        print(f"Loaded assignment history for {len(self.assignment_history)} people over last {lookback_days} days")
+    
+    def _calculate_person_priority_score(self, person: Persons, role_name: str) -> float:
+        """
+        Calculate a priority score for assigning a person to a role.
+        Lower score = higher priority (should be assigned first).
+        """
+        person_id = person.id
+        role_lower = role_name.lower()
+        
+        # Base score
+        score = 0.0
+        
+        # Factor 1: Recent assignment frequency for this specific role (heavily weighted)
+        if role_lower in self.role_assignment_counts:
+            recent_role_assignments = self.role_assignment_counts[role_lower].get(person_id, 0)
+            score += recent_role_assignments * 10  # Heavy penalty for recent same-role assignments
+        
+        # Factor 2: Total assignment frequency across all roles (moderate weight)
+        total_recent_assignments = sum(self.assignment_history.get(person_id, {}).values())
+        score += total_recent_assignments * 2  # Moderate penalty for being assigned frequently
+        
+        # Factor 3: Random factor for tie-breaking (small weight)
+        score += random.random() * 0.5
+        
+        return score
+    
+    def _select_best_person_for_role(self, eligible_people: List[Persons], role_name: str) -> Optional[Persons]:
+        """Select the best person for a role based on rotation history."""
+        if not eligible_people:
+            return None
+        
+        # Calculate priority scores for all eligible people
+        scored_people = [
+            (self._calculate_person_priority_score(person, role_name), person)
+            for person in eligible_people
+        ]
+        
+        # Sort by score (ascending - lowest score = highest priority)
+        scored_people.sort(key=lambda x: x[0])
+        
+        # Select the person with the lowest score (highest priority)
+        selected_person = scored_people[0][1]
+        
+        print(f"Selected {selected_person.first_name} {selected_person.last_name} for {role_name} "
+              f"(priority score: {scored_people[0][0]:.2f})")
+        
+        return selected_person
+    
+    def _get_person_info(self, person: Persons) -> PersonInfo:
+        """Convert a Persons model instance to PersonInfo dataclass."""
+        return PersonInfo(
+            id=person.id,
+            name=f"{person.first_name} {person.last_name}",
+            first_name=person.first_name,
+            last_name=person.last_name
+        )
+    
+    def _validate_initial_data(self, services: QuerySet, roles: List[Roles], available_people: QuerySet) -> None:
+        """Validate that required data exists before roster generation."""
+        if not services.exists():
+            raise ValueError("No services defined.")
+        if not roles:
+            raise ValueError("No roles defined.")
+        if not available_people.exists():
+            raise ValueError("No people marked as present for the selected date.")
+    
+    def _select_producer(self, available_people: QuerySet) -> Persons:
+        """Select a producer from available people using rotation logic."""
+        producer_pool = available_people.filter(is_producer=True)
+        if not producer_pool.exists():
+            raise ValueError("No producer available.")
+        
+        # Use rotation logic for producer selection
+        producer = self._select_best_person_for_role(list(producer_pool), "producer")
+        if not producer:
+            # Fallback to random if rotation logic fails
+            producer = random.choice(list(producer_pool))
+        
+        self.global_assigned.add(producer.id)
+        print(f"Selected producer: {producer.first_name} {producer.last_name}")
+        return producer
+    
+    def _select_assistant_producer(self, available_people: QuerySet) -> Persons:
+        """Select an assistant producer using rotation logic (excluding already assigned)."""
+        eligible_assistants = available_people.exclude(id__in=self.global_assigned)
+        if not eligible_assistants.exists():
+            raise ValueError("No assistant producer available.")
+        
+        # Use rotation logic for assistant producer selection
+        assistant_producer = self._select_best_person_for_role(list(eligible_assistants), "assistant_producer")
+        if not assistant_producer:
+            # Fallback to random if rotation logic fails
+            assistant_producer = random.choice(list(eligible_assistants))
+        
+        self.global_assigned.add(assistant_producer.id)
+        print(f"Selected assistant producer: {assistant_producer.first_name} {assistant_producer.last_name}")
+        return assistant_producer
+    
+    def _assign_service_roles(self, service: Services, available_people: QuerySet, roles: List[Roles]) -> List[RoleAssignment]:
+        """Assign roles for a specific service using effective rotation logic."""
         service_assignments = []
-
-        for display_name, db_role_name in ROLE_LABELS:
+        
+        for display_name, db_role_name in self.ROLE_LABELS:
             db_role = next((r for r in roles if r.name.lower() == db_role_name.lower()), None)
             if not db_role:
+                print(f"Warning: Role '{db_role_name}' not found in database")
                 continue
-
-            # Only consider people who haven't been assigned yet
+            
             eligible = [
                 p for p in available_people
-                if db_role in p.roles.all() and p.id not in global_assigned
+                if db_role in p.roles.all() and p.id not in self.global_assigned
             ]
-
+            
             if eligible:
-                random.shuffle(eligible)
-                chosen = eligible[0]
-                service_assignments.append({
-                    "role": display_name,
-                    "name": f"{chosen.first_name} {chosen.last_name}",
-                    "person_id": chosen.id
-                })
-                global_assigned.add(chosen.id)
+                # Use rotation-based selection instead of random
+                chosen = self._select_best_person_for_role(eligible, db_role_name)
+                if not chosen:
+                    # Fallback to random if rotation logic fails
+                    chosen = random.choice(eligible)
+                
+                service_assignments.append(RoleAssignment(
+                    role=display_name,
+                    name=f"{chosen.first_name} {chosen.last_name}",
+                    person_id=chosen.id
+                ))
+                self.global_assigned.add(chosen.id)
                 print(f"Assigned {chosen.first_name} {chosen.last_name} to {display_name} (Service: {service.description})")
             else:
                 print(f"Warning: No available people for role '{display_name}' in service '{service.description}'")
-
-        structured["services"].append({
-            "service_id": service.id,
-            "service_name": service.description,
-            "assignments": service_assignments
-        })
-
-    # Assign 2 Hospitality - ensure no conflicts
-    if hospitality_role:
+        
+        return service_assignments
+    
+    def _assign_hospitality(self, available_people: QuerySet, hospitality_role: Optional[Roles]) -> List[str]:
+        """Assign hospitality roles using rotation logic."""
+        if not hospitality_role:
+            print("Warning: Hospitality role not found")
+            return []
+        
         hospitality_candidates = [
             p for p in available_people
-            if hospitality_role in p.roles.all() and p.id not in global_assigned
+            if hospitality_role in p.roles.all() and p.id not in self.global_assigned
         ]
-        selected = random.sample(hospitality_candidates, min(2, len(hospitality_candidates)))
-        structured["hospitality"] = [f"{p.first_name} {p.last_name}" for p in selected]
-        global_assigned.update(p.id for p in selected)
-        print(f"Assigned {len(selected)} people to Hospitality: {[f'{p.first_name} {p.last_name}' for p in selected]}")
-
-    # Assign Social Media to Victor Reuben - ensure no conflicts
-    if social_media_role:
-        victor = available_people.filter(first_name__iexact="Victor", last_name__iexact="Reuben").first()
-        if victor and social_media_role in victor.roles.all() and victor.id not in global_assigned:
-            structured["social_media"] = [f"{victor.first_name} {victor.last_name}"]
-            global_assigned.add(victor.id)
-            print(f"Assigned Victor Reuben to Social Media")
-        else:
-            # Fallback: assign any available person with social media role
-            social_media_candidates = [
-                p for p in available_people
-                if social_media_role in p.roles.all() and p.id not in global_assigned
-            ]
-            if social_media_candidates:
+        
+        if not hospitality_candidates:
+            print("Warning: No one available for Hospitality role")
+            return []
+        
+        # Select up to 2 people using rotation logic
+        selected = []
+        for i in range(min(2, len(hospitality_candidates))):
+            best_person = self._select_best_person_for_role(hospitality_candidates, "hospitality")
+            if best_person:
+                selected.append(best_person)
+                hospitality_candidates.remove(best_person)  # Remove from candidates for next selection
+        
+        # Fallback to random selection if rotation logic didn't work
+        if not selected:
+            selected = random.sample(hospitality_candidates, min(2, len(hospitality_candidates)))
+        
+        hospitality_names = [f"{p.first_name} {p.last_name}" for p in selected]
+        self.global_assigned.update(p.id for p in selected)
+        print(f"Assigned {len(selected)} people to Hospitality: {hospitality_names}")
+        
+        return hospitality_names
+    
+    def _assign_social_media(self, available_people: QuerySet, social_media_role: Optional[Roles]) -> List[str]:
+        """Assign social media role using rotation logic, with Victor Reuben preference."""
+        if not social_media_role:
+            print("Warning: Social Media role not found")
+            return []
+        
+        # Try to assign Victor Reuben first (maintaining existing preference)
+        victor = available_people.filter(
+            first_name__iexact="Victor", 
+            last_name__iexact="Reuben"
+        ).first()
+        
+        if victor and social_media_role in victor.roles.all() and victor.id not in self.global_assigned:
+            # Check if Victor has been assigned to social media recently
+            victor_score = self._calculate_person_priority_score(victor, "social media")
+            
+            # If Victor hasn't been assigned recently (score < 5), assign him
+            if victor_score < 5.0:
+                self.global_assigned.add(victor.id)
+                print("Assigned Victor Reuben to Social Media (preferred candidate)")
+                return [f"{victor.first_name} {victor.last_name}"]
+            else:
+                print(f"Victor Reuben recently assigned to social media (score: {victor_score:.2f}), using rotation")
+        
+        # Use rotation logic for social media assignment
+        social_media_candidates = [
+            p for p in available_people
+            if social_media_role in p.roles.all() and p.id not in self.global_assigned
+        ]
+        
+        if social_media_candidates:
+            chosen = self._select_best_person_for_role(social_media_candidates, "social media")
+            if not chosen:
+                # Fallback to random if rotation logic fails
                 chosen = random.choice(social_media_candidates)
-                structured["social_media"] = [f"{chosen.first_name} {chosen.last_name}"]
-                global_assigned.add(chosen.id)
-                print(f"Assigned {chosen.first_name} {chosen.last_name} to Social Media (Victor not available)")
+            
+            self.global_assigned.add(chosen.id)
+            print(f"Assigned {chosen.first_name} {chosen.last_name} to Social Media")
+            return [f"{chosen.first_name} {chosen.last_name}"]
+        
+        print("Warning: No one available for Social Media role")
+        return []
+    
+    def generate(self, target_date: date) -> Dict:
+        """Generate a roster for the given date with effective rotation system."""
+        print(f"Starting roster generation for date: {target_date}")
+        
+        # Reset global assignments for this generation
+        self.global_assigned.clear()
+        
+        # Load assignment history for rotation logic
+        self._load_assignment_history(target_date)
+        
+        # Fetch data
+        services = Services.objects.filter(is_active=True).order_by('id')
+        roles = list(Roles.objects.all())
+        available_people = Persons.objects.filter(is_present=True).prefetch_related('roles')
+        
+        # Validate initial data
+        self._validate_initial_data(services, roles, available_people)
+        
+        # Select producer and assistant producer using rotation
+        producer = self._select_producer(available_people)
+        assistant_producer = self._select_assistant_producer(available_people)
+        
+        # Find special roles
+        hospitality_role = next((r for r in roles if r.name.lower() == "hospitality"), None)
+        social_media_role = next((r for r in roles if r.name.lower() == "social media"), None)
+        
+        # Initialize roster structure
+        roster = RosterStructure(
+            date=str(target_date),
+            producer=self._get_person_info(producer),
+            assistant_producer=self._get_person_info(assistant_producer)
+        )
+        
+        # Assign roles for each service using rotation
+        for service in services:
+            service_assignments = self._assign_service_roles(service, available_people, roles)
+            roster.services.append(ServiceAssignment(
+                service_id=service.id,
+                service_name=service.description,
+                assignments=service_assignments
+            ))
+        
+        # Assign special roles using rotation
+        roster.hospitality = self._assign_hospitality(available_people, hospitality_role)
+        roster.social_media = self._assign_social_media(available_people, social_media_role)
+        
+        print(f"Roster generated successfully with rotation logic. Total people assigned: {len(self.global_assigned)}")
+        
+        # Convert to dictionary for backward compatibility
+        return {
+            "date": roster.date,
+            "producer": {
+                "id": roster.producer.id,
+                "name": roster.producer.name
+            },
+            "assistant_producer": {
+                "id": roster.assistant_producer.id,
+                "name": roster.assistant_producer.name
+            },
+            "services": [
+                {
+                    "service_id": service.service_id,
+                    "service_name": service.service_name,
+                    "assignments": [
+                        {
+                            "role": assignment.role,
+                            "name": assignment.name,
+                            "person_id": assignment.person_id
+                        }
+                        for assignment in service.assignments
+                    ]
+                }
+                for service in roster.services
+            ],
+            "hospitality": roster.hospitality,
+            "social_media": roster.social_media
+        }
+    
+    def save_roster_to_database(self, roster_data: Dict, target_date: date) -> None:
+        """Save the generated roster to the database for tracking assignment history."""
+        try:
+            with transaction.atomic():
+                # Create roster entries for each service
+                services = Services.objects.filter(is_active=True)
+                
+                for service in services:
+                    # Find corresponding service assignments in roster data
+                    service_data = next(
+                        (s for s in roster_data.get('services', []) if s['service_id'] == service.id),
+                        None
+                    )
+                    
+                    if not service_data:
+                        continue
+                    
+                    # Create or update roster entry
+                    roster_entry, created = Rosters.objects.get_or_create(
+                        service=service,
+                        date=target_date,
+                        defaults={'person_id': 1}  # Placeholder person
+                    )
+                    
+                    # Clear existing assignments for this roster entry
+                    Assignment.objects.filter(roster=roster_entry).delete()
+                    
+                    # Create new assignments
+                    for assignment_data in service_data.get('assignments', []):
+                        try:
+                            person = Persons.objects.get(id=assignment_data['person_id'])
+                            role_name = assignment_data['role']
+                            
+                            # Map display name to database role name
+                            db_role_name = next(
+                                (db_name for display_name, db_name in self.ROLE_LABELS if display_name == role_name),
+                                role_name
+                            )
+                            
+                            role = Roles.objects.filter(name__iexact=db_role_name).first()
+                            if role:
+                                Assignment.objects.create(
+                                    roster=roster_entry,
+                                    role=role,
+                                    person=person
+                                )
+                        except (Persons.DoesNotExist, Roles.DoesNotExist) as e:
+                            print(f"Warning: Could not create assignment - {e}")
+                
+                print(f"Roster saved to database for {target_date}")
+                
+        except Exception as e:
+            print(f"Error saving roster to database: {e}")
+            raise
 
-    print(f"Roster generated successfully. Total people assigned: {len(global_assigned)}")
-    return structured
+
+def generate_roster(target_date: date, save_to_db: bool = True) -> Dict:
+    """
+    Generate roster with effective rotation and automatic saving.
+    Uses the new RosterGenerator class with rotation logic.
+    
+    Args:
+        target_date: The date to generate the roster for
+        save_to_db: Whether to automatically save the roster to database for tracking (default: True)
+    
+    Returns:
+        Dictionary containing the generated roster data
+    """
+    generator = RosterGenerator()
+    roster_data = generator.generate(target_date)
+    
+    # Automatically save to database for rotation tracking
+    if save_to_db:
+        try:
+            generator.save_roster_to_database(roster_data, target_date)
+            print("Roster automatically saved to database for rotation tracking")
+        except Exception as e:
+            print(f"Warning: Could not save roster to database: {e}")
+            # Continue execution even if saving fails
+    
+    return roster_data
+
+
+def get_assignment_statistics(lookback_days: int = 90) -> Dict:
+    """
+    Get assignment statistics for the last N days to help with roster planning.
+    
+    Args:
+        lookback_days: Number of days to look back for statistics
+    
+    Returns:
+        Dictionary containing assignment statistics
+    """
+    end_date = date.today()
+    start_date = end_date - timedelta(days=lookback_days)
+    
+    # Get all assignments in the period
+    assignments = Assignment.objects.filter(
+        roster__date__gte=start_date,
+        roster__date__lte=end_date
+    ).select_related('person', 'role')
+    
+    # Calculate statistics
+    person_stats = {}
+    role_stats = {}
+    
+    for assignment in assignments:
+        person_name = f"{assignment.person.first_name} {assignment.person.last_name}"
+        role_name = assignment.role.name
+        
+        # Person statistics
+        if person_name not in person_stats:
+            person_stats[person_name] = {"total_assignments": 0, "roles": {}}
+        
+        person_stats[person_name]["total_assignments"] += 1
+        
+        if role_name not in person_stats[person_name]["roles"]:
+            person_stats[person_name]["roles"][role_name] = 0
+        person_stats[person_name]["roles"][role_name] += 1
+        
+        # Role statistics
+        if role_name not in role_stats:
+            role_stats[role_name] = {"total_assignments": 0, "people": {}}
+        
+        role_stats[role_name]["total_assignments"] += 1
+        
+        if person_name not in role_stats[role_name]["people"]:
+            role_stats[role_name]["people"][person_name] = 0
+        role_stats[role_name]["people"][person_name] += 1
+    
+    return {
+        "period": f"{start_date} to {end_date}",
+        "person_statistics": person_stats,
+        "role_statistics": role_stats,
+        "total_assignments": len(assignments)
+    }

@@ -26,7 +26,13 @@ SECRET_KEY = 'django-insecure-0dbu@#=rp4t%b$v5q#5*)8v&hf=0+!!$u6961s$g2x-!ozigy@
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'localhost', 
+    '127.0.0.1', 
+    '192.168.1.59',  # Previous IP
+    '192.168.1.140', # Current IP address
+    '0.0.0.0',       # Allow all IPs for development
+]
 
 
 # Application definition
@@ -101,7 +107,30 @@ DATABASES = {
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    "http://10.0.2.2:8000",  # Android emulator
+    "http://localhost:8000",
 ]
+
+# Allow all origins for development (remove in production)
+CORS_ALLOW_ALL_ORIGINS = True
+
+# Allow credentials to be sent with requests
+CORS_ALLOW_CREDENTIALS = True
+
+# Additional CORS headers
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+]
+
 AUTH_USER_MODEL = 'small_app.User'
 
 # Password validation

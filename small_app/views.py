@@ -297,73 +297,33 @@ def assignment_detail(request, pk):
     serializer = AssignmentSerializer(assignment)
     return Response(serializer.data, status=200)
 
-@api_view(['POST'])
-def generate_structured_roster(request):
-    try:
-        target_date = request.data.get('date')
-        absent_ids = request.data.get('members', [])
-        is_present = request.data.get('is_present', False)
+# Legacy endpoints for backward compatibility
 
-        if not target_date:
-            return Response({"error": "Date is required."}, status=status.HTTP_400_BAD_REQUEST)
-
-        # 1. Set attendance based on selected members
-        Persons.objects.update(is_present=True)  # reset everyone to present
-        if not is_present:  # if selected members are absent
-            Persons.objects.filter(id__in=absent_ids).update(is_present=False)
-
-        # 2. Call your roster generator (modified version below)
-        structured = generate_roster(date.fromisoformat(target_date))
-        return Response(structured, status=status.HTTP_200_OK)
-
-    except Exception as e:
-        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
-
+# Legacy endpoints for backward compatibility
 @api_view(['POST'])
 def save_roster(request):
+    """Legacy save roster endpoint"""
     try:
-        structured_roster = request.data.get('structured_roster')
-        if not structured_roster:
-            return Response({"error": "Structured roster data is required."}, status=status.HTTP_400_BAD_REQUEST)
-
-        # Save the structured roster to the database
-        for service_data in structured_roster['services']:
-            service, created = Services.objects.get_or_create(time=service_data['time'], defaults={'description': service_data.get('description', '')})
-            for person_data in service_data['assignments']:
-                person = Persons.objects.get(id=person_data['id'])
-                Rosters.objects.create(person=person, service=service, date=date.fromisoformat(structured_roster['date']))
-
-        return Response({"message": "Roster saved successfully."}, status=status.HTTP_201_CREATED)
-
+        from .api_views import api_save_roster
+        return api_save_roster(request)
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-    return Response({"error": "Method not allowed"}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
+@api_view(['POST'])
+def generate_structured_roster(request):
+    """Legacy generate roster endpoint"""
+    try:
+        from .api_views import api_generate_roster
+        return api_generate_roster(request)
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['POST'])
 def generate_and_download_roster(request):
+    """Legacy PDF download endpoint"""
     try:
-        # Get roster data from request or generate new one
-        roster_data = request.data.get('roster_data')
-        target_date = request.data.get('date')
-        
-        if not roster_data and target_date:
-            # Generate new roster if only date provided
-            roster_data = generate_roster(date.fromisoformat(target_date))
-        elif not roster_data:
-            # Default to today if no data provided
-            roster_data = generate_roster(date.today())
-        
-        # Generate PDF
-        pdf = export_roster_pdf(roster_data)
-        
-        # Create response
-        response = HttpResponse(pdf, content_type='application/pdf')
-        filename = f'roster_{roster_data.get("date", date.today())}.pdf'
-        response['Content-Disposition'] = f'attachment; filename="{filename}"'
-        return response
-        
+        from .api_views import api_export_roster_pdf
+        return api_export_roster_pdf(request)
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
