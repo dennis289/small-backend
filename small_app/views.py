@@ -22,7 +22,7 @@ User = get_user_model()
 @api_view(['POST'])
 def signup(request):
     if request.method == 'POST':
-        serializer = userSerializer(data=request.data)
+        serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=201)
