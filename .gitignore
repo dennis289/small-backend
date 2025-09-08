@@ -1,3 +1,15 @@
 
 db.sqlite3
 __pycache__/
+migrations/
+Documents/
+env/
+Documents.pub/
+requirements.txt
+server.log
+start_backend.sh
+test_enhanced_scheduler.py
+test_optimized_scheduler.py
+test_role_restrictions.py
+test_scheduler_with_absences.py
+test_scheduler.py
