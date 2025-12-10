@@ -28,17 +28,19 @@ class Roles(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     def __str__(self):
-        return self.name
+        return self.name or "Unnamed Service"
 
 class Services(models.Model):
-    time = models.CharField(max_length=100, unique=True)
+    name = models.CharField(max_length=100, blank=True, null=True)
+    start_time = models.TimeField(null=True, blank=True)
+    end_time = models.TimeField(null=True, blank=True)
     description = models.TextField(blank=True, null=True)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.time
+        return self.name
     
 class Rosters(models.Model):
     person = models.ForeignKey(Persons, on_delete=models.CASCADE)
