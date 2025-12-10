@@ -77,7 +77,7 @@ class RosterGenerator:
         
         # Build assignment history
         for assignment in recent_assignments:
-            person_id = assignment.person.id
+            person_id = assignment.person.pk
             role_name = assignment.role.name.lower()
             
             # Track general assignment history per person
@@ -105,7 +105,7 @@ class RosterGenerator:
         Calculate a priority score for assigning a person to a role.
         Lower score = higher priority (should be assigned first).
         """
-        person_id = person.id
+        person_id = person.pk
         role_lower = role_name.lower()
         
         # Base score
@@ -150,7 +150,7 @@ class RosterGenerator:
     def _get_person_info(self, person: Persons) -> PersonInfo:
         """Convert a Persons model instance to PersonInfo dataclass."""
         return PersonInfo(
-            id=person.id,
+            id=person.pk,
             name=f"{person.first_name} {person.last_name}",
             first_name=person.first_name,
             last_name=person.last_name
@@ -177,13 +177,13 @@ class RosterGenerator:
             # Fallback to random if rotation logic fails
             producer = random.choice(list(producer_pool))
         
-        self.global_assigned.add(producer.id)
+        self.global_assigned.add(producer.pk)
         print(f"Selected producer: {producer.first_name} {producer.last_name}")
         return producer
     
     def _select_assistant_producer(self, available_people: QuerySet) -> Persons:
         """Select an assistant producer using rotation logic (excluding already assigned)."""
-        eligible_assistants = available_people.exclude(id__in=self.global_assigned)
+        eligible_assistants = available_people.exclude(pk__in=self.global_assigned)
         if not eligible_assistants.exists():
             raise ValueError("No assistant producer available.")
         
@@ -193,7 +193,7 @@ class RosterGenerator:
             # Fallback to random if rotation logic fails
             assistant_producer = random.choice(list(eligible_assistants))
         
-        self.global_assigned.add(assistant_producer.id)
+        self.global_assigned.add(assistant_producer.pk)
         print(f"Selected assistant producer: {assistant_producer.first_name} {assistant_producer.last_name}")
         return assistant_producer
     
@@ -209,7 +209,7 @@ class RosterGenerator:
             
             eligible = [
                 p for p in available_people
-                if db_role in p.roles.all() and p.id not in self.global_assigned
+                if db_role in p.roles.all() and p.pk not in self.global_assigned
             ]
             
             if eligible:
@@ -222,9 +222,9 @@ class RosterGenerator:
                 service_assignments.append(RoleAssignment(
                     role=display_name,
                     name=f"{chosen.first_name} {chosen.last_name}",
-                    person_id=chosen.id
+                    person_id=chosen.pk
                 ))
-                self.global_assigned.add(chosen.id)
+                self.global_assigned.add(chosen.pk)
                 print(f"Assigned {chosen.first_name} {chosen.last_name} to {display_name} (Service: {service.description})")
             else:
                 print(f"Warning: No available people for role '{display_name}' in service '{service.description}'")
@@ -239,7 +239,7 @@ class RosterGenerator:
         
         hospitality_candidates = [
             p for p in available_people
-            if hospitality_role in p.roles.all() and p.id not in self.global_assigned
+            if hospitality_role in p.roles.all() and p.pk not in self.global_assigned
         ]
         
         if not hospitality_candidates:
@@ -259,7 +259,7 @@ class RosterGenerator:
             selected = random.sample(hospitality_candidates, min(2, len(hospitality_candidates)))
         
         hospitality_names = [f"{p.first_name} {p.last_name}" for p in selected]
-        self.global_assigned.update(p.id for p in selected)
+        self.global_assigned.update(p.pk for p in selected)
         print(f"Assigned {len(selected)} people to Hospitality: {hospitality_names}")
         
         return hospitality_names
@@ -276,13 +276,13 @@ class RosterGenerator:
             last_name__iexact="Reuben"
         ).first()
         
-        if victor and social_media_role in victor.roles.all() and victor.id not in self.global_assigned:
+        if victor and social_media_role in victor.roles.all() and victor.pk not in self.global_assigned:
             # Check if Victor has been assigned to social media recently
             victor_score = self._calculate_person_priority_score(victor, "social media")
             
             # If Victor hasn't been assigned recently (score < 5), assign him
             if victor_score < 5.0:
-                self.global_assigned.add(victor.id)
+                self.global_assigned.add(victor.pk)
                 print("Assigned Victor Reuben to Social Media (preferred candidate)")
                 return [f"{victor.first_name} {victor.last_name}"]
             else:
@@ -291,7 +291,7 @@ class RosterGenerator:
         # Use rotation logic for social media assignment
         social_media_candidates = [
             p for p in available_people
-            if social_media_role in p.roles.all() and p.id not in self.global_assigned
+            if social_media_role in p.roles.all() and p.pk not in self.global_assigned
         ]
         
         if social_media_candidates:
@@ -300,7 +300,7 @@ class RosterGenerator:
                 # Fallback to random if rotation logic fails
                 chosen = random.choice(social_media_candidates)
             
-            self.global_assigned.add(chosen.id)
+            self.global_assigned.add(chosen.pk)
             print(f"Assigned {chosen.first_name} {chosen.last_name} to Social Media")
             return [f"{chosen.first_name} {chosen.last_name}"]
         
@@ -344,8 +344,8 @@ class RosterGenerator:
         for service in services:
             service_assignments = self._assign_service_roles(service, available_people, roles)
             roster.services.append(ServiceAssignment(
-                service_id=service.id,
-                service_name=service.description,
+                service_id=service.pk,
+                service_name=service.description or "Unknown Service",
                 assignments=service_assignments
             ))
         
@@ -395,7 +395,7 @@ class RosterGenerator:
                 for service in services:
                     # Find corresponding service assignments in roster data
                     service_data = next(
-                        (s for s in roster_data.get('services', []) if s['service_id'] == service.id),
+                        (s for s in roster_data.get('services', []) if s['service_id'] == service.pk),
                         None
                     )
                     

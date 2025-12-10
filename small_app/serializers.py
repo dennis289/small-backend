@@ -93,7 +93,7 @@ class ServicesSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Services
-        fields = ['id', 'time', 'description', 'is_active', 'duration', 'created_at', 'updated_at']
+        fields = ['id','name', 'start_time', 'end_time', 'description', 'is_active', 'duration', 'created_at', 'updated_at']
         read_only_fields = ['created_at', 'updated_at']
     
     def get_duration(self, obj):
