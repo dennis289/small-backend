@@ -87,12 +87,12 @@ class RolesSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'description', 'is_special_role', 'created_at', 'updated_at']
         read_only_fields = ['created_at', 'updated_at']
 
-class ServicesSerializer(serializers.ModelSerializer):
+class EventsSerializer(serializers.ModelSerializer):
     # Add duration field for Flutter app compatibility
     duration = serializers.SerializerMethodField()
     
     class Meta:
-        model = Services
+        model = Events
         fields = ['id','name', 'start_time', 'end_time', 'description', 'is_active', 'duration', 'created_at', 'updated_at']
         read_only_fields = ['created_at', 'updated_at']
     
@@ -102,19 +102,19 @@ class ServicesSerializer(serializers.ModelSerializer):
 
 class RostersSerializer(serializers.ModelSerializer):
     person_name = serializers.CharField(source='person.name', read_only=True)
-    service_name = serializers.CharField(source='service.time', read_only=True)
+    event_name = serializers.CharField(source='event.name', read_only=True)
     
     class Meta:
         model = Rosters
-        fields = ['id', 'person', 'person_name', 'service', 'service_name', 'date', 'created_at', 'updated_at']
+        fields = ['id', 'person', 'person_name', 'event', 'event_name', 'date', 'created_at', 'updated_at']
         read_only_fields = ['created_at', 'updated_at']
 
 class AssignmentSerializer(serializers.ModelSerializer):
     person_name = serializers.CharField(source='person.name', read_only=True)
     role_name = serializers.CharField(source='role.name', read_only=True)
-    service_name = serializers.CharField(source='roster.service.time', read_only=True)
+    event_name = serializers.CharField(source='roster.event.name', read_only=True)
     date = serializers.DateField(source='roster.date', read_only=True)
     
     class Meta:
         model = Assignment
-        fields = ['id', 'roster', 'person', 'person_name', 'role', 'role_name', 'service_name', 'date']
+        fields = ['id', 'roster', 'person', 'person_name', 'role', 'role_name', 'event_name', 'date']
