@@ -4,7 +4,7 @@ from typing import List, Dict, Optional, Set
 from datetime import date, timedelta
 from django.db.models import QuerySet, Count, Q
 from django.db import transaction
-from .models import Persons, Roles, Services, Assignment, Rosters
+from .models import Persons, Roles, Events, Assignment, Rosters
 
 
 @dataclass
@@ -25,10 +25,10 @@ class RoleAssignment:
 
 
 @dataclass
-class ServiceAssignment:
-    """Data class to represent assignments for a service."""
-    service_id: int
-    service_name: str
+class EventAssignment:
+    """Data class to represent assignments for an event."""
+    event_id: int
+    event_name: str
     assignments: List[RoleAssignment] = field(default_factory=list)
 
 
@@ -38,7 +38,7 @@ class RosterStructure:
     date: str
     producer: PersonInfo
     assistant_producer: PersonInfo
-    services: List[ServiceAssignment] = field(default_factory=list)
+    events: List[EventAssignment] = field(default_factory=list)
     hospitality: List[str] = field(default_factory=list)
     social_media: List[str] = field(default_factory=list)
 
@@ -69,7 +69,7 @@ class RosterGenerator:
         recent_assignments = Assignment.objects.filter(
             roster__date__gte=start_date,
             roster__date__lt=target_date
-        ).select_related('person', 'role', 'roster__service')
+        ).select_related('person', 'role', 'roster__event')
         
         # Reset history tracking
         self.assignment_history.clear()
@@ -156,10 +156,10 @@ class RosterGenerator:
             last_name=person.last_name
         )
     
-    def _validate_initial_data(self, services: QuerySet, roles: List[Roles], available_people: QuerySet) -> None:
+    def _validate_initial_data(self, events: QuerySet, roles: List[Roles], available_people: QuerySet) -> None:
         """Validate that required data exists before roster generation."""
-        if not services.exists():
-            raise ValueError("No services defined.")
+        if not events.exists():
+            raise ValueError("No events defined.")
         if not roles:
             raise ValueError("No roles defined.")
         if not available_people.exists():
@@ -197,9 +197,9 @@ class RosterGenerator:
         print(f"Selected assistant producer: {assistant_producer.first_name} {assistant_producer.last_name}")
         return assistant_producer
     
-    def _assign_service_roles(self, service: Services, available_people: QuerySet, roles: List[Roles]) -> List[RoleAssignment]:
-        """Assign roles for a specific service using effective rotation logic."""
-        service_assignments = []
+    def _assign_event_roles(self, event: Events, available_people: QuerySet, roles: List[Roles]) -> List[RoleAssignment]:
+        """Assign roles for a specific event using effective rotation logic."""
+        event_assignments = []
         
         for display_name, db_role_name in self.ROLE_LABELS:
             db_role = next((r for r in roles if r.name.lower() == db_role_name.lower()), None)
@@ -219,17 +219,17 @@ class RosterGenerator:
                     # Fallback to random if rotation logic fails
                     chosen = random.choice(eligible)
                 
-                service_assignments.append(RoleAssignment(
+                event_assignments.append(RoleAssignment(
                     role=display_name,
                     name=f"{chosen.first_name} {chosen.last_name}",
                     person_id=chosen.pk
                 ))
                 self.global_assigned.add(chosen.pk)
-                print(f"Assigned {chosen.first_name} {chosen.last_name} to {display_name} (Service: {service.description})")
+                print(f"Assigned {chosen.first_name} {chosen.last_name} to {display_name} (Event: {event.description})")
             else:
-                print(f"Warning: No available people for role '{display_name}' in service '{service.description}'")
+                print(f"Warning: No available people for role '{display_name}' in event '{event.description}'")
         
-        return service_assignments
+        return event_assignments
     
     def _assign_hospitality(self, available_people: QuerySet, hospitality_role: Optional[Roles]) -> List[str]:
         """Assign hospitality roles using rotation logic."""
@@ -318,12 +318,12 @@ class RosterGenerator:
         self._load_assignment_history(target_date)
         
         # Fetch data
-        services = Services.objects.filter(is_active=True).order_by('id')
+        events = Events.objects.filter(is_active=True).order_by('id')
         roles = list(Roles.objects.all())
         available_people = Persons.objects.filter(is_present=True).prefetch_related('roles')
         
         # Validate initial data
-        self._validate_initial_data(services, roles, available_people)
+        self._validate_initial_data(events, roles, available_people)
         
         # Select producer and assistant producer using rotation
         producer = self._select_producer(available_people)
@@ -340,13 +340,13 @@ class RosterGenerator:
             assistant_producer=self._get_person_info(assistant_producer)
         )
         
-        # Assign roles for each service using rotation
-        for service in services:
-            service_assignments = self._assign_service_roles(service, available_people, roles)
-            roster.services.append(ServiceAssignment(
-                service_id=service.pk,
-                service_name=service.description or "Unknown Service",
-                assignments=service_assignments
+        # Assign roles for each event using rotation
+        for event in events:
+            event_assignments = self._assign_event_roles(event, available_people, roles)
+            roster.events.append(EventAssignment(
+                event_id=event.pk,
+                event_name=event.description or "Unknown Event",
+                assignments=event_assignments
             ))
         
         # Assign special roles using rotation
@@ -366,20 +366,20 @@ class RosterGenerator:
                 "id": roster.assistant_producer.id,
                 "name": roster.assistant_producer.name
             },
-            "services": [
+            "events": [
                 {
-                    "service_id": service.service_id,
-                    "service_name": service.service_name,
+                    "event_id": event.event_id,
+                    "event_name": event.event_name,
                     "assignments": [
                         {
                             "role": assignment.role,
                             "name": assignment.name,
                             "person_id": assignment.person_id
                         }
-                        for assignment in service.assignments
+                        for assignment in event.assignments
                     ]
                 }
-                for service in roster.services
+                for event in roster.events
             ],
             "hospitality": roster.hospitality,
             "social_media": roster.social_media
@@ -389,22 +389,22 @@ class RosterGenerator:
         """Save the generated roster to the database for tracking assignment history."""
         try:
             with transaction.atomic():
-                # Create roster entries for each service
-                services = Services.objects.filter(is_active=True)
+                # Create roster entries for each event
+                events = Events.objects.filter(is_active=True)
                 
-                for service in services:
-                    # Find corresponding service assignments in roster data
-                    service_data = next(
-                        (s for s in roster_data.get('services', []) if s['service_id'] == service.pk),
+                for event in events:
+                    # Find corresponding event assignments in roster data
+                    event_data = next(
+                        (s for s in roster_data.get('events', []) if s['event_id'] == event.pk),
                         None
                     )
                     
-                    if not service_data:
+                    if not event_data:
                         continue
                     
                     # Create or update roster entry
                     roster_entry, created = Rosters.objects.get_or_create(
-                        service=service,
+                        event=event,
                         date=target_date,
                         defaults={'person_id': 1}  # Placeholder person
                     )
@@ -413,7 +413,7 @@ class RosterGenerator:
                     Assignment.objects.filter(roster=roster_entry).delete()
                     
                     # Create new assignments
-                    for assignment_data in service_data.get('assignments', []):
+                    for assignment_data in event_data.get('assignments', []):
                         try:
                             person = Persons.objects.get(id=assignment_data['person_id'])
                             role_name = assignment_data['role']

@@ -1,7 +1,7 @@
 from .views import *
 from django.urls import path, include
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
-from .api_urls import api_urlpatterns
+
 
 urlpatterns = [
     # Existing URLs
@@ -13,8 +13,8 @@ urlpatterns = [
     path('persons/<int:pk>/', person_detail, name='person_detail'),
     path('roles/', roles, name='roles'),
     path('roles/<int:pk>/', role_detail, name='role_detail'),
-    path('services/', services, name='services'),
-    path('services/<int:pk>/', service_detail, name='service_detail'),
+    path('events/', events, name='events'),
+    path('events/<int:pk>/', event_detail, name='event_detail'),
     path('rosters/', rosters, name='rosters'),
     path('rosters/save/', save_roster, name='save_roster'),
     # path('rosters/generate/',generate_structured_roster),  # Removed - conflicts with API endpoint
@@ -22,4 +22,4 @@ urlpatterns = [
     path('assignments/<int:pk>/', assignment_detail, name='assignment_detail'),
     path('availability/status-choices/', get_status, name='status-choices'),
     path('generate-roster/', generate_and_download_roster, name='generate_roster'),
-] + api_urlpatterns  # Add our new API endpoints
+] 

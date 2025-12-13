@@ -30,7 +30,7 @@ class Roles(models.Model):
     def __str__(self):
         return self.name or "Unnamed Service"
 
-class Services(models.Model):
+class Events(models.Model):
     name = models.CharField(max_length=100, blank=True, null=True)
     start_time = models.TimeField(null=True, blank=True)
     end_time = models.TimeField(null=True, blank=True)
@@ -44,16 +44,16 @@ class Services(models.Model):
     
 class Rosters(models.Model):
     person = models.ForeignKey(Persons, on_delete=models.CASCADE)
-    service = models.ForeignKey(Services, on_delete=models.CASCADE)
+    event = models.ForeignKey(Events, on_delete=models.CASCADE)
     date = models.DateField(null=False, blank=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        unique_together = ('person', 'service')
+        unique_together = ('person', 'event')
 
     def __str__(self):
-        return f"{self.person} - {self.service}"
+        return f"{self.person} - {self.event}"
     
 class Assignment(models.Model):
     roster = models.ForeignKey(Rosters,on_delete=models.CASCADE, related_name="assignments")
@@ -65,9 +65,9 @@ class Assignment(models.Model):
         constraints =[
             models.UniqueConstraint(
                 fields=['person','roster'],
-                name='unique_assignment_per_person_per_service'
+                name='unique_assignment_per_person_per_event'
             )
         ]
 
     def __str__(self):
-        return f"{self.person} _ {self.role} on {self.roster.service.name} ({self.roster.date})"
+        return f"{self.person} _ {self.role} on {self.roster.event.name} ({self.roster.date})"

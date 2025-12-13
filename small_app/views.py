@@ -152,47 +152,46 @@ def role_detail(request, pk):
     return Response(serializer.data, status=200)
 
 @api_view(['POST','GET','PUT','DELETE'])
-def services(request):
+def events(request):
     if request.method == 'POST':
-        serializer = ServicesSerializer(data=request.data)
+        serializer = EventsSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=201)
         return Response(serializer.errors, status=400)
     elif request.method == 'GET':
-        services = Services.objects.all()
-        serializer = ServicesSerializer(services, many=True)
+        events = Events.objects.all()
+        serializer = EventsSerializer(events, many=True)
         return Response(serializer.data, status=200)
     elif request.method == 'PUT':
-        service_id = request.data.get('id')
+        event_id = request.data.get('id')
         try:
-            service = Services.objects.get(id=service_id)
-        except Services.DoesNotExist:
-            return Response({"error": "Service not found"}, status=404)
+            event = Events.objects.get(id=event_id)
+        except Events.DoesNotExist:
+            return Response({"error": "Event not found"}, status=404)
         
-        serializer = ServicesSerializer(service, data=request.data, partial=True)
+        serializer = EventsSerializer(event, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=200)
         return Response(serializer.errors, status=400)
     elif request.method == 'DELETE':
-        service_id = request.data.get('id')
+        event_id = request.data.get('id')
         try:
-            service = Services.objects.get(id=service_id)
-            service.delete()
-            return Response({"message": "Service deleted successfully"}, status=204)
-        except Services.DoesNotExist:
-            return Response({"error": "Service not found"}, status=404)
+            event = Events.objects.get(id=event_id)
+            event.delete()
+            return Response({"message": "Event deleted successfully"}, status=204)
+        except Events.DoesNotExist:
+            return Response({"error": "Event not found"}, status=404)
     else:
         return Response({"error": "Method not allowed"}, status=405)
 @api_view(['GET'])
-def service_detail(request, pk):
+def event_detail(request, pk):
     try:
-        service = Services.objects.get(pk=pk)
-    except Services.DoesNotExist:
-        return Response({"error": "Service not found"}, status=404)
-
-    serializer = ServicesSerializer(service)
+        event = Events.objects.get(pk=pk)
+    except Events.DoesNotExist:
+        return Response({"error": "Event not found"}, status=404)
+    serializer = EventsSerializer(event)
     return Response(serializer.data, status=200)
 
 @api_view(['POST', 'GET', 'PUT', 'DELETE'])
@@ -303,27 +302,15 @@ def assignment_detail(request, pk):
 @api_view(['POST'])
 def save_roster(request):
     """Legacy save roster endpoint"""
-    try:
-        from .api_views import api_save_roster
-        return api_save_roster(request)
-    except Exception as e:
-        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    pass
 
 @api_view(['POST'])
 def generate_structured_roster(request):
     """Legacy generate roster endpoint"""
-    try:
-        from .api_views import api_generate_roster
-        return api_generate_roster(request)
-    except Exception as e:
-        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    pass
 
 @api_view(['POST'])
 def generate_and_download_roster(request):
     """Legacy PDF download endpoint"""
-    try:
-        from .api_views import api_export_roster_pdf
-        return api_export_roster_pdf(request)
-    except Exception as e:
-        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    pass
 
