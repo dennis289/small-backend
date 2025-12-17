@@ -40,7 +40,7 @@ class Events(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.name
+        return self.name or "Unnamed Event"
     
 class Rosters(models.Model):
     person = models.ForeignKey(Persons, on_delete=models.CASCADE)
