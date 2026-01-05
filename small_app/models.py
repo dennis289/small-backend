@@ -14,6 +14,7 @@ class Persons(models.Model):
     is_producer = models.BooleanField(default=False)
     is_assistant_producer= models.BooleanField(default= False)
     is_present = models.BooleanField(default=True, null=False, blank=False)
+    is_active = models.BooleanField(default=True)
     roles = models.ManyToManyField('Roles', blank=True) 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -71,3 +72,13 @@ class Assignment(models.Model):
 
     def __str__(self):
         return f"{self.person} _ {self.role} on {self.roster.event.name} ({self.roster.date})"
+    
+class MembersBulkUpload(models.Model):
+    json_data = models.JSONField()
+    status = models.BooleanField(default=False)
+    number_of_records = models.IntegerField(default=0)
+    success_products = models.IntegerField(default=0)
+    failed_products = models.IntegerField(default=0)
+    created_at = models.DateField(auto_now_add=True)
+    updated_at = models.DateField(auto_now=True)
+    

@@ -98,7 +98,6 @@ class RosterGenerator:
             
             self.role_assignment_counts[role_name][person_id] += 1
         
-        print(f"Loaded assignment history for {len(self.assignment_history)} people over last {lookback_days} days")
     
     def _calculate_person_priority_score(self, person: Persons, role_name: str) -> float:
         """
@@ -142,8 +141,8 @@ class RosterGenerator:
         # Select the person with the lowest score (highest priority)
         selected_person = scored_people[0][1]
         
-        print(f"Selected {selected_person.first_name} {selected_person.last_name} for {role_name} "
-              f"(priority score: {scored_people[0][0]:.2f})")
+        # print(f"Selected {selected_person.first_name} {selected_person.last_name} for {role_name} "
+        #       f"(priority score: {scored_people[0][0]:.2f})")
         
         return selected_person
     
@@ -178,12 +177,11 @@ class RosterGenerator:
             producer = random.choice(list(producer_pool))
         
         self.global_assigned.add(producer.pk)
-        print(f"Selected producer: {producer.first_name} {producer.last_name}")
         return producer
     
     def _select_assistant_producer(self, available_people: QuerySet) -> Persons:
         """Select an assistant producer using rotation logic (excluding already assigned)."""
-        eligible_assistants = available_people.exclude(pk__in=self.global_assigned)
+        eligible_assistants = available_people.filter(is_assistant_producer=True).exclude(pk__in=self.global_assigned)
         if not eligible_assistants.exists():
             raise ValueError("No assistant producer available.")
         
@@ -194,7 +192,6 @@ class RosterGenerator:
             assistant_producer = random.choice(list(eligible_assistants))
         
         self.global_assigned.add(assistant_producer.pk)
-        print(f"Selected assistant producer: {assistant_producer.first_name} {assistant_producer.last_name}")
         return assistant_producer
     
     def _assign_event_roles(self, event: Events, available_people: QuerySet, roles: List[Roles]) -> List[RoleAssignment]:
@@ -225,7 +222,6 @@ class RosterGenerator:
                     person_id=chosen.pk
                 ))
                 self.global_assigned.add(chosen.pk)
-                print(f"Assigned {chosen.first_name} {chosen.last_name} to {display_name} (Event: {event.description})")
             else:
                 print(f"Warning: No available people for role '{display_name}' in event '{event.description}'")
         
@@ -260,7 +256,6 @@ class RosterGenerator:
         
         hospitality_names = [f"{p.first_name} {p.last_name}" for p in selected]
         self.global_assigned.update(p.pk for p in selected)
-        print(f"Assigned {len(selected)} people to Hospitality: {hospitality_names}")
         
         return hospitality_names
     
@@ -283,7 +278,6 @@ class RosterGenerator:
             # If Victor hasn't been assigned recently (score < 5), assign him
             if victor_score < 5.0:
                 self.global_assigned.add(victor.pk)
-                print("Assigned Victor Reuben to Social Media (preferred candidate)")
                 return [f"{victor.first_name} {victor.last_name}"]
             else:
                 print(f"Victor Reuben recently assigned to social media (score: {victor_score:.2f}), using rotation")
@@ -301,7 +295,6 @@ class RosterGenerator:
                 chosen = random.choice(social_media_candidates)
             
             self.global_assigned.add(chosen.pk)
-            print(f"Assigned {chosen.first_name} {chosen.last_name} to Social Media")
             return [f"{chosen.first_name} {chosen.last_name}"]
         
         print("Warning: No one available for Social Media role")

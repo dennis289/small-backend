@@ -1,3 +1,5 @@
+import ast
+import json
 from django.shortcuts import render
 from .serializers import *
 from .models import *
@@ -17,6 +19,25 @@ from django.http import HttpResponse
 User = get_user_model()
 
 # Create your views here.
+def parse_roles(roles):
+
+    if not roles:
+        return []
+
+    try:
+        return ast.literal_eval(roles)
+    except (ValueError, SyntaxError):
+        pass
+
+    try:
+        return json.loads(roles)
+    except (ValueError, TypeError):
+        pass
+    
+    if isinstance(roles, str):
+            return [branch.strip() for branch in roles.split(',') if branch.strip()]
+
+    return [roles]
 
 # signing up users to the system
 @api_view(['POST'])
@@ -35,9 +56,9 @@ def login(request):
     email = request.data.get('email')
     password = request.data.get('password')
 
+    # ensure either email or username is provided and password is provided
     if not email or not password:
-        return Response({"error": "Missing email or password"}, status=status.HTTP_400_BAD_REQUEST)
-    print(email, password)
+        return Response({"error": "Email and password are required"}, status=status.HTTP_400_BAD_REQUEST)
     try:
         user_obj = User.objects.get(email=email)
     except User.DoesNotExist:
@@ -62,7 +83,7 @@ def get_tokens_for_user(user):
         'access': str(refresh.access_token),
     }
 
-@api_view(['POST','GET','PUT','DELETE'])
+@api_view(['POST','GET'])
 def persons(request):
     if request.method == 'POST':
         serializer = PersonsSerializer(data=request.data)
@@ -74,7 +95,10 @@ def persons(request):
         persons = Persons.objects.all()
         serializer = PersonsSerializer(persons, many=True)
         return Response(serializer.data, status=200)
-    elif request.method == 'PUT':
+    
+@api_view(['PUT', 'DELETE'])
+def modify_person(request,id):
+    if request.method == 'PUT':
         person_id = request.data.get('id')
         try:
             person = Persons.objects.get(id=person_id)
@@ -103,10 +127,69 @@ def person_detail(request, pk):
     except Persons.DoesNotExist:
         return Response({"error": "Person not found"}, status=404)
 
-    serializer = PersonsSerializer(person)
-    return Response(serializer.data, status=200)
+@api_view(['POST'])
+def bulk_upload_persons(request):
+    """Endpoint to handle bulk upload of persons via CSV file"""
+    json_data = request.data.get('json_data')
+    if not json_data:
+        return Response({"error": "No data provided"}, status=400)
+    number_of_records = len(json_data)
+    assortment_bulk_upload = MembersBulkUpload.objects.create(
+        json_data=json_data, number_of_records= number_of_records)
+    for record in json_data:
+        first_name = record.get('first_name')
+        last_name = record.get('last_name')
+        email = record.get('email')
+        phone_number = record.get('phone_number')
+        area_of_residence = record.get('area_of_residence')
+        is_producer = record.get('is_producer', False)
+        is_assistant_producer = record.get('is_assistant_producer', False)
+        is_active = record.get('is_active', True)
+        roles = record.get('roles', [])
 
-@api_view(['POST','GET','PUT','DELETE'])
+        if first_name == None or first_name == "":
+            print("Skipping record due to missing first name")
+            continue
+        if last_name == None or last_name == "":
+            print("Skipping record due to missing last name")
+            continue
+        if email == None or email == "":
+            record['email'] = f"{first_name.lower()}.{last_name.lower()}@gmail.com"
+        if phone_number == None:
+            record['phone_number'] = "0700000000"
+        if area_of_residence == None:
+            record['area_of_residence'] = ""
+        if is_producer == None:
+            record['is_producer'] = False
+        if is_assistant_producer == None:
+            record['is_assistant_producer'] = False
+        if is_active == None:
+            record['is_active'] = True
+        if roles:
+            role_objs = []
+            roles = parse_roles(roles)
+            print(f"Parsed roles: {roles}")
+            for role_name in roles:
+                print(f"Processing role: {role_name}")
+                try:
+                    role_obj = Roles.objects.get(name__iexact = role_name)
+                    role_id = role_obj.id
+                except:
+                    role_obj = Roles.objects.create(name=role_name)
+                    role_id = role_obj.id
+                role_objs.append(role_id)
+                role_name = role_objs
+        else:
+            role_name = None
+            
+        record.pop("roles", None)  # Remove roles to avoid issues in serializer
+        serializer = PersonsSerializer(data=record)
+        if serializer.is_valid():
+            serializer.save()
+            assortment_bulk_upload.success_products += 1
+
+
+@api_view(['POST','GET'])
 def roles(request):
     if request.method == 'POST':
         serializer = RolesSerializer(data=request.data)
@@ -118,7 +201,9 @@ def roles(request):
         roles = Roles.objects.all()
         serializer = RolesSerializer(roles, many=True)
         return Response(serializer.data, status=200)
-    elif request.method == 'PUT':
+@api_view(['PUT', 'DELETE'])
+def modify_role(request,id):
+    if request.method == 'PUT':
         role_id = request.data.get('id')
         try:
             role = Roles.objects.get(id=role_id)
@@ -151,9 +236,10 @@ def role_detail(request, pk):
     serializer = RolesSerializer(role)
     return Response(serializer.data, status=200)
 
-@api_view(['POST','GET','PUT','DELETE'])
+@api_view(['POST','GET'])
 def events(request):
     if request.method == 'POST':
+        event_name = request.data.get('name')
         serializer = EventsSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -163,10 +249,11 @@ def events(request):
         events = Events.objects.all()
         serializer = EventsSerializer(events, many=True)
         return Response(serializer.data, status=200)
-    elif request.method == 'PUT':
-        event_id = request.data.get('id')
+@api_view(['PUT', 'DELETE'])
+def modify_event(request,id):
+    if request.method == 'PUT':
         try:
-            event = Events.objects.get(id=event_id)
+            event = Events.objects.get(id=id)
         except Events.DoesNotExist:
             return Response({"error": "Event not found"}, status=404)
         
