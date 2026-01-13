@@ -3,6 +3,7 @@ asgiref==3.8.1
 attrs==25.3.0
 billiard==4.2.1
 celery==5.5.2
+charset-normalizer==3.4.2
 click==8.2.1
 click-didyoumean==0.3.1
 click-plugins==1.1.1
@@ -19,9 +20,11 @@ kombu==5.5.3
 pillow==11.2.1
 prompt_toolkit==3.0.51
 PyJWT==2.9.0
+python-constraint==1.4.0
 python-dateutil==2.9.0.post0
 PyYAML==6.0.2
 referencing==0.36.2
+reportlab==4.4.2
 rpds-py==0.25.1
 six==1.17.0
 sqlparse==0.5.3
