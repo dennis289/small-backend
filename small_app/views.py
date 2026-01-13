@@ -101,7 +101,7 @@ def modify_person(request,id):
     if request.method == 'PUT':
         person_id = request.data.get('id')
         try:
-            person = Persons.objects.get(id=person_id)
+            person = Persons.objects.get(id=id)
         except Persons.DoesNotExist:
             return Response({"error": "Person not found"}, status=404)
         
@@ -113,7 +113,7 @@ def modify_person(request,id):
     elif request.method == 'DELETE':
         person_id = request.data.get('id')
         try:
-            person = Persons.objects.get(id=person_id)
+            person = Persons.objects.get(id=id)
             person.delete()
             return Response({"message": "Person deleted successfully"}, status=204)
         except Persons.DoesNotExist:
@@ -130,7 +130,7 @@ def person_detail(request, pk):
 @api_view(['POST'])
 def bulk_upload_persons(request):
     """Endpoint to handle bulk upload of persons via CSV file"""
-    json_data = request.data.get('json_data')
+    json_data = request.data.get('data')
     if not json_data:
         return Response({"error": "No data provided"}, status=400)
     number_of_records = len(json_data)
@@ -140,7 +140,7 @@ def bulk_upload_persons(request):
         first_name = record.get('first_name')
         last_name = record.get('last_name')
         email = record.get('email')
-        phone_number = record.get('phone_number')
+        phone_number = record.get('contact')
         area_of_residence = record.get('area_of_residence')
         is_producer = record.get('is_producer', False)
         is_assistant_producer = record.get('is_assistant_producer', False)
@@ -157,6 +157,8 @@ def bulk_upload_persons(request):
             record['email'] = f"{first_name.lower()}.{last_name.lower()}@gmail.com"
         if phone_number == None:
             record['phone_number'] = "0700000000"
+        else:
+            record['phone_number'] = str(phone_number)
         if area_of_residence == None:
             record['area_of_residence'] = ""
         if is_producer == None:
@@ -187,6 +189,11 @@ def bulk_upload_persons(request):
         if serializer.is_valid():
             serializer.save()
             assortment_bulk_upload.success_products += 1
+    return Response({
+        "message": "Bulk upload completed",
+        "total_records": number_of_records,
+        "successful_uploads": assortment_bulk_upload.success_products
+    }, status=201)
 
 
 @api_view(['POST','GET'])
@@ -240,6 +247,10 @@ def role_detail(request, pk):
 def events(request):
     if request.method == 'POST':
         event_name = request.data.get('name')
+        if event_name == None or event_name == "":
+            return Response({"error": "Event name is required"}, status=400)
+        if Events.objects.filter(name__iexact=event_name).exists():
+            return Response({"error": "Event with this name already exists"}, status=400)
         serializer = EventsSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -256,6 +267,13 @@ def modify_event(request,id):
             event = Events.objects.get(id=id)
         except Events.DoesNotExist:
             return Response({"error": "Event not found"}, status=404)
+        event_name = request.data.get('name')
+        if event_name == None or event_name == "":
+            return Response({"error": "Event name is required"}, status=400)
+        if 'name' in request.data:
+            event_name = request.data.get('name')
+            if Events.objects.filter(name__iexact=event_name).exclude(id=id).exists():
+                return Response({"error": "Event with this name already exists"}, status=400)
         
         serializer = EventsSerializer(event, data=request.data, partial=True)
         if serializer.is_valid():

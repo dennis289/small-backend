@@ -53,7 +53,7 @@ class RosterGenerator:
         ("Streaming", "Streaming"),
         ("Still Images", "Photography"),
         ("Media Desk", "Media Desk"),
-        ("Time Keeper", "Time keeper")
+        ("Time Keeper", "Time Keeper")
     ]
     
     def __init__(self):
@@ -161,12 +161,12 @@ class RosterGenerator:
             raise ValueError("No events defined.")
         if not roles:
             raise ValueError("No roles defined.")
-        if not available_people.exists():
+        if not available_people.filter(is_active=True).exists():
             raise ValueError("No people marked as present for the selected date.")
     
     def _select_producer(self, available_people: QuerySet) -> Persons:
         """Select a producer from available people using rotation logic."""
-        producer_pool = available_people.filter(is_producer=True)
+        producer_pool = available_people.filter(is_producer=True, is_active = True)
         if not producer_pool.exists():
             raise ValueError("No producer available.")
         
@@ -181,7 +181,7 @@ class RosterGenerator:
     
     def _select_assistant_producer(self, available_people: QuerySet) -> Persons:
         """Select an assistant producer using rotation logic (excluding already assigned)."""
-        eligible_assistants = available_people.filter(is_assistant_producer=True).exclude(pk__in=self.global_assigned)
+        eligible_assistants = available_people.filter(is_assistant_producer=True, is_active = True).exclude(pk__in=self.global_assigned)
         if not eligible_assistants.exists():
             raise ValueError("No assistant producer available.")
         
@@ -313,7 +313,7 @@ class RosterGenerator:
         # Fetch data
         events = Events.objects.filter(is_active=True).order_by('id')
         roles = list(Roles.objects.all())
-        available_people = Persons.objects.filter(is_present=True).prefetch_related('roles')
+        available_people = Persons.objects.filter(is_present=True, is_active=True).prefetch_related('roles')
         
         # Validate initial data
         self._validate_initial_data(events, roles, available_people)
