@@ -4,6 +4,7 @@ __pycache__/
 migrations/
 Documents/
 env/
+venv/
 Documents.pub/
 requirements.txt
 server.log
