@@ -12,7 +12,7 @@ class Persons(models.Model):
     phone_number = models.CharField(max_length=15, blank=True, null=True)
     area_of_residence = models.TextField(blank=True, null=True)
     is_producer = models.BooleanField(default=False)
-    is_assistant_producer= models.BooleanField(default= False)
+    is_assistant_producer = models.BooleanField(default=False)
     is_present = models.BooleanField(default=True, null=False, blank=False)
     is_active = models.BooleanField(default=True)
     roles = models.ManyToManyField('Roles', blank=True) 
@@ -23,9 +23,10 @@ class Persons(models.Model):
         return f"{self.first_name} {self.last_name}"
 
 class Roles(models.Model):
-    name=models.CharField(max_length=100, unique=True)
-    description=models.TextField(blank=True, null=True)
+    name = models.CharField(max_length=100, unique=True)
+    description = models.TextField(blank=True, null=True)
     is_special_role = models.BooleanField(default=False)
+    max_assignments = models.PositiveIntegerField(default=1)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     def __str__(self):
@@ -44,17 +45,16 @@ class Events(models.Model):
         return self.name or "Unnamed Event"
     
 class Rosters(models.Model):
-    person = models.ForeignKey(Persons, on_delete=models.CASCADE)
     event = models.ForeignKey(Events, on_delete=models.CASCADE, null=True)
     date = models.DateField(null=False, blank=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        unique_together = ('person', 'event')
+        unique_together = ('event', 'date')
 
     def __str__(self):
-        return f"{self.person} - {self.event}"
+        return f"{self.event} - {self.date}"
     
 class Assignment(models.Model):
     roster = models.ForeignKey(Rosters,on_delete=models.CASCADE, related_name="assignments")
@@ -62,17 +62,73 @@ class Assignment(models.Model):
     person = models.ForeignKey(Persons, on_delete=models.CASCADE)
 
     class Meta:
-
-        constraints =[
+        constraints = [
             models.UniqueConstraint(
-                fields=['person','roster'],
-                name='unique_assignment_per_person_per_event'
+                fields=['person','roster','role'],
+                name='unique_assignment_per_person_per_role_per_roster'
             )
         ]
 
     def __str__(self):
         return f"{self.person} _ {self.role} on {self.roster.event.name} ({self.roster.date})"
     
+class AwardType(models.Model):
+    """Dynamic list of award types (e.g. Day off, Appreciation email, Gift)."""
+    name = models.CharField(max_length=150, unique=True)
+    description = models.TextField(blank=True, null=True)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.name
+
+
+class Award(models.Model):
+    """One award per event – feedback + award given to a single person."""
+    event = models.OneToOneField(
+        Events, on_delete=models.CASCADE, related_name='award'
+    )
+    person = models.ForeignKey(
+        Persons, on_delete=models.CASCADE, related_name='awards'
+    )
+    award_type = models.ForeignKey(
+        AwardType, on_delete=models.CASCADE, related_name='awards'
+    )
+    feedback = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.award_type} → {self.person} ({self.event})"
+
+
+class RosterFeedback(models.Model):
+    """Per-person feedback for a roster – tracks presence and comments."""
+    roster = models.ForeignKey(
+        Rosters, on_delete=models.CASCADE, related_name='feedback'
+    )
+    person = models.ForeignKey(
+        Persons, on_delete=models.CASCADE, related_name='feedback'
+    )
+    is_present = models.BooleanField(default=False)
+    feedback = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['roster', 'person'],
+                name='unique_feedback_per_person_per_roster'
+            )
+        ]
+
+    def __str__(self):
+        status = "Present" if self.is_present else "Absent"
+        return f"{self.person} – {status} ({self.roster})"
+
+
 class MembersBulkUpload(models.Model):
     json_data = models.JSONField()
     status = models.BooleanField(default=False)

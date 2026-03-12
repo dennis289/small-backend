@@ -37,26 +37,22 @@ class PersonsSerializer(serializers.ModelSerializer):
     roles = serializers.PrimaryKeyRelatedField(
         many=True,
         queryset=Roles.objects.all(),
-        required=False  # Make roles optional
+        required=False
     )
-    # For reading (GET), show names
     role_names = serializers.SlugRelatedField(
         many=True,
         read_only=True,
         slug_field='name',
         source='roles'
     )
-    # Add full name field for Flutter app compatibility
     name = serializers.SerializerMethodField()
-    phone = serializers.CharField(source='phone_number', required=False, allow_blank=True)
-    address = serializers.CharField(source='area_of_residence', required=False, allow_blank=True)
 
     class Meta:
         model = Persons
         fields = [
-            'id', 'first_name', 'last_name', 'name', 'email', 'phone_number', 
-            'phone', 'area_of_residence', 'address', 'is_producer', 
-            'is_assistant_producer', 'is_present', 'roles', 'role_names',
+            'id', 'first_name', 'last_name', 'name', 'email', 'phone_number',
+            'area_of_residence', 'is_producer', 'is_assistant_producer',
+            'is_present', 'is_active', 'roles', 'role_names',
             'created_at', 'updated_at'
         ]
         read_only_fields = ['created_at', 'updated_at']
@@ -84,7 +80,7 @@ class PersonsSerializer(serializers.ModelSerializer):
 class RolesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Roles
-        fields = ['id', 'name', 'description', 'is_special_role', 'created_at', 'updated_at']
+        fields = ['id', 'name', 'description', 'is_special_role', 'max_assignments', 'created_at', 'updated_at']
         read_only_fields = ['created_at', 'updated_at']
 
 class EventsSerializer(serializers.ModelSerializer):
@@ -101,20 +97,81 @@ class EventsSerializer(serializers.ModelSerializer):
         return 60  # Default 60 minutes
 
 class RostersSerializer(serializers.ModelSerializer):
-    person_name = serializers.CharField(source='person.name', read_only=True)
     event_name = serializers.CharField(source='event.name', read_only=True)
-    
+
     class Meta:
         model = Rosters
-        fields = ['id', 'person', 'person_name', 'event', 'event_name', 'date', 'created_at', 'updated_at']
+        fields = ['id', 'event', 'event_name', 'date', 'created_at', 'updated_at']
         read_only_fields = ['created_at', 'updated_at']
 
 class AssignmentSerializer(serializers.ModelSerializer):
-    person_name = serializers.CharField(source='person.name', read_only=True)
+    person_name = serializers.SerializerMethodField()
     role_name = serializers.CharField(source='role.name', read_only=True)
     event_name = serializers.CharField(source='roster.event.name', read_only=True)
     date = serializers.DateField(source='roster.date', read_only=True)
-    
+
     class Meta:
         model = Assignment
         fields = ['id', 'roster', 'person', 'person_name', 'role', 'role_name', 'event_name', 'date']
+
+    def get_person_name(self, obj):
+        return f"{obj.person.first_name} {obj.person.last_name}".strip()
+
+
+class AwardTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AwardType
+        fields = ['id', 'name', 'description', 'is_active', 'created_at', 'updated_at']
+        read_only_fields = ['created_at', 'updated_at']
+
+
+class AwardSerializer(serializers.ModelSerializer):
+    person_name = serializers.SerializerMethodField()
+    event_name = serializers.CharField(source='event.name', read_only=True)
+    award_type_name = serializers.CharField(source='award_type.name', read_only=True)
+
+    class Meta:
+        model = Award
+        fields = [
+            'id', 'event', 'event_name', 'person', 'person_name',
+            'award_type', 'award_type_name', 'feedback',
+            'created_at', 'updated_at'
+        ]
+        read_only_fields = ['created_at', 'updated_at']
+
+    def get_person_name(self, obj):
+        return f"{obj.person.first_name} {obj.person.last_name}".strip()
+
+    def validate_event(self, value):
+        """Ensure only one award per event."""
+        if self.instance is None and Award.objects.filter(event=value).exists():
+            raise serializers.ValidationError(
+                "An award has already been given for this event."
+            )
+        if (
+            self.instance
+            and self.instance.event != value
+            and Award.objects.filter(event=value).exists()
+        ):
+            raise serializers.ValidationError(
+                "An award has already been given for this event."
+            )
+        return value
+
+
+class RosterFeedbackSerializer(serializers.ModelSerializer):
+    person_name = serializers.SerializerMethodField()
+    roster_date = serializers.DateField(source='roster.date', read_only=True)
+    event_name = serializers.CharField(source='roster.event.name', read_only=True)
+
+    class Meta:
+        model = RosterFeedback
+        fields = [
+            'id', 'roster', 'roster_date', 'event_name',
+            'person', 'person_name', 'is_present', 'feedback',
+            'created_at', 'updated_at'
+        ]
+        read_only_fields = ['created_at', 'updated_at']
+
+    def get_person_name(self, obj):
+        return f"{obj.person.first_name} {obj.person.last_name}".strip()

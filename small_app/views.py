@@ -1,9 +1,15 @@
 import ast
 import json
 from django.shortcuts import render
-from .serializers import *
-from .models import *
-from rest_framework import viewsets
+from .serializers import (
+    UserSerializer, LoginSerializer, PersonsSerializer,
+    RolesSerializer, EventsSerializer, RostersSerializer, AssignmentSerializer,
+    AwardTypeSerializer, AwardSerializer, RosterFeedbackSerializer,
+)
+from .models import (
+    User, Persons, Roles, Events, Rosters, Assignment, MembersBulkUpload,
+    AwardType, Award, RosterFeedback,
+)
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
@@ -11,9 +17,8 @@ from django.contrib.auth import authenticate, get_user_model
 from rest_framework_simplejwt.tokens import RefreshToken
 from .scheduler import generate_roster
 from datetime import datetime, date, time
-from .pdf import export_roster_pdf  # Now available with reportlab installed
+from .pdf import export_roster_pdf
 from django.http import HttpResponse
-
 
 
 User = get_user_model()
@@ -42,14 +47,11 @@ def parse_roles(roles):
 # signing up users to the system
 @api_view(['POST'])
 def signup(request):
-    if request.method == 'POST':
-        serializer = UserSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=201)
-        return Response(serializer.errors, status=400)
-    else:
-        return Response({"error": "method not allowed"}, status=405)
+    serializer = UserSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=201)
+    return Response(serializer.errors, status=400)
     
 @api_view(['POST'])
 def login(request):
@@ -86,6 +88,10 @@ def get_tokens_for_user(user):
 @api_view(['POST','GET'])
 def persons(request):
     if request.method == 'POST':
+        mobile_number = request.data.get('phone_number')
+        number = Persons.objects.filter(phone_number=mobile_number).exists()
+        if number:
+            return Response({"error": "Person with this phone number already exists"}, status=400)
         serializer = PersonsSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -97,35 +103,29 @@ def persons(request):
         return Response(serializer.data, status=200)
     
 @api_view(['PUT', 'DELETE'])
-def modify_person(request,id):
+def modify_person(request, id):
+    try:
+        person = Persons.objects.get(id=id)
+    except Persons.DoesNotExist:
+        return Response({"error": "Person not found"}, status=404)
+
     if request.method == 'PUT':
-        person_id = request.data.get('id')
-        try:
-            person = Persons.objects.get(id=id)
-        except Persons.DoesNotExist:
-            return Response({"error": "Person not found"}, status=404)
-        
         serializer = PersonsSerializer(person, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=200)
         return Response(serializer.errors, status=400)
     elif request.method == 'DELETE':
-        person_id = request.data.get('id')
-        try:
-            person = Persons.objects.get(id=id)
-            person.delete()
-            return Response({"message": "Person deleted successfully"}, status=204)
-        except Persons.DoesNotExist:
-            return Response({"error": "Person not found"}, status=404)
-    else:
-        return Response({"error": "Method not allowed"}, status=405)
+        person.delete()
+        return Response({"message": "Person deleted successfully"}, status=204)
 @api_view(['GET'])
 def person_detail(request, pk):
     try:
         person = Persons.objects.get(pk=pk)
     except Persons.DoesNotExist:
         return Response({"error": "Person not found"}, status=404)
+    serializer = PersonsSerializer(person)
+    return Response(serializer.data, status=200)
 
 @api_view(['POST'])
 def bulk_upload_persons(request):
@@ -147,25 +147,25 @@ def bulk_upload_persons(request):
         is_active = record.get('is_active', True)
         roles = record.get('roles', [])
 
-        if first_name == None or first_name == "":
+        if not first_name:
             print("Skipping record due to missing first name")
             continue
-        if last_name == None or last_name == "":
+        if not last_name:
             print("Skipping record due to missing last name")
             continue
-        if email == None or email == "":
+        if not email:
             record['email'] = f"{first_name.lower()}.{last_name.lower()}@gmail.com"
-        if phone_number == None:
+        if not phone_number:
             record['phone_number'] = "0700000000"
         else:
             record['phone_number'] = str(phone_number)
-        if area_of_residence == None:
+        if not area_of_residence:
             record['area_of_residence'] = ""
-        if is_producer == None:
+        if not is_producer:
             record['is_producer'] = False
-        if is_assistant_producer == None:
+        if not is_assistant_producer:
             record['is_assistant_producer'] = False
-        if is_active == None:
+        if not is_active:
             record['is_active'] = True
         if roles:
             role_objs = []
@@ -209,29 +209,21 @@ def roles(request):
         serializer = RolesSerializer(roles, many=True)
         return Response(serializer.data, status=200)
 @api_view(['PUT', 'DELETE'])
-def modify_role(request,id):
+def modify_role(request, id):
+    try:
+        role = Roles.objects.get(id=id)
+    except Roles.DoesNotExist:
+        return Response({"error": "Role not found"}, status=404)
+
     if request.method == 'PUT':
-        role_id = request.data.get('id')
-        try:
-            role = Roles.objects.get(id=role_id)
-        except Roles.DoesNotExist:
-            return Response({"error": "Role not found"}, status=404)
-        
         serializer = RolesSerializer(role, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=200)
         return Response(serializer.errors, status=400)
     elif request.method == 'DELETE':
-        role_id = request.data.get('id')
-        try:
-            role = Roles.objects.get(id=role_id)
-            role.delete()
-            return Response({"message": "Role deleted successfully"}, status=204)
-        except Roles.DoesNotExist:
-            return Response({"error": "Role not found"}, status=404)
-    else:
-        return Response({"error": "Method not allowed"}, status=405)
+        role.delete()
+        return Response({"message": "Role deleted successfully"}, status=204)
     
 @api_view(['GET'])
 def role_detail(request, pk):
@@ -247,7 +239,7 @@ def role_detail(request, pk):
 def events(request):
     if request.method == 'POST':
         event_name = request.data.get('name')
-        if event_name == None or event_name == "":
+        if not event_name:
             return Response({"error": "Event name is required"}, status=400)
         if Events.objects.filter(name__iexact=event_name).exists():
             return Response({"error": "Event with this name already exists"}, status=400)
@@ -261,35 +253,26 @@ def events(request):
         serializer = EventsSerializer(events, many=True)
         return Response(serializer.data, status=200)
 @api_view(['PUT', 'DELETE'])
-def modify_event(request,id):
+def modify_event(request, id):
+    try:
+        event = Events.objects.get(id=id)
+    except Events.DoesNotExist:
+        return Response({"error": "Event not found"}, status=404)
+
     if request.method == 'PUT':
-        try:
-            event = Events.objects.get(id=id)
-        except Events.DoesNotExist:
-            return Response({"error": "Event not found"}, status=404)
         event_name = request.data.get('name')
-        if event_name == None or event_name == "":
+        if not event_name:
             return Response({"error": "Event name is required"}, status=400)
-        if 'name' in request.data:
-            event_name = request.data.get('name')
-            if Events.objects.filter(name__iexact=event_name).exclude(id=id).exists():
-                return Response({"error": "Event with this name already exists"}, status=400)
-        
+        if Events.objects.filter(name__iexact=event_name).exclude(id=id).exists():
+            return Response({"error": "Event with this name already exists"}, status=400)
         serializer = EventsSerializer(event, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=200)
         return Response(serializer.errors, status=400)
     elif request.method == 'DELETE':
-        event_id = request.data.get('id')
-        try:
-            event = Events.objects.get(id=event_id)
-            event.delete()
-            return Response({"message": "Event deleted successfully"}, status=204)
-        except Events.DoesNotExist:
-            return Response({"error": "Event not found"}, status=404)
-    else:
-        return Response({"error": "Method not allowed"}, status=405)
+        event.delete()
+        return Response({"message": "Event deleted successfully"}, status=204)
 @api_view(['GET'])
 def event_detail(request, pk):
     try:
@@ -402,20 +385,218 @@ def assignment_detail(request, pk):
     return Response(serializer.data, status=200)
 
 # Legacy endpoints for backward compatibility
-
-# Legacy endpoints for backward compatibility
 @api_view(['POST'])
 def save_roster(request):
-    """Legacy save roster endpoint"""
-    pass
+    """Save an edited roster back to the database."""
+    roster_data = request.data.get('data')
+    date_str = request.data.get('date')
 
-@api_view(['POST'])
-def generate_structured_roster(request):
-    """Legacy generate roster endpoint"""
-    pass
+    if not roster_data or not date_str:
+        return Response(
+            {"error": "Both 'data' and 'date' fields are required."},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    try:
+        target_date = datetime.strptime(date_str, '%Y-%m-%d').date()
+    except ValueError:
+        return Response(
+            {"error": "Invalid date format. Use YYYY-MM-DD."},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    try:
+        from .scheduler import RosterGenerator
+        generator = RosterGenerator()
+        generator.save_roster_to_database(roster_data, target_date)
+        return Response({"message": "Roster saved successfully."}, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 @api_view(['POST'])
 def generate_and_download_roster(request):
-    """Legacy PDF download endpoint"""
-    pass
+    """Return a PDF of the supplied roster data."""
+    roster_data = request.data.get('roster_data')
+    if not roster_data:
+        return Response(
+            {"error": "'roster_data' is required."},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    try:
+        pdf_bytes = export_roster_pdf(roster_data)
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    date_str = roster_data.get('date', 'roster')
+    response = HttpResponse(pdf_bytes, content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="roster_{date_str}.pdf"'
+    return response
+
+
+# ──────────────────────────────────────────
+# Award-type CRUD
+# ──────────────────────────────────────────
+@api_view(['GET', 'POST'])
+def award_types(request):
+    if request.method == 'GET':
+        qs = AwardType.objects.all()
+        serializer = AwardTypeSerializer(qs, many=True)
+        return Response(serializer.data, status=200)
+    elif request.method == 'POST':
+        serializer = AwardTypeSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=201)
+        return Response(serializer.errors, status=400)
+
+
+@api_view(['GET', 'PUT', 'DELETE'])
+def award_type_detail(request, pk):
+    try:
+        award_type = AwardType.objects.get(pk=pk)
+    except AwardType.DoesNotExist:
+        return Response({"error": "Award type not found"}, status=404)
+
+    if request.method == 'GET':
+        serializer = AwardTypeSerializer(award_type)
+        return Response(serializer.data, status=200)
+    elif request.method == 'PUT':
+        serializer = AwardTypeSerializer(award_type, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=200)
+        return Response(serializer.errors, status=400)
+    elif request.method == 'DELETE':
+        award_type.delete()
+        return Response({"message": "Award type deleted"}, status=204)
+
+
+# ──────────────────────────────────────────
+# Award CRUD  (one per event)
+# ──────────────────────────────────────────
+@api_view(['GET', 'POST'])
+def awards(request):
+    if request.method == 'GET':
+        qs = Award.objects.select_related('event', 'person', 'award_type').all()
+        serializer = AwardSerializer(qs, many=True)
+        return Response(serializer.data, status=200)
+    elif request.method == 'POST':
+        serializer = AwardSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=201)
+        return Response(serializer.errors, status=400)
+
+
+@api_view(['GET', 'PUT', 'DELETE'])
+def award_detail(request, pk):
+    try:
+        award = Award.objects.get(pk=pk)
+    except Award.DoesNotExist:
+        return Response({"error": "Award not found"}, status=404)
+
+    if request.method == 'GET':
+        serializer = AwardSerializer(award)
+        return Response(serializer.data, status=200)
+    elif request.method == 'PUT':
+        serializer = AwardSerializer(award, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=200)
+        return Response(serializer.errors, status=400)
+    elif request.method == 'DELETE':
+        award.delete()
+        return Response({"message": "Award deleted"}, status=204)
+
+
+@api_view(['GET'])
+def event_award(request, event_id):
+    """Return the award for a specific event, or null if none."""
+    try:
+        award = Award.objects.select_related('event', 'person', 'award_type').get(event_id=event_id)
+        return Response(AwardSerializer(award).data, status=200)
+    except Award.DoesNotExist:
+        return Response(None, status=200)
+
+
+# ──────────────────────────────────────────
+# Roster Feedback
+# ──────────────────────────────────────────
+@api_view(['GET'])
+def roster_persons(request, roster_id):
+    """Return all active persons with any existing feedback for the given roster."""
+    try:
+        roster = Rosters.objects.get(pk=roster_id)
+    except Rosters.DoesNotExist:
+        return Response({"error": "Roster not found"}, status=404)
+
+    persons = Persons.objects.filter(is_active=True).order_by('first_name', 'last_name')
+    existing = {
+        fb.person_id: fb
+        for fb in RosterFeedback.objects.filter(roster=roster)
+    }
+
+    data = []
+    for p in persons:
+        fb = existing.get(p.id)
+        data.append({
+            'person_id': p.id,
+            'person_name': f"{p.first_name} {p.last_name}".strip(),
+            'is_present': fb.is_present if fb else False,
+            'feedback': fb.feedback if fb else '',
+            'feedback_id': fb.id if fb else None,
+        })
+    return Response(data, status=200)
+
+
+@api_view(['POST'])
+def submit_feedback(request, roster_id):
+    """Bulk create/update feedback for a roster.
+    Expects: { "feedback": [ { "person_id": 1, "is_present": true, "feedback": "..." }, ... ] }
+    """
+    try:
+        roster = Rosters.objects.get(pk=roster_id)
+    except Rosters.DoesNotExist:
+        return Response({"error": "Roster not found"}, status=404)
+
+    items = request.data.get('feedback', [])
+    if not items:
+        return Response({"error": "No feedback data provided"}, status=400)
+
+    created = 0
+    updated = 0
+    for item in items:
+        person_id = item.get('person_id')
+        if not person_id:
+            continue
+        obj, was_created = RosterFeedback.objects.update_or_create(
+            roster=roster,
+            person_id=person_id,
+            defaults={
+                'is_present': item.get('is_present', False),
+                'feedback': item.get('feedback', ''),
+            }
+        )
+        if was_created:
+            created += 1
+        else:
+            updated += 1
+
+    return Response({
+        "message": "Feedback saved successfully",
+        "created": created,
+        "updated": updated,
+    }, status=200)
+
+
+@api_view(['GET'])
+def roster_feedback(request, roster_id):
+    """Return all feedback entries for a roster."""
+    qs = RosterFeedback.objects.filter(
+        roster_id=roster_id
+    ).select_related('person', 'roster__event')
+    serializer = RosterFeedbackSerializer(qs, many=True)
+    return Response(serializer.data, status=200)
 

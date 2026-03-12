@@ -26,4 +26,14 @@ urlpatterns = [
     path('assignments/<int:pk>/', assignment_detail, name='assignment_detail'),
     path('availability/status-choices/', get_status, name='status-choices'),
     path('generate-roster/', generate_and_download_roster, name='generate_roster'),
+    # Awards
+    path('award-types/', award_types, name='award_types'),
+    path('award-types/<int:pk>/', award_type_detail, name='award_type_detail'),
+    path('awards/', awards, name='awards'),
+    path('awards/<int:pk>/', award_detail, name='award_detail'),
+    path('awards/event/<int:event_id>/', event_award, name='event_award'),
+    # Roster Feedback
+    path('rosters/<int:roster_id>/persons/', roster_persons, name='roster_persons'),
+    path('rosters/<int:roster_id>/feedback/', submit_feedback, name='submit_feedback'),
+    path('rosters/<int:roster_id>/feedback/list/', roster_feedback, name='roster_feedback'),
 ] 
