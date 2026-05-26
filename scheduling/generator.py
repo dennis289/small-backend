@@ -1,10 +1,15 @@
+import logging
 import random
-from dataclasses import dataclass, field
-from typing import List, Dict, Optional, Set
+from dataclasses import dataclass
 from datetime import date, datetime, timedelta
-from django.db.models import QuerySet, Count, Q
+from typing import Dict, List, Optional, Set
+
 from django.db import transaction
-from .models import Persons, Roles, Events, Assignment, Rosters
+from django.db.models import QuerySet
+
+from small_app.models import Assignment, Events, Persons, Roles, Rosters
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -12,7 +17,7 @@ class RoleAssignment:
     """Data class to represent a role assignment."""
     role: str
     name: str
-    person_id: int
+    person_id: Optional[int]
 
 
 class RosterGenerator:
@@ -28,7 +33,7 @@ class RosterGenerator:
         self._assistant_producer_id: Optional[int] = None
 
     # ------------------------------------------------------------------
-    # History & cooldown helpers (unchanged)
+    # History & cooldown helpers
     # ------------------------------------------------------------------
 
     def _load_assignment_history(self, target_date: date, lookback_days: int = 90) -> None:
@@ -96,7 +101,7 @@ class RosterGenerator:
         return available if available else people
 
     # ------------------------------------------------------------------
-    # Scoring & selection helpers (unchanged)
+    # Scoring & selection helpers
     # ------------------------------------------------------------------
 
     def _calculate_person_priority_score(self, person: Persons, role_name: str) -> float:
@@ -129,19 +134,19 @@ class RosterGenerator:
     # ------------------------------------------------------------------
 
     def _validate_initial_data(self, events: QuerySet, roles: List[Roles], available_people: QuerySet) -> None:
-        if not events.exists():
+        if not events.filter(is_active=True).exists():
             raise ValueError("No events defined.")
         if not roles:
             raise ValueError("No roles defined.")
-        if not available_people.filter(is_active=True).exists():
+        if not available_people.filter(is_active=True, is_present=True).exists():
             raise ValueError("No people marked as present for the selected date.")
 
     # ------------------------------------------------------------------
-    # Leadership selection (unchanged)
+    # Leadership selection
     # ------------------------------------------------------------------
 
     def _select_producer(self, available_people: QuerySet) -> Persons:
-        producer_pool = list(available_people.filter(is_producer=True, is_active=True))
+        producer_pool = list(available_people.filter(is_producer=True, is_active=True, is_present=True))
         if not producer_pool:
             raise ValueError("No producer available.")
         candidates = self._filter_cooldown(producer_pool, "producer")
@@ -153,7 +158,7 @@ class RosterGenerator:
 
     def _select_assistant_producer(self, available_people: QuerySet) -> Persons:
         assistant_pool = list(
-            available_people.filter(is_assistant_producer=True, is_active=True)
+            available_people.filter(is_assistant_producer=True, is_active=True, is_present=True)
             .exclude(pk__in=self.global_assigned)
         )
         if not assistant_pool:
@@ -181,7 +186,7 @@ class RosterGenerator:
 
             # People who are configured for this role
             capable = [
-                p for p in available_people
+                p for p in available_people if p.is_active and p.is_present and role in p.roles.all()
                 if role in p.roles.all()
             ]
             if not capable:
@@ -202,11 +207,18 @@ class RosterGenerator:
                     person_id=chosen.pk,
                 ))
                 self.global_assigned.add(chosen.pk)
-                # If the assistant producer just got their one extra role, lock them out
-                if chosen.pk == self._assistant_producer_id:
-                    self.global_assigned.add(chosen.pk)
             else:
-                print(f"Warning: No available people for role '{role_name}' in event '{event.description}'")
+                # Leave the slot empty so the user can fill it in via edit mode
+                # rather than duplicating a person across roles.
+                logger.info(
+                    "No fresh person for role '%s' in event '%s' — leaving slot empty",
+                    role_name, event.name
+                )
+                event_assignments.append(RoleAssignment(
+                    role=role_name,
+                    name="",
+                    person_id=None,
+                ))
 
         return event_assignments
 
@@ -221,7 +233,7 @@ class RosterGenerator:
 
             capable = [
                 p for p in available_people
-                if role in p.roles.all()
+                if p.is_active and p.is_present and role in p.roles.all()
             ]
             if not capable:
                 continue
@@ -230,7 +242,7 @@ class RosterGenerator:
             candidates = self._filter_cooldown(not_yet_assigned, role_name)
 
             if not candidates:
-                print(f"Warning: No one available for special role '{role_name}'")
+                logger.warning("No one available for special role '%s'", role_name)
                 result[role_name.lower()] = []
                 continue
 
@@ -259,7 +271,7 @@ class RosterGenerator:
 
     def generate(self, target_date: date) -> Dict:
         """Generate a roster for the given date — fully driven by database roles."""
-        print(f"Starting roster generation for date: {target_date}")
+        logger.info("Starting roster generation for date: %s", target_date)
 
         self.global_assigned.clear()
         self._load_assignment_history(target_date)
@@ -282,7 +294,7 @@ class RosterGenerator:
             assignments = self._assign_event_roles(event, available_people, roles)
             event_list.append({
                 "event_id": event.pk,
-                "event_name": event.description or event.name or "Unknown Event",
+                "event_name": event.name or event.description or "Unknown Event",
                 "assignments": [
                     {"role": a.role, "name": a.name, "person_id": a.person_id}
                     for a in assignments
@@ -292,7 +304,7 @@ class RosterGenerator:
         # Special roles (fully dynamic)
         special_roles = self._assign_special_roles(available_people, roles)
 
-        print(f"Roster generated successfully. Total assigned: {len(self.global_assigned)}")
+        logger.info("Roster generated successfully. Total assigned: %d", len(self.global_assigned))
 
         # Summary
         all_people = list(available_people)
@@ -369,17 +381,17 @@ class RosterGenerator:
                                     person=person,
                                 )
                         except Persons.DoesNotExist as e:
-                            print(f"Warning: Could not create assignment - {e}")
+                            logger.warning("Could not create assignment: %s", e)
 
                 # Leadership + special roles saved to the first roster entry
                 if first_roster_entry:
                     self._save_leadership_assignments(roster_data, first_roster_entry)
                     self._save_special_role_assignments(roster_data, first_roster_entry)
 
-                print(f"Roster saved to database for {target_date}")
+                logger.info("Roster saved to database for %s", target_date)
 
         except Exception as e:
-            print(f"Error saving roster to database: {e}")
+            logger.exception("Error saving roster to database: %s", e)
             raise
 
     def _save_leadership_assignments(self, roster_data: Dict, roster_entry: Rosters) -> None:
@@ -395,7 +407,7 @@ class RosterGenerator:
             try:
                 person = Persons.objects.get(id=person_data['id'])
             except Persons.DoesNotExist:
-                print(f"Warning: Person not found for {role_display_name} assignment")
+                logger.warning("Person not found for %s assignment", role_display_name)
                 continue
             role, _ = Roles.objects.get_or_create(
                 name=role_display_name,
@@ -423,58 +435,7 @@ class RosterGenerator:
                         person=person,
                     )
                 except Persons.DoesNotExist:
-                    print(f"Warning: Person {person_data.get('person_id')} not found for '{role_key}'")
-
-
-def generate_roster(target_date: date, save_to_db: bool = True) -> Dict:
-    """Generate roster with effective rotation and automatic saving."""
-    generator = RosterGenerator()
-    roster_data = generator.generate(target_date)
-
-    if save_to_db:
-        try:
-            generator.save_roster_to_database(roster_data, target_date)
-            print("Roster automatically saved to database for rotation tracking")
-        except Exception as e:
-            print(f"Warning: Could not save roster to database: {e}")
-
-    return roster_data
-
-
-def get_assignment_statistics(lookback_days: int = 90) -> Dict:
-    """Get assignment statistics for the last N days."""
-    end_date = date.today()
-    start_date = end_date - timedelta(days=lookback_days)
-
-    assignments = Assignment.objects.filter(
-        roster__date__gte=start_date,
-        roster__date__lte=end_date
-    ).select_related('person', 'role')
-
-    person_stats = {}
-    role_stats = {}
-
-    for assignment in assignments:
-        person_name = f"{assignment.person.first_name} {assignment.person.last_name}"
-        role_name = assignment.role.name
-
-        if person_name not in person_stats:
-            person_stats[person_name] = {"total_assignments": 0, "roles": {}}
-        person_stats[person_name]["total_assignments"] += 1
-        if role_name not in person_stats[person_name]["roles"]:
-            person_stats[person_name]["roles"][role_name] = 0
-        person_stats[person_name]["roles"][role_name] += 1
-
-        if role_name not in role_stats:
-            role_stats[role_name] = {"total_assignments": 0, "people": {}}
-        role_stats[role_name]["total_assignments"] += 1
-        if person_name not in role_stats[role_name]["people"]:
-            role_stats[role_name]["people"][person_name] = 0
-        role_stats[role_name]["people"][person_name] += 1
-
-    return {
-        "period": f"{start_date} to {end_date}",
-        "person_statistics": person_stats,
-        "role_statistics": role_stats,
-        "total_assignments": len(assignments),
-    }
+                    logger.warning(
+                        "Person %s not found for role '%s'",
+                        person_data.get('person_id'), role_key
+                    )

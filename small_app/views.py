@@ -1,29 +1,38 @@
 import ast
 import json
-from django.shortcuts import render
-from .serializers import (
-    UserSerializer, LoginSerializer, PersonsSerializer,
-    RolesSerializer, EventsSerializer, RostersSerializer, AssignmentSerializer,
-    AwardTypeSerializer, AwardSerializer, RosterFeedbackSerializer,
-)
+from datetime import datetime, date
+
+from django.contrib.auth import authenticate
+from django.db.models import Q
+from django.http import HttpResponse
+from rest_framework import status
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.pagination import PageNumberPagination
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework_simplejwt.tokens import RefreshToken
+
+from scheduling.generator import RosterGenerator
+from scheduling.services import generate_roster
+
 from .models import (
     User, Persons, Roles, Events, Rosters, Assignment, MembersBulkUpload,
-    AwardType, Award, RosterFeedback,
+    AwardType, Award, RosterFeedback, MemberStreak,
 )
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from rest_framework import status
-from django.contrib.auth import authenticate, get_user_model
-from rest_framework_simplejwt.tokens import RefreshToken
-from .scheduler import generate_roster
-from datetime import datetime, date, time
 from .pdf import export_roster_pdf
-from django.http import HttpResponse
+from .serializers import (
+    UserSerializer, PersonsSerializer, RolesSerializer, EventsSerializer,
+    RostersSerializer, AssignmentSerializer, AwardTypeSerializer,
+    AwardSerializer, RosterFeedbackSerializer,
+)
 
 
-User = get_user_model()
+class MyPagination(PageNumberPagination):
+    page_size = 25
+    page_size_query_param = "page_size"
+    max_page_size = 70
 
-# Create your views here.
+
 def parse_roles(roles):
 
     if not roles:
@@ -85,6 +94,35 @@ def get_tokens_for_user(user):
         'access': str(refresh.access_token),
     }
 
+def _user_payload(user):
+    return {
+        'id': user.id,
+        'username': user.username,
+        'email': user.email,
+        'first_name': user.first_name,
+        'last_name': user.last_name,
+    }
+
+@api_view(['GET', 'PATCH'])
+@permission_classes([IsAuthenticated])
+def user_profile(request):
+    user = request.user
+    if request.method == 'GET':
+        return Response(_user_payload(user))
+
+    data = request.data
+    for field in ['username', 'email', 'first_name', 'last_name']:
+        if field in data and data[field] != '':
+            setattr(user, field, data[field])
+
+    if data.get('new_password'):
+        if not user.check_password(data.get('current_password', '')):
+            return Response({'error': 'Current password is incorrect'}, status=status.HTTP_400_BAD_REQUEST)
+        user.set_password(data['new_password'])
+
+    user.save()
+    return Response({**_user_payload(user), 'message': 'Profile updated successfully'})
+
 @api_view(['POST','GET'])
 def persons(request):
     if request.method == 'POST':
@@ -98,9 +136,24 @@ def persons(request):
             return Response(serializer.data, status=201)
         return Response(serializer.errors, status=400)
     elif request.method == 'GET':
+        search_term = request.query_params.get('search', '').strip()
         persons = Persons.objects.all()
-        serializer = PersonsSerializer(persons, many=True)
-        return Response(serializer.data, status=200)
+        if search_term:
+            persons = persons.filter(
+                Q(first_name__icontains=search_term) |
+                Q(last_name__icontains=search_term) |
+                Q(email__icontains=search_term)
+            )
+        paginator = MyPagination()
+        paginated_persons = paginator.paginate_queryset(persons, request)
+        serializer = PersonsSerializer(paginated_persons, many=True)
+        return paginator.get_paginated_response(serializer.data)
+
+@api_view(['GET'])
+def active_members(request):
+    active_persons = Persons.objects.filter(is_active=True)
+    serializer = PersonsSerializer(active_persons, many=True)
+    return Response(serializer.data, status=200)
     
 @api_view(['PUT', 'DELETE'])
 def modify_person(request, id):
@@ -167,27 +220,19 @@ def bulk_upload_persons(request):
             record['is_assistant_producer'] = False
         if not is_active:
             record['is_active'] = True
+        role_ids = []
         if roles:
-            role_objs = []
             roles = parse_roles(roles)
-            print(f"Parsed roles: {roles}")
-            for role_name in roles:
-                print(f"Processing role: {role_name}")
-                try:
-                    role_obj = Roles.objects.get(name__iexact = role_name)
-                    role_id = role_obj.id
-                except:
-                    role_obj = Roles.objects.create(name=role_name)
-                    role_id = role_obj.id
-                role_objs.append(role_id)
-                role_name = role_objs
-        else:
-            role_name = None
-            
+            for rname in roles:
+                role_obj, _ = Roles.objects.get_or_create(name__iexact=rname, defaults={'name': rname})
+                role_ids.append(role_obj.id)
+
         record.pop("roles", None)  # Remove roles to avoid issues in serializer
         serializer = PersonsSerializer(data=record)
         if serializer.is_valid():
-            serializer.save()
+            person = serializer.save()
+            if role_ids:
+                person.roles.set(role_ids)
             assortment_bulk_upload.success_products += 1
     return Response({
         "message": "Bulk upload completed",
@@ -293,12 +338,27 @@ def rosters(request):
             date = datetime.strptime(date, '%Y-%m-%d').date()
         except ValueError:
             return Response({'date': ['Invalid date format. Use YYYY-MM-DD.']}, status=status.HTTP_400_BAD_REQUEST)
+        
+        absent_members = request.data.get('absent_members', [])
+        inactive_events = request.data.get('inactive_events', [])
+        if absent_members:
+            Persons.objects.filter(id__in=absent_members).update(is_present=False)
+        if inactive_events:
+            Events.objects.filter(id__in=inactive_events).update(is_active=False)
+
 
         try:
             structured_roster = generate_roster(date)
-            return Response(structured_roster, status=status.HTTP_201_CREATED)
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Absence is per-generation: restore flags so the next roster starts clean.
+        # if absent_members:
+        #     Persons.objects.filter(id__in=absent_members).update(is_present=True)
+        # if inactive_events:
+        #     Events.objects.filter(id__in=inactive_events).update(is_active=True)
+
+        return Response(structured_roster, status=status.HTTP_201_CREATED)
 
     elif request.method == 'GET':
         rosters = Rosters.objects.all()
@@ -406,7 +466,6 @@ def save_roster(request):
         )
 
     try:
-        from .scheduler import RosterGenerator
         generator = RosterGenerator()
         generator.save_roster_to_database(roster_data, target_date)
         return Response({"message": "Roster saved successfully."}, status=status.HTTP_200_OK)
@@ -474,20 +533,66 @@ def award_type_detail(request, pk):
 
 
 # ──────────────────────────────────────────
-# Award CRUD  (one per event)
+# Award CRUD  (decoupled from events)
 # ──────────────────────────────────────────
+def _parse_date(value):
+    if not value:
+        return None
+    try:
+        return datetime.strptime(value, '%Y-%m-%d').date()
+    except (TypeError, ValueError):
+        return None
+
+
 @api_view(['GET', 'POST'])
 def awards(request):
     if request.method == 'GET':
-        qs = Award.objects.select_related('event', 'person', 'award_type').all()
-        serializer = AwardSerializer(qs, many=True)
-        return Response(serializer.data, status=200)
-    elif request.method == 'POST':
-        serializer = AwardSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=201)
+        qs = Award.objects.select_related('person', 'award_type', 'given_by').all()
+
+        person_id = request.query_params.get('person')
+        type_id = request.query_params.get('type')
+        from_str = request.query_params.get('from')
+        to_str = request.query_params.get('to')
+
+        if person_id:
+            qs = qs.filter(person_id=person_id)
+        if type_id:
+            qs = qs.filter(award_type_id=type_id)
+        from_date = _parse_date(from_str)
+        to_date = _parse_date(to_str)
+        if from_date:
+            qs = qs.filter(given_at__gte=from_date)
+        if to_date:
+            qs = qs.filter(given_at__lte=to_date)
+
+        paginator = MyPagination()
+        page = paginator.paginate_queryset(qs, request)
+        serializer = AwardSerializer(page, many=True)
+        return paginator.get_paginated_response(serializer.data)
+
+    # POST
+    serializer = AwardSerializer(data=request.data)
+    if not serializer.is_valid():
         return Response(serializer.errors, status=400)
+
+    person = serializer.validated_data['person']
+
+    # Snapshot the streak *before* it resets, so the award shows the streak it earned.
+    streak, _ = MemberStreak.objects.get_or_create(person=person)
+    streak_snapshot = streak.current_streak
+
+    given_by = request.user if request.user.is_authenticated else None
+    if not serializer.validated_data.get('given_at'):
+        serializer.validated_data['given_at'] = date.today()
+
+    award = serializer.save(streak_at_award=streak_snapshot, given_by=given_by)
+
+    if streak.current_streak > streak.longest_streak:
+        streak.longest_streak = streak.current_streak
+    streak.current_streak = 0
+    streak.save()
+
+    return Response(AwardSerializer(award).data, status=201)
 
 
 @api_view(['GET', 'PUT', 'DELETE'])
@@ -512,43 +617,157 @@ def award_detail(request, pk):
 
 
 @api_view(['GET'])
-def event_award(request, event_id):
-    """Return the award for a specific event, or null if none."""
-    try:
-        award = Award.objects.select_related('event', 'person', 'award_type').get(event_id=event_id)
-        return Response(AwardSerializer(award).data, status=200)
-    except Award.DoesNotExist:
-        return Response(None, status=200)
+def award_stats(request):
+    """Aggregate counts for the awards dashboard."""
+    from django.db.models import Count
+    from django.db.models.functions import TruncMonth
+
+    today = date.today()
+    month_start = today.replace(day=1)
+    qs = Award.objects.all()
+
+    by_type = list(
+        qs.values('award_type', 'award_type__name')
+          .annotate(count=Count('id'))
+          .order_by('-count')
+    )
+    by_type = [
+        {'award_type_id': row['award_type'], 'name': row['award_type__name'], 'count': row['count']}
+        for row in by_type
+    ]
+
+    top_recipients = list(
+        qs.values('person', 'person__first_name', 'person__last_name')
+          .annotate(count=Count('id'))
+          .order_by('-count')[:10]
+    )
+    top_recipients = [
+        {
+            'person_id': row['person'],
+            'name': f"{row['person__first_name']} {row['person__last_name']}".strip(),
+            'count': row['count'],
+        }
+        for row in top_recipients
+    ]
+
+    by_month = list(
+        qs.annotate(month=TruncMonth('given_at'))
+          .values('month')
+          .annotate(count=Count('id'))
+          .order_by('month')
+    )
+    by_month = [
+        {'month': row['month'].strftime('%Y-%m'), 'count': row['count']}
+        for row in by_month if row['month']
+    ]
+
+    return Response({
+        'total': qs.count(),
+        'this_month': qs.filter(given_at__gte=month_start).count(),
+        'unique_recipients': qs.values('person').distinct().count(),
+        'unique_types': qs.values('award_type').distinct().count(),
+        'by_type': by_type,
+        'top_recipients': top_recipients,
+        'by_month': by_month,
+    }, status=200)
+
+
+@api_view(['GET'])
+def person_awards(request, pk):
+    """Return all awards received by a single person."""
+    if not Persons.objects.filter(pk=pk).exists():
+        return Response({"error": "Person not found"}, status=404)
+    qs = (
+        Award.objects
+        .filter(person_id=pk)
+        .select_related('award_type', 'given_by')
+    )
+    return Response(AwardSerializer(qs, many=True).data, status=200)
 
 
 # ──────────────────────────────────────────
 # Roster Feedback
 # ──────────────────────────────────────────
+def _recalculate_streak(person_id):
+    """Recompute and persist the attendance streak for a single person."""
+    try:
+        person = Persons.objects.get(pk=person_id)
+    except Persons.DoesNotExist:
+        return
+
+    feedbacks = (
+        RosterFeedback.objects
+        .filter(person=person)
+        .select_related('roster')
+        .order_by('-roster__date')
+    )
+
+    current_streak = 0
+    for fb in feedbacks:
+        if fb.is_present:
+            current_streak += 1
+        else:
+            break
+
+    streak, _ = MemberStreak.objects.get_or_create(person=person)
+    if current_streak > streak.longest_streak:
+        streak.longest_streak = current_streak
+    streak.current_streak = current_streak
+    streak.save()
+
+
+@api_view(['GET'])
+def person_streaks(request):
+    """Return current and longest attendance streak for every active member."""
+    persons = Persons.objects.filter(is_active=True).select_related('streak')
+    result = []
+    for person in persons:
+        streak = getattr(person, 'streak', None)
+        result.append({
+            'person_id': person.pk,
+            'name': f"{person.first_name} {person.last_name}".strip(),
+            'current_streak': streak.current_streak if streak else 0,
+            'longest_streak': streak.longest_streak if streak else 0,
+        })
+    result.sort(key=lambda x: x['current_streak'], reverse=True)
+    return Response(result, status=200)
+
+
 @api_view(['GET'])
 def roster_persons(request, roster_id):
-    """Return all active persons with any existing feedback for the given roster."""
+    """Return all persons assigned to a roster with their current feedback status."""
     try:
         roster = Rosters.objects.get(pk=roster_id)
     except Rosters.DoesNotExist:
         return Response({"error": "Roster not found"}, status=404)
 
-    persons = Persons.objects.filter(is_active=True).order_by('first_name', 'last_name')
-    existing = {
-        fb.person_id: fb
-        for fb in RosterFeedback.objects.filter(roster=roster)
+    assignments = Assignment.objects.filter(roster=roster).select_related('person', 'role')
+
+    feedback_map = {
+        f.person_id: f
+        for f in RosterFeedback.objects.filter(roster=roster)
     }
 
-    data = []
-    for p in persons:
-        fb = existing.get(p.id)
-        data.append({
-            'person_id': p.id,
-            'person_name': f"{p.first_name} {p.last_name}".strip(),
-            'is_present': fb.is_present if fb else False,
+    seen = set()
+    result = []
+    for a in assignments:
+        p = a.person
+        if p.pk in seen:
+            continue
+        seen.add(p.pk)
+        fb = feedback_map.get(p.pk)
+        result.append({
+            'person_id': p.pk,
+            'first_name': p.first_name,
+            'last_name': p.last_name,
+            'role': a.role.name,
+            'is_present': fb.is_present if fb else True,
             'feedback': fb.feedback if fb else '',
-            'feedback_id': fb.id if fb else None,
         })
-    return Response(data, status=200)
+
+    return Response(result, status=200)
+
+
 
 
 @api_view(['POST'])
@@ -567,6 +786,7 @@ def submit_feedback(request, roster_id):
 
     created = 0
     updated = 0
+    person_ids = []
     for item in items:
         person_id = item.get('person_id')
         if not person_id:
@@ -577,12 +797,18 @@ def submit_feedback(request, roster_id):
             defaults={
                 'is_present': item.get('is_present', False),
                 'feedback': item.get('feedback', ''),
+                'rating': item.get('rating') or None,
+                'feedback_category': item.get('feedback_category') or None,
             }
         )
+        person_ids.append(person_id)
         if was_created:
             created += 1
         else:
             updated += 1
+
+    for pid in person_ids:
+        _recalculate_streak(pid)
 
     return Response({
         "message": "Feedback saved successfully",

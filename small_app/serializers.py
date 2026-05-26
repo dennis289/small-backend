@@ -1,6 +1,10 @@
 from rest_framework import serializers
-from django.contrib.auth import authenticate
-from .models import *
+
+from .models import (
+    User, Persons, Roles, Events, Rosters, Assignment,
+    AwardType, Award, RosterFeedback,
+)
+
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -11,27 +15,6 @@ class UserSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         return User.objects.create_user(**validated_data)
 
-class LoginSerializer(serializers.Serializer):
-    email = serializers.EmailField()
-    password = serializers.CharField()
-
-    def validate(self, attrs):
-        email = attrs.get('email')
-        password = attrs.get('password')
-
-        if email and password:
-            try:
-                user_obj = User.objects.get(email=email)
-                user = authenticate(username=user_obj.username, password=password)
-                if user:
-                    attrs['user'] = user
-                    return attrs
-                else:
-                    raise serializers.ValidationError('Invalid credentials')
-            except User.DoesNotExist:
-                raise serializers.ValidationError('Invalid credentials')
-        else:
-            raise serializers.ValidationError('Must include email and password')
 
 class PersonsSerializer(serializers.ModelSerializer):
     roles = serializers.PrimaryKeyRelatedField(
@@ -127,36 +110,32 @@ class AwardTypeSerializer(serializers.ModelSerializer):
 
 class AwardSerializer(serializers.ModelSerializer):
     person_name = serializers.SerializerMethodField()
-    event_name = serializers.CharField(source='event.name', read_only=True)
     award_type_name = serializers.CharField(source='award_type.name', read_only=True)
+    given_by_name = serializers.SerializerMethodField()
 
     class Meta:
         model = Award
         fields = [
-            'id', 'event', 'event_name', 'person', 'person_name',
-            'award_type', 'award_type_name', 'feedback',
-            'created_at', 'updated_at'
+            'id', 'person', 'person_name',
+            'award_type', 'award_type_name',
+            'given_at', 'streak_at_award',
+            'given_by', 'given_by_name',
+            'feedback', 'created_at', 'updated_at',
         ]
-        read_only_fields = ['created_at', 'updated_at']
+        read_only_fields = [
+            'streak_at_award', 'given_by', 'given_by_name',
+            'created_at', 'updated_at',
+        ]
 
     def get_person_name(self, obj):
         return f"{obj.person.first_name} {obj.person.last_name}".strip()
 
-    def validate_event(self, value):
-        """Ensure only one award per event."""
-        if self.instance is None and Award.objects.filter(event=value).exists():
-            raise serializers.ValidationError(
-                "An award has already been given for this event."
-            )
-        if (
-            self.instance
-            and self.instance.event != value
-            and Award.objects.filter(event=value).exists()
-        ):
-            raise serializers.ValidationError(
-                "An award has already been given for this event."
-            )
-        return value
+    def get_given_by_name(self, obj):
+        if not obj.given_by:
+            return None
+        u = obj.given_by
+        full = f"{u.first_name} {u.last_name}".strip()
+        return full or u.username
 
 
 class RosterFeedbackSerializer(serializers.ModelSerializer):
@@ -169,9 +148,12 @@ class RosterFeedbackSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'roster', 'roster_date', 'event_name',
             'person', 'person_name', 'is_present', 'feedback',
+            'rating', 'feedback_category',
             'created_at', 'updated_at'
         ]
         read_only_fields = ['created_at', 'updated_at']
 
     def get_person_name(self, obj):
         return f"{obj.person.first_name} {obj.person.last_name}".strip()
+
+

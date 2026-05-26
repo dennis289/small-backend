@@ -85,26 +85,46 @@ class AwardType(models.Model):
 
 
 class Award(models.Model):
-    """One award per event – feedback + award given to a single person."""
-    event = models.OneToOneField(
-        Events, on_delete=models.CASCADE, related_name='award'
-    )
+    """Recognition record — a person, an award type, and the streak it ended."""
     person = models.ForeignKey(
         Persons, on_delete=models.CASCADE, related_name='awards'
     )
     award_type = models.ForeignKey(
-        AwardType, on_delete=models.CASCADE, related_name='awards'
+        AwardType, on_delete=models.PROTECT, related_name='awards'
+    )
+    given_at = models.DateField()
+    streak_at_award = models.PositiveIntegerField(default=0)
+    given_by = models.ForeignKey(
+        User, on_delete=models.SET_NULL, null=True, blank=True,
+        related_name='awards_given',
     )
     feedback = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    class Meta:
+        ordering = ['-given_at', '-created_at']
+        indexes = [
+            models.Index(fields=['-given_at']),
+            models.Index(fields=['person']),
+        ]
+
     def __str__(self):
-        return f"{self.award_type} → {self.person} ({self.event})"
+        return f"{self.award_type} → {self.person} ({self.given_at})"
 
 
 class RosterFeedback(models.Model):
     """Per-person feedback for a roster – tracks presence and comments."""
+
+    CATEGORY_CHOICES = [
+        ('general', 'General'),
+        ('punctuality', 'Punctuality'),
+        ('teamwork', 'Teamwork'),
+        ('performance', 'Performance'),
+        ('attitude', 'Attitude'),
+        ('excellent', 'Excellent Service'),
+    ]
+
     roster = models.ForeignKey(
         Rosters, on_delete=models.CASCADE, related_name='feedback'
     )
@@ -113,6 +133,10 @@ class RosterFeedback(models.Model):
     )
     is_present = models.BooleanField(default=False)
     feedback = models.TextField(blank=True, null=True)
+    rating = models.PositiveSmallIntegerField(null=True, blank=True)
+    feedback_category = models.CharField(
+        max_length=50, blank=True, null=True, choices=CATEGORY_CHOICES
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -127,6 +151,19 @@ class RosterFeedback(models.Model):
     def __str__(self):
         status = "Present" if self.is_present else "Absent"
         return f"{self.person} – {status} ({self.roster})"
+
+
+class MemberStreak(models.Model):
+    """Tracks consecutive attendance streaks per person."""
+    person = models.OneToOneField(
+        Persons, on_delete=models.CASCADE, related_name='streak'
+    )
+    current_streak = models.PositiveIntegerField(default=0)
+    longest_streak = models.PositiveIntegerField(default=0)
+    last_updated = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.person} — streak: {self.current_streak}"
 
 
 class MembersBulkUpload(models.Model):
