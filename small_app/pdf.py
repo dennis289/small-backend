@@ -17,7 +17,7 @@ def _ordinal(n):
         suffix = "th"
     else:
         suffix = {1: "st", 2: "nd", 3: "rd"}.get(n % 10, "th")
-    return str(n), suffix
+    return str(n), suffix   
 
 
 def _format_roster_date(date_str):
