@@ -1,8 +1,5 @@
 from django.contrib import admin
-from .models import (
-    User, Persons, Roles, Events, Rosters, Assignment,
-    AwardType, Award, RosterFeedback,
-)
+from .models import *
 
 
 class AssignmentInline(admin.TabularInline):
@@ -41,9 +38,34 @@ class RolesAdmin(admin.ModelAdmin):
     list_filter = ['is_special_role']
     search_fields = ['name']
 
+@admin.register(Events)
+class EventsAdmin(admin.ModelAdmin):
+    list_display = ['id', 'name']
+    search_fields = ['name']
 
-admin.site.register(Events)
-admin.site.register(User)
-admin.site.register(AwardType)
-admin.site.register(Award)
-admin.site.register(RosterFeedback)
+@admin.register(AwardType)
+class AwardTypeAdmin(admin.ModelAdmin):
+    list_display = ['id', 'name']
+    search_fields = ['name']
+
+@admin.register(Award)
+class AwardAdmin(admin.ModelAdmin):
+    list_display = ['id', 'award_type', 'person', 'given_at', 'streak_at_award', 'given_by']
+    list_filter = ['award_type', 'given_at']
+    search_fields = ['person__first_name', 'person__last_name', 'award_type__name']
+    ordering = ['-given_at']
+
+
+@admin.register(MemberStreak)
+class MemberStreakAdmin(admin.ModelAdmin):
+    list_display = ['id', 'person', 'current_streak', 'longest_streak']
+    list_filter = ['current_streak', 'longest_streak']
+    search_fields = ['person__first_name', 'person__last_name']
+    ordering = ['-current_streak']
+
+@admin.register(RosterFeedback)
+class RosterFeedbackAdmin(admin.ModelAdmin):
+    list_display = ['id', 'roster', 'person', 'created_at']
+    list_filter = ['created_at']
+    search_fields = ['roster__event__name', 'roster__date']
+    ordering = ['-created_at']
