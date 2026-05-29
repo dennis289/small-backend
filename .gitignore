@@ -1,16 +1,44 @@
-
-db.sqlite3
+# Byte-compiled / cache
 __pycache__/
-migrations/
-Documents/
-env/
+*.py[cod]
+*$py.class
+
+# Virtual environments
 venv/
-Documents.pub/
-requirements.txt
+env/
+.venv/
+
+# Django
+db.sqlite3
+db.sqlite3-journal
+*.sqlite3
+db.Roster
+rosters.db
+staticfiles/
+media/
+*.log
 server.log
-start_backend.sh
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+Documents
+Documents.pub
+
+# Local test scripts (never committed)
 test_enhanced_scheduler.py
 test_optimized_scheduler.py
 test_role_restrictions.py
 test_scheduler_with_absences.py
 test_scheduler.py
+start_backend.sh
+
+# Editor / OS
+.idea/
+.vscode/
+.DS_Store
+*.swp
+*.swo

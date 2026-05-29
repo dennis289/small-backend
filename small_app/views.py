@@ -1,10 +1,13 @@
 import ast
 import json
+import secrets
 from datetime import datetime, date
 
 from django.contrib.auth import authenticate
+from django.db import transaction
 from django.db.models import Q
 from django.http import HttpResponse
+from django.utils import timezone
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.pagination import PageNumberPagination
@@ -17,7 +20,7 @@ from scheduling.services import generate_roster
 
 from .models import (
     User, Persons, Roles, Events, Rosters, Assignment, MembersBulkUpload,
-    AwardType, Award, RosterFeedback, MemberStreak,
+    AwardType, Award, RosterFeedback, MemberStreak, FeedbackShareLink,
 )
 from .pdf import export_roster_pdf
 from .serializers import (
@@ -825,4 +828,167 @@ def roster_feedback(request, roster_id):
     ).select_related('person', 'roster__event')
     serializer = RosterFeedbackSerializer(qs, many=True)
     return Response(serializer.data, status=200)
+
+
+# ──────────────────────────────────────────
+# Shareable feedback link (public, one-time use)
+# ──────────────────────────────────────────
+def _build_share_payload(link):
+    """Aggregate every roster + assignment for the link's date into a single payload."""
+    rosters_qs = (
+        Rosters.objects
+        .filter(date=link.date)
+        .select_related('event')
+        .prefetch_related('assignments__person', 'assignments__role')
+        .order_by('event__id')
+    )
+
+    events_payload = []
+    seen_person_ids = set()
+    members_payload = []
+
+    for roster in rosters_qs:
+        assignments = []
+        for a in roster.assignments.all().order_by('role__name'):
+            assignments.append({
+                'person_id': a.person.pk,
+                'name': f"{a.person.first_name} {a.person.last_name}".strip(),
+                'role': a.role.name,
+            })
+            if a.person.pk not in seen_person_ids:
+                seen_person_ids.add(a.person.pk)
+                members_payload.append({
+                    'person_id': a.person.pk,
+                    'name': f"{a.person.first_name} {a.person.last_name}".strip(),
+                })
+        events_payload.append({
+            'roster_id': roster.pk,
+            'event_id': roster.event.pk if roster.event else None,
+            'event_name': roster.event.name if roster.event else 'Unnamed event',
+            'assignments': assignments,
+        })
+
+    members_payload.sort(key=lambda m: m['name'])
+
+    return {
+        'date': str(link.date),
+        'is_used': link.is_used,
+        'events': events_payload,
+        'members': members_payload,
+    }
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def create_feedback_share_link(request):
+    """Create a one-time share link for a roster date. Authenticated admin endpoint.
+
+    Body: { "date": "YYYY-MM-DD" }
+    Returns: { token, date, share_url }
+    """
+    date_str = request.data.get('date')
+    if not date_str:
+        return Response({'error': 'date is required (YYYY-MM-DD)'}, status=400)
+    try:
+        target_date = datetime.strptime(date_str, '%Y-%m-%d').date()
+    except ValueError:
+        return Response({'error': 'Invalid date format'}, status=400)
+
+    if not Rosters.objects.filter(date=target_date).exists():
+        return Response(
+            {'error': f'No saved roster for {date_str}. Save the roster before generating a share link.'},
+            status=400,
+        )
+
+    token = secrets.token_urlsafe(32)
+    link = FeedbackShareLink.objects.create(
+        token=token,
+        date=target_date,
+        created_by=request.user if request.user.is_authenticated else None,
+    )
+    return Response({
+        'token': link.token,
+        'date': str(link.date),
+        'created_at': link.created_at.isoformat(),
+    }, status=201)
+
+
+@api_view(['GET'])
+def feedback_share_get(request, token):
+    """Public: fetch the form data for a share link."""
+    try:
+        link = FeedbackShareLink.objects.get(token=token)
+    except FeedbackShareLink.DoesNotExist:
+        return Response({'error': 'Link not found'}, status=404)
+    if link.is_used:
+        return Response({'error': 'This link has already been used.'}, status=410)
+    return Response(_build_share_payload(link), status=200)
+
+
+@api_view(['POST'])
+def feedback_share_submit(request, token):
+    """Public: submit feedback through a one-time share link.
+
+    Body:
+      {
+        "attendance": [{"person_id": 1, "is_present": true}, ...],
+        "global_feedback": "Overall notes..."
+      }
+
+    Creates a RosterFeedback row per (roster, person) for every roster on the
+    link's date, using the same is_present value for that person across all
+    rosters they're assigned to. Marks the link as used so it can't be replayed.
+    """
+    try:
+        link = FeedbackShareLink.objects.get(token=token)
+    except FeedbackShareLink.DoesNotExist:
+        return Response({'error': 'Link not found'}, status=404)
+    if link.is_used:
+        return Response({'error': 'This link has already been used.'}, status=410)
+
+    attendance = request.data.get('attendance', [])
+    global_feedback = request.data.get('global_feedback', '') or ''
+
+    presence_by_person = {}
+    for item in attendance:
+        pid = item.get('person_id')
+        if pid is None:
+            continue
+        presence_by_person[int(pid)] = bool(item.get('is_present', True))
+
+    rosters_for_day = list(Rosters.objects.filter(date=link.date))
+    if not rosters_for_day:
+        return Response({'error': 'No rosters exist for that date anymore.'}, status=400)
+
+    affected_person_ids = set()
+    with transaction.atomic():
+        for roster in rosters_for_day:
+            assigned_person_ids = set(
+                Assignment.objects.filter(roster=roster).values_list('person_id', flat=True)
+            )
+            for person_id in assigned_person_ids:
+                is_present = presence_by_person.get(person_id, True)
+                RosterFeedback.objects.update_or_create(
+                    roster=roster,
+                    person_id=person_id,
+                    defaults={
+                        'is_present': is_present,
+                        'feedback': global_feedback,
+                    },
+                )
+                affected_person_ids.add(person_id)
+
+        link.is_used = True
+        link.used_at = timezone.now()
+        link.global_feedback = global_feedback
+        link.save(update_fields=['is_used', 'used_at', 'global_feedback'])
+
+    for pid in affected_person_ids:
+        _recalculate_streak(pid)
+
+    return Response({
+        'message': 'Feedback submitted. Thank you.',
+        'date': str(link.date),
+        'affected_members': len(affected_person_ids),
+    }, status=200)
 
