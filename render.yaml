@@ -1,0 +1,24 @@
+databases:
+  - name: small-backend-db
+    plan: free
+    databaseName: small_backend_db
+    user: mwangidennis
+
+services:
+  - type: web
+    name: small-backend
+    runtime: python
+    plan: free
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn small_backend.wsgi:application"
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: small-backend-db
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: "False"
+      - key: PYTHON_VERSION
+        value: "3.12.3"

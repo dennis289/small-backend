@@ -166,6 +166,32 @@ class MemberStreak(models.Model):
         return f"{self.person} — streak: {self.current_streak}"
 
 
+class FeedbackShareLink(models.Model):
+    """A one-time-use shareable link for collecting feedback for a roster date.
+
+    The token is unguessable and unauthenticated — anyone with the URL can submit
+    once. After submission, ``is_used`` flips to True and the form rejects further
+    posts. ``global_feedback`` stores the single overall note attached to the form.
+    """
+    token = models.CharField(max_length=64, unique=True, db_index=True)
+    date = models.DateField()
+    is_used = models.BooleanField(default=False)
+    used_at = models.DateTimeField(null=True, blank=True)
+    global_feedback = models.TextField(blank=True, null=True)
+    created_by = models.ForeignKey(
+        User, on_delete=models.SET_NULL, null=True, blank=True,
+        related_name='feedback_links_created',
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        status = "used" if self.is_used else "open"
+        return f"FeedbackShareLink({self.date}, {status})"
+
+
 class MembersBulkUpload(models.Model):
     json_data = models.JSONField()
     status = models.BooleanField(default=False)

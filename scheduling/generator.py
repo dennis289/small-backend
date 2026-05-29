@@ -30,6 +30,9 @@ class RosterGenerator:
         self.assignment_history: Dict[int, Dict[str, int]] = {}
         self.role_assignment_counts: Dict[str, Dict[int, int]] = {}
         self.generation_cooldown: Dict[int, Set[str]] = {}
+        # Who held each role in the immediately previous saved roster. Used to
+        # guarantee no back-to-back repeats even when the full cooldown pool is exhausted.
+        self.previous_roster_holders: Dict[str, Set[int]] = {}
         self._assistant_producer_id: Optional[int] = None
 
     # ------------------------------------------------------------------
@@ -69,6 +72,7 @@ class RosterGenerator:
     def _load_generation_cooldowns(self, target_date: date) -> None:
         """Build a hard cooldown map from the last COOLDOWN_GENERATIONS roster dates."""
         self.generation_cooldown.clear()
+        self.previous_roster_holders.clear()
 
         recent_dates = list(
             Rosters.objects
@@ -81,24 +85,40 @@ class RosterGenerator:
         if not recent_dates:
             return
 
+        most_recent_date = recent_dates[0]
+
         cooldown_assignments = Assignment.objects.filter(
             roster__date__in=recent_dates
-        ).select_related('person', 'role')
+        ).select_related('person', 'role', 'roster')
 
         for assignment in cooldown_assignments:
             person_id = assignment.person.pk
             role_name = assignment.role.name.lower()
-            if person_id not in self.generation_cooldown:
-                self.generation_cooldown[person_id] = set()
-            self.generation_cooldown[person_id].add(role_name)
+            self.generation_cooldown.setdefault(person_id, set()).add(role_name)
+            if assignment.roster.date == most_recent_date:
+                self.previous_roster_holders.setdefault(role_name, set()).add(person_id)
 
     def _is_on_cooldown(self, person_id: int, role_name: str) -> bool:
         return role_name.lower() in self.generation_cooldown.get(person_id, set())
 
+    def _held_role_in_previous_roster(self, person_id: int, role_name: str) -> bool:
+        return person_id in self.previous_roster_holders.get(role_name.lower(), set())
+
     def _filter_cooldown(self, people: List[Persons], role_name: str) -> List[Persons]:
-        """Remove people on cooldown; fall back to full list when everyone is blocked."""
+        """Apply rotation rules with a two-tier fallback.
+
+        Tier 1 (preferred): everyone not on cooldown.
+        Tier 2 (fallback): cooldown is exhausted — still exclude whoever held the role
+        in the immediately previous saved roster so the same person never repeats back-to-back.
+        Tier 3 (last resort): only one person exists for the role; we have no choice.
+        """
         available = [p for p in people if not self._is_on_cooldown(p.pk, role_name)]
-        return available if available else people
+        if available:
+            return available
+        no_back_to_back = [p for p in people if not self._held_role_in_previous_roster(p.pk, role_name)]
+        if no_back_to_back:
+            return no_back_to_back
+        return people
 
     # ------------------------------------------------------------------
     # Scoring & selection helpers
@@ -119,6 +139,10 @@ class RosterGenerator:
         score += random.random() * 0.5
         return score
 
+    # Candidates within this many score points of the minimum are treated as tied
+    # and picked among randomly. Higher = more randomization, lower = stricter fairness.
+    SCORE_TIE_WINDOW = 10.0
+
     def _select_best_person_for_role(self, eligible_people: List[Persons], role_name: str) -> Optional[Persons]:
         if not eligible_people:
             return None
@@ -126,8 +150,9 @@ class RosterGenerator:
             (self._calculate_person_priority_score(person, role_name), person)
             for person in eligible_people
         ]
-        scored_people.sort(key=lambda x: x[0])
-        return scored_people[0][1]
+        min_score = min(score for score, _ in scored_people)
+        tied = [person for score, person in scored_people if score <= min_score + self.SCORE_TIE_WINDOW]
+        return random.choice(tied)
 
     # ------------------------------------------------------------------
     # Validation
