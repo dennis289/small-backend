@@ -1,0 +1,5484 @@
+[
+{
+  "model": "admin.logentry",
+  "pk": 1,
+  "fields": {
+    "action_time": "2026-05-08T19:43:54.210Z",
+    "user": 1,
+    "content_type": 11,
+    "object_id": "10",
+    "object_repr": "Austin Kagema",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"First name\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 2,
+  "fields": {
+    "action_time": "2026-05-08T20:26:43.952Z",
+    "user": 1,
+    "content_type": 11,
+    "object_id": "46",
+    "object_repr": "Lucy Njuguna",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 3,
+  "fields": {
+    "action_time": "2026-05-15T05:38:04.605Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "224",
+    "object_repr": "Pacique Birori _ Hospitality on First Service (2026-05-17)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 4,
+  "fields": {
+    "action_time": "2026-05-15T05:38:04.605Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "223",
+    "object_repr": "David Gituku _ Hospitality on First Service (2026-05-17)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 5,
+  "fields": {
+    "action_time": "2026-05-15T05:38:04.605Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "222",
+    "object_repr": "Maureen Mugambi _ Assistant Producer on First Service (2026-05-17)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 6,
+  "fields": {
+    "action_time": "2026-05-15T05:38:04.605Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "221",
+    "object_repr": "Mirriam Githinji _ Producer on First Service (2026-05-17)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 7,
+  "fields": {
+    "action_time": "2026-05-15T05:38:04.605Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "220",
+    "object_repr": "Mercy Makena _ Media Desk on Third Service (2026-05-17)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 8,
+  "fields": {
+    "action_time": "2026-05-15T05:38:04.605Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "219",
+    "object_repr": "Rose Murugi _ Time Keeper on Third Service (2026-05-17)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 9,
+  "fields": {
+    "action_time": "2026-05-15T05:38:04.605Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "218",
+    "object_repr": "Dennis Karuti _ Streaming on Third Service (2026-05-17)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 10,
+  "fields": {
+    "action_time": "2026-05-15T05:38:04.605Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "217",
+    "object_repr": "David Kariuki _ Still Images on Third Service (2026-05-17)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 11,
+  "fields": {
+    "action_time": "2026-05-15T05:38:04.605Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "216",
+    "object_repr": "Faith Maina _ Projecting on Third Service (2026-05-17)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 12,
+  "fields": {
+    "action_time": "2026-05-15T05:38:04.605Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "215",
+    "object_repr": "Dennis Mwangi _ Camera 2 on Third Service (2026-05-17)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 13,
+  "fields": {
+    "action_time": "2026-05-15T05:38:04.605Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "214",
+    "object_repr": "Patrick Mbugua _ Camera 1 on Third Service (2026-05-17)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 14,
+  "fields": {
+    "action_time": "2026-05-15T05:38:04.605Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "213",
+    "object_repr": "Albert Lopete _ Media Desk on Second Service (2026-05-17)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 15,
+  "fields": {
+    "action_time": "2026-05-15T05:38:04.605Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "212",
+    "object_repr": "Maureen Mugambi _ Time Keeper on Second Service (2026-05-17)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 16,
+  "fields": {
+    "action_time": "2026-05-15T05:38:04.605Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "211",
+    "object_repr": "Bonface Ndirangu _ Streaming on Second Service (2026-05-17)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 17,
+  "fields": {
+    "action_time": "2026-05-15T05:38:04.605Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "210",
+    "object_repr": "David Gachuru _ Still Images on Second Service (2026-05-17)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 18,
+  "fields": {
+    "action_time": "2026-05-15T05:38:04.605Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "209",
+    "object_repr": "Patrick Collins _ Projecting on Second Service (2026-05-17)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 19,
+  "fields": {
+    "action_time": "2026-05-15T05:38:04.605Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "208",
+    "object_repr": "Eliud Muiruri _ Camera 2 on Second Service (2026-05-17)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 20,
+  "fields": {
+    "action_time": "2026-05-15T05:38:04.605Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "207",
+    "object_repr": "Anthony Muriithi _ Camera 1 on Second Service (2026-05-17)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 21,
+  "fields": {
+    "action_time": "2026-05-15T05:38:04.605Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "206",
+    "object_repr": "Bonface Theuri _ Media Desk on First Service (2026-05-17)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 22,
+  "fields": {
+    "action_time": "2026-05-15T05:38:04.605Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "205",
+    "object_repr": "Lewis Kirimi _ Time Keeper on First Service (2026-05-17)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 23,
+  "fields": {
+    "action_time": "2026-05-15T05:38:04.605Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "204",
+    "object_repr": "Hilda Ndegwa _ Streaming on First Service (2026-05-17)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 24,
+  "fields": {
+    "action_time": "2026-05-15T05:38:04.605Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "203",
+    "object_repr": "Joy Wanjiku _ Still Images on First Service (2026-05-17)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 25,
+  "fields": {
+    "action_time": "2026-05-15T05:38:04.605Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "202",
+    "object_repr": "Edward Kibugi _ Projecting on First Service (2026-05-17)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 26,
+  "fields": {
+    "action_time": "2026-05-15T05:38:04.605Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "201",
+    "object_repr": "Waithaka Njoroge _ Camera 2 on First Service (2026-05-17)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 27,
+  "fields": {
+    "action_time": "2026-05-15T05:38:04.605Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "200",
+    "object_repr": "Emmanuel Wawire _ Camera 1 on First Service (2026-05-17)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 28,
+  "fields": {
+    "action_time": "2026-05-15T05:38:04.605Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "25",
+    "object_repr": "Anthony Muriithi _ Hospitality on First Service (2026-05-10)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 29,
+  "fields": {
+    "action_time": "2026-05-15T05:38:04.605Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "24",
+    "object_repr": "Cynthia Wanjiru _ Hospitality on First Service (2026-05-10)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 30,
+  "fields": {
+    "action_time": "2026-05-15T05:38:04.605Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "23",
+    "object_repr": "Pacique Birori _ Assistant Producer on First Service (2026-05-10)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 31,
+  "fields": {
+    "action_time": "2026-05-15T05:38:04.605Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "22",
+    "object_repr": "Edward Kibugi _ Producer on First Service (2026-05-10)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 32,
+  "fields": {
+    "action_time": "2026-05-15T05:38:04.605Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "21",
+    "object_repr": "Joy Wanjiku _ Media Desk on Third Service (2026-05-10)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 33,
+  "fields": {
+    "action_time": "2026-05-15T05:38:04.605Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "20",
+    "object_repr": "Faith Maina _ Time Keeper on Third Service (2026-05-10)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 34,
+  "fields": {
+    "action_time": "2026-05-15T05:38:04.605Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "19",
+    "object_repr": "Bonface Ndirangu _ Streaming on Third Service (2026-05-10)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 35,
+  "fields": {
+    "action_time": "2026-05-15T05:38:04.605Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "18",
+    "object_repr": "Mercy Makena _ Still Images on Third Service (2026-05-10)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 36,
+  "fields": {
+    "action_time": "2026-05-15T05:38:04.605Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "17",
+    "object_repr": "Eliud Muiruri _ Projecting on Third Service (2026-05-10)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 37,
+  "fields": {
+    "action_time": "2026-05-15T05:38:04.605Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "16",
+    "object_repr": "David Gituku _ Camera 2 on Third Service (2026-05-10)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 38,
+  "fields": {
+    "action_time": "2026-05-15T05:38:04.605Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "15",
+    "object_repr": "Pacique Birori _ Camera 1 on Third Service (2026-05-10)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 39,
+  "fields": {
+    "action_time": "2026-05-15T05:38:04.605Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "14",
+    "object_repr": "Rose Murugi _ Media Desk on Second Service (2026-05-10)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 40,
+  "fields": {
+    "action_time": "2026-05-15T05:38:04.605Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "13",
+    "object_repr": "Bonface Theuri _ Time Keeper on Second Service (2026-05-10)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 41,
+  "fields": {
+    "action_time": "2026-05-15T05:38:04.605Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "12",
+    "object_repr": "Vickram Kimwere _ Streaming on Second Service (2026-05-10)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 42,
+  "fields": {
+    "action_time": "2026-05-15T05:38:04.605Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "11",
+    "object_repr": "Albert Lopete _ Still Images on Second Service (2026-05-10)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 43,
+  "fields": {
+    "action_time": "2026-05-15T05:38:04.605Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "10",
+    "object_repr": "David Kariuki _ Projecting on Second Service (2026-05-10)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 44,
+  "fields": {
+    "action_time": "2026-05-15T05:38:04.605Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "9",
+    "object_repr": "Emmanuel Wawire _ Camera 2 on Second Service (2026-05-10)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 45,
+  "fields": {
+    "action_time": "2026-05-15T05:38:04.605Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "8",
+    "object_repr": "David Gachuru _ Camera 1 on Second Service (2026-05-10)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 46,
+  "fields": {
+    "action_time": "2026-05-15T05:38:04.605Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "7",
+    "object_repr": "Victor Reuben _ Media Desk on First Service (2026-05-10)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 47,
+  "fields": {
+    "action_time": "2026-05-15T05:38:04.605Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "6",
+    "object_repr": "Hilda Ndegwa _ Time Keeper on First Service (2026-05-10)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 48,
+  "fields": {
+    "action_time": "2026-05-15T05:38:04.605Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "5",
+    "object_repr": "Dennis Mwangi _ Streaming on First Service (2026-05-10)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 49,
+  "fields": {
+    "action_time": "2026-05-15T05:38:04.605Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "4",
+    "object_repr": "Patrick Collins _ Still Images on First Service (2026-05-10)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 50,
+  "fields": {
+    "action_time": "2026-05-15T05:38:04.605Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "3",
+    "object_repr": "Dennis Karuti _ Projecting on First Service (2026-05-10)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 51,
+  "fields": {
+    "action_time": "2026-05-15T05:38:04.605Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "2",
+    "object_repr": "Patrick Mbugua _ Camera 2 on First Service (2026-05-10)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 52,
+  "fields": {
+    "action_time": "2026-05-15T05:38:04.605Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "1",
+    "object_repr": "Mirriam Githinji _ Camera 1 on First Service (2026-05-10)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 53,
+  "fields": {
+    "action_time": "2026-05-15T05:38:04.605Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "49",
+    "object_repr": "Eliud Muiruri _ Hospitality on First Service (2026-05-08)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 54,
+  "fields": {
+    "action_time": "2026-05-15T05:38:04.605Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "48",
+    "object_repr": "Anthony Muriithi _ Hospitality on First Service (2026-05-08)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 55,
+  "fields": {
+    "action_time": "2026-05-15T05:38:04.605Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "47",
+    "object_repr": "Vickram Kimwere _ Assistant Producer on First Service (2026-05-08)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 56,
+  "fields": {
+    "action_time": "2026-05-15T05:38:04.605Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "46",
+    "object_repr": "Bonface Ndirangu _ Producer on First Service (2026-05-08)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 57,
+  "fields": {
+    "action_time": "2026-05-15T05:38:04.605Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "45",
+    "object_repr": "Victor Reuben _ Media Desk on Third Service (2026-05-08)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 58,
+  "fields": {
+    "action_time": "2026-05-15T05:38:04.605Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "44",
+    "object_repr": "Faith Maina _ Time Keeper on Third Service (2026-05-08)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 59,
+  "fields": {
+    "action_time": "2026-05-15T05:38:04.605Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "43",
+    "object_repr": "Dennis Karuti _ Streaming on Third Service (2026-05-08)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 60,
+  "fields": {
+    "action_time": "2026-05-15T05:38:04.605Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "42",
+    "object_repr": "Maureen Mugambi _ Projecting on Third Service (2026-05-08)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 61,
+  "fields": {
+    "action_time": "2026-05-15T05:38:04.605Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "41",
+    "object_repr": "Patrick Mbugua _ Camera 2 on Third Service (2026-05-08)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 62,
+  "fields": {
+    "action_time": "2026-05-15T05:38:04.605Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "40",
+    "object_repr": "Vickram Kimwere _ Camera 1 on Third Service (2026-05-08)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 63,
+  "fields": {
+    "action_time": "2026-05-15T05:38:04.605Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "39",
+    "object_repr": "Joy Wanjiku _ Media Desk on Second Service (2026-05-08)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 64,
+  "fields": {
+    "action_time": "2026-05-15T05:38:04.605Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "38",
+    "object_repr": "David Gituku _ Time Keeper on Second Service (2026-05-08)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 65,
+  "fields": {
+    "action_time": "2026-05-15T05:38:04.605Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "37",
+    "object_repr": "Emmanuel Wawire _ Streaming on Second Service (2026-05-08)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 66,
+  "fields": {
+    "action_time": "2026-05-15T05:38:04.605Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "36",
+    "object_repr": "Albert Lopete _ Still Images on Second Service (2026-05-08)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 67,
+  "fields": {
+    "action_time": "2026-05-15T05:38:04.605Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "35",
+    "object_repr": "Mercy Makena _ Projecting on Second Service (2026-05-08)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 68,
+  "fields": {
+    "action_time": "2026-05-15T05:38:04.605Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "34",
+    "object_repr": "David Kariuki _ Camera 2 on Second Service (2026-05-08)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 69,
+  "fields": {
+    "action_time": "2026-05-15T05:38:04.605Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "33",
+    "object_repr": "Waithaka Njoroge _ Camera 1 on Second Service (2026-05-08)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 70,
+  "fields": {
+    "action_time": "2026-05-15T05:38:04.606Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "32",
+    "object_repr": "Pacique Birori _ Media Desk on First Service (2026-05-08)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 71,
+  "fields": {
+    "action_time": "2026-05-15T05:38:04.606Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "31",
+    "object_repr": "Hilda Ndegwa _ Time Keeper on First Service (2026-05-08)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 72,
+  "fields": {
+    "action_time": "2026-05-15T05:38:04.606Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "30",
+    "object_repr": "Dennis Mwangi _ Streaming on First Service (2026-05-08)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 73,
+  "fields": {
+    "action_time": "2026-05-15T05:38:04.606Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "29",
+    "object_repr": "Patrick Collins _ Still Images on First Service (2026-05-08)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 74,
+  "fields": {
+    "action_time": "2026-05-15T05:38:04.606Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "28",
+    "object_repr": "Lewis Kirimi _ Projecting on First Service (2026-05-08)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 75,
+  "fields": {
+    "action_time": "2026-05-15T05:38:04.606Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "27",
+    "object_repr": "David Gachuru _ Camera 2 on First Service (2026-05-08)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 76,
+  "fields": {
+    "action_time": "2026-05-15T05:38:04.606Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "26",
+    "object_repr": "Cynthia Wanjiru _ Camera 1 on First Service (2026-05-08)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 77,
+  "fields": {
+    "action_time": "2026-05-15T06:41:49.545Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "398",
+    "object_repr": "Cynthia Wanjiru _ Hospitality on First Service (2026-05-24)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 78,
+  "fields": {
+    "action_time": "2026-05-15T06:41:49.545Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "397",
+    "object_repr": "Mirriam Githinji _ Hospitality on First Service (2026-05-24)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 79,
+  "fields": {
+    "action_time": "2026-05-15T06:41:49.545Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "396",
+    "object_repr": "Maureen Mugambi _ Assistant Producer on First Service (2026-05-24)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 80,
+  "fields": {
+    "action_time": "2026-05-15T06:41:49.545Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "395",
+    "object_repr": "Bonface Theuri _ Producer on First Service (2026-05-24)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 81,
+  "fields": {
+    "action_time": "2026-05-15T06:41:49.545Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "394",
+    "object_repr": "David Gituku _ Media Desk on Third Service (2026-05-24)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 82,
+  "fields": {
+    "action_time": "2026-05-15T06:41:49.545Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "393",
+    "object_repr": "Bonface Ndirangu _ Time Keeper on Third Service (2026-05-24)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 83,
+  "fields": {
+    "action_time": "2026-05-15T06:41:49.545Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "392",
+    "object_repr": "Emmanuel Wawire _ Streaming on Third Service (2026-05-24)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 84,
+  "fields": {
+    "action_time": "2026-05-15T06:41:49.545Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "391",
+    "object_repr": "Joy Wanjiku _ Still Images on Third Service (2026-05-24)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 85,
+  "fields": {
+    "action_time": "2026-05-15T06:41:49.546Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "390",
+    "object_repr": "Dennis Karuti _ Projecting on Third Service (2026-05-24)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 86,
+  "fields": {
+    "action_time": "2026-05-15T06:41:49.546Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "389",
+    "object_repr": "Patrick Mbugua _ Camera 2 on Third Service (2026-05-24)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 87,
+  "fields": {
+    "action_time": "2026-05-15T06:41:49.546Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "388",
+    "object_repr": "Anthony Muriithi _ Camera 1 on Third Service (2026-05-24)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 88,
+  "fields": {
+    "action_time": "2026-05-15T06:41:49.546Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "387",
+    "object_repr": "Hilda Ndegwa _ Media Desk on Second Service (2026-05-24)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 89,
+  "fields": {
+    "action_time": "2026-05-15T06:41:49.546Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "386",
+    "object_repr": "Waithaka Njoroge _ Time Keeper on Second Service (2026-05-24)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 90,
+  "fields": {
+    "action_time": "2026-05-15T06:41:49.546Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "385",
+    "object_repr": "Vickram Kimwere _ Streaming on Second Service (2026-05-24)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 91,
+  "fields": {
+    "action_time": "2026-05-15T06:41:49.546Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "384",
+    "object_repr": "Mercy Makena _ Still Images on Second Service (2026-05-24)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 92,
+  "fields": {
+    "action_time": "2026-05-15T06:41:49.546Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "383",
+    "object_repr": "Victor Reuben _ Projecting on Second Service (2026-05-24)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 93,
+  "fields": {
+    "action_time": "2026-05-15T06:41:49.546Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "382",
+    "object_repr": "Pacique Birori _ Camera 2 on Second Service (2026-05-24)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 94,
+  "fields": {
+    "action_time": "2026-05-15T06:41:49.546Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "381",
+    "object_repr": "Patrick Collins _ Camera 1 on Second Service (2026-05-24)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 95,
+  "fields": {
+    "action_time": "2026-05-15T06:41:49.546Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "380",
+    "object_repr": "Faith Maina _ Media Desk on First Service (2026-05-24)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 96,
+  "fields": {
+    "action_time": "2026-05-15T06:41:49.546Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "379",
+    "object_repr": "Rose Murugi _ Time Keeper on First Service (2026-05-24)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 97,
+  "fields": {
+    "action_time": "2026-05-15T06:41:49.546Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "378",
+    "object_repr": "Edward Kibugi _ Streaming on First Service (2026-05-24)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 98,
+  "fields": {
+    "action_time": "2026-05-15T06:41:49.546Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "377",
+    "object_repr": "Albert Lopete _ Still Images on First Service (2026-05-24)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 99,
+  "fields": {
+    "action_time": "2026-05-15T06:41:49.546Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "376",
+    "object_repr": "Maureen Mugambi _ Projecting on First Service (2026-05-24)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 100,
+  "fields": {
+    "action_time": "2026-05-15T06:41:49.546Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "375",
+    "object_repr": "Eliud Muiruri _ Camera 2 on First Service (2026-05-24)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 101,
+  "fields": {
+    "action_time": "2026-05-15T06:41:49.546Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "374",
+    "object_repr": "Dennis Mwangi _ Camera 1 on First Service (2026-05-24)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 102,
+  "fields": {
+    "action_time": "2026-05-15T06:41:49.546Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "324",
+    "object_repr": "Anthony Muriithi _ Hospitality on First Service (2026-05-16)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 103,
+  "fields": {
+    "action_time": "2026-05-15T06:41:49.546Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "323",
+    "object_repr": "Dennis Mwangi _ Hospitality on First Service (2026-05-16)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 104,
+  "fields": {
+    "action_time": "2026-05-15T06:41:49.546Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "322",
+    "object_repr": "Emmanuel Wawire _ Assistant Producer on First Service (2026-05-16)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 105,
+  "fields": {
+    "action_time": "2026-05-15T06:41:49.546Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "321",
+    "object_repr": "Joy Wanjiku _ Producer on First Service (2026-05-16)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 106,
+  "fields": {
+    "action_time": "2026-05-15T06:41:49.546Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "320",
+    "object_repr": "Victor Reuben _ Media Desk on Third Service (2026-05-16)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 107,
+  "fields": {
+    "action_time": "2026-05-15T06:41:49.546Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "319",
+    "object_repr": "Lewis Kirimi _ Time Keeper on Third Service (2026-05-16)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 108,
+  "fields": {
+    "action_time": "2026-05-15T06:41:49.546Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "318",
+    "object_repr": "Bonface Ndirangu _ Streaming on Third Service (2026-05-16)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 109,
+  "fields": {
+    "action_time": "2026-05-15T06:41:49.546Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "317",
+    "object_repr": "Vickram Kimwere _ Still Images on Third Service (2026-05-16)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 110,
+  "fields": {
+    "action_time": "2026-05-15T06:41:49.546Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "316",
+    "object_repr": "Edward Kibugi _ Projecting on Third Service (2026-05-16)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 111,
+  "fields": {
+    "action_time": "2026-05-15T06:41:49.546Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "315",
+    "object_repr": "David Gituku _ Camera 2 on Third Service (2026-05-16)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 112,
+  "fields": {
+    "action_time": "2026-05-15T06:41:49.546Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "314",
+    "object_repr": "Eliud Muiruri _ Camera 1 on Third Service (2026-05-16)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 113,
+  "fields": {
+    "action_time": "2026-05-15T06:41:49.546Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "313",
+    "object_repr": "Mirriam Githinji _ Media Desk on Second Service (2026-05-16)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 114,
+  "fields": {
+    "action_time": "2026-05-15T06:41:49.546Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "312",
+    "object_repr": "Emmanuel Wawire _ Time Keeper on Second Service (2026-05-16)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 115,
+  "fields": {
+    "action_time": "2026-05-15T06:41:49.546Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "311",
+    "object_repr": "Hilda Ndegwa _ Streaming on Second Service (2026-05-16)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 116,
+  "fields": {
+    "action_time": "2026-05-15T06:41:49.546Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "310",
+    "object_repr": "Patrick Collins _ Still Images on Second Service (2026-05-16)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 117,
+  "fields": {
+    "action_time": "2026-05-15T06:41:49.546Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "309",
+    "object_repr": "Faith Maina _ Projecting on Second Service (2026-05-16)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 118,
+  "fields": {
+    "action_time": "2026-05-15T06:41:49.546Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "308",
+    "object_repr": "David Gachuru _ Camera 2 on Second Service (2026-05-16)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 119,
+  "fields": {
+    "action_time": "2026-05-15T06:41:49.546Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "307",
+    "object_repr": "Pacique Birori _ Camera 1 on Second Service (2026-05-16)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 120,
+  "fields": {
+    "action_time": "2026-05-15T06:41:49.546Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "306",
+    "object_repr": "Cynthia Wanjiru _ Media Desk on First Service (2026-05-16)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 121,
+  "fields": {
+    "action_time": "2026-05-15T06:41:49.546Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "305",
+    "object_repr": "Patrick Mbugua _ Time Keeper on First Service (2026-05-16)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 122,
+  "fields": {
+    "action_time": "2026-05-15T06:41:49.546Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "304",
+    "object_repr": "Dennis Karuti _ Streaming on First Service (2026-05-16)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 123,
+  "fields": {
+    "action_time": "2026-05-15T06:41:49.546Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "303",
+    "object_repr": "David Kariuki _ Still Images on First Service (2026-05-16)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 124,
+  "fields": {
+    "action_time": "2026-05-15T06:41:49.546Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "302",
+    "object_repr": "Mercy Makena _ Projecting on First Service (2026-05-16)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 125,
+  "fields": {
+    "action_time": "2026-05-15T06:41:49.546Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "301",
+    "object_repr": "Albert Lopete _ Camera 2 on First Service (2026-05-16)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 126,
+  "fields": {
+    "action_time": "2026-05-15T06:41:49.546Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "300",
+    "object_repr": "Waithaka Njoroge _ Camera 1 on First Service (2026-05-16)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 127,
+  "fields": {
+    "action_time": "2026-05-15T12:46:30.504Z",
+    "user": 1,
+    "content_type": 11,
+    "object_id": "20",
+    "object_repr": "Bonface Theuri",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Is active\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 128,
+  "fields": {
+    "action_time": "2026-05-21T07:47:09.572Z",
+    "user": 1,
+    "content_type": 14,
+    "object_id": "15",
+    "object_repr": "Third Service - 2026-05-24",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 129,
+  "fields": {
+    "action_time": "2026-05-21T07:47:09.572Z",
+    "user": 1,
+    "content_type": 14,
+    "object_id": "14",
+    "object_repr": "Second Service - 2026-05-24",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 130,
+  "fields": {
+    "action_time": "2026-05-21T07:47:09.572Z",
+    "user": 1,
+    "content_type": 14,
+    "object_id": "13",
+    "object_repr": "First Service - 2026-05-24",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 131,
+  "fields": {
+    "action_time": "2026-05-21T07:47:09.572Z",
+    "user": 1,
+    "content_type": 14,
+    "object_id": "18",
+    "object_repr": "Third Service - 2026-05-23",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 132,
+  "fields": {
+    "action_time": "2026-05-21T07:47:09.572Z",
+    "user": 1,
+    "content_type": 14,
+    "object_id": "17",
+    "object_repr": "Second Service - 2026-05-23",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 133,
+  "fields": {
+    "action_time": "2026-05-21T07:47:09.572Z",
+    "user": 1,
+    "content_type": 14,
+    "object_id": "16",
+    "object_repr": "First Service - 2026-05-23",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 134,
+  "fields": {
+    "action_time": "2026-05-21T07:47:09.572Z",
+    "user": 1,
+    "content_type": 14,
+    "object_id": "9",
+    "object_repr": "Third Service - 2026-05-17",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 135,
+  "fields": {
+    "action_time": "2026-05-21T07:47:09.572Z",
+    "user": 1,
+    "content_type": 14,
+    "object_id": "8",
+    "object_repr": "Second Service - 2026-05-17",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 136,
+  "fields": {
+    "action_time": "2026-05-21T07:47:09.572Z",
+    "user": 1,
+    "content_type": 14,
+    "object_id": "7",
+    "object_repr": "First Service - 2026-05-17",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 137,
+  "fields": {
+    "action_time": "2026-05-21T07:47:09.572Z",
+    "user": 1,
+    "content_type": 14,
+    "object_id": "12",
+    "object_repr": "Third Service - 2026-05-16",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 138,
+  "fields": {
+    "action_time": "2026-05-21T07:47:09.572Z",
+    "user": 1,
+    "content_type": 14,
+    "object_id": "11",
+    "object_repr": "Second Service - 2026-05-16",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 139,
+  "fields": {
+    "action_time": "2026-05-21T07:47:09.572Z",
+    "user": 1,
+    "content_type": 14,
+    "object_id": "10",
+    "object_repr": "First Service - 2026-05-16",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 140,
+  "fields": {
+    "action_time": "2026-05-21T07:47:09.572Z",
+    "user": 1,
+    "content_type": 14,
+    "object_id": "3",
+    "object_repr": "Third Service - 2026-05-10",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 141,
+  "fields": {
+    "action_time": "2026-05-21T07:47:09.572Z",
+    "user": 1,
+    "content_type": 14,
+    "object_id": "2",
+    "object_repr": "Second Service - 2026-05-10",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 142,
+  "fields": {
+    "action_time": "2026-05-21T07:47:09.572Z",
+    "user": 1,
+    "content_type": 14,
+    "object_id": "1",
+    "object_repr": "First Service - 2026-05-10",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 143,
+  "fields": {
+    "action_time": "2026-05-21T07:47:09.572Z",
+    "user": 1,
+    "content_type": 14,
+    "object_id": "6",
+    "object_repr": "Third Service - 2026-05-08",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 144,
+  "fields": {
+    "action_time": "2026-05-21T07:47:09.572Z",
+    "user": 1,
+    "content_type": 14,
+    "object_id": "5",
+    "object_repr": "Second Service - 2026-05-08",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 145,
+  "fields": {
+    "action_time": "2026-05-21T07:47:09.572Z",
+    "user": 1,
+    "content_type": 14,
+    "object_id": "4",
+    "object_repr": "First Service - 2026-05-08",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 146,
+  "fields": {
+    "action_time": "2026-05-23T10:39:07.290Z",
+    "user": 3,
+    "content_type": 11,
+    "object_id": "2",
+    "object_repr": "Mirriam Githinji",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Is present\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 147,
+  "fields": {
+    "action_time": "2026-05-23T10:39:20.288Z",
+    "user": 3,
+    "content_type": 11,
+    "object_id": "1",
+    "object_repr": "Dennis Karuti",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Is present\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 148,
+  "fields": {
+    "action_time": "2026-05-26T06:27:16.306Z",
+    "user": 3,
+    "content_type": 11,
+    "object_id": "47",
+    "object_repr": "Timothy Karani",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Is present\", \"Is active\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 149,
+  "fields": {
+    "action_time": "2026-05-26T06:27:27.169Z",
+    "user": 3,
+    "content_type": 11,
+    "object_id": "48",
+    "object_repr": "Lilian Njambi",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Is active\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 150,
+  "fields": {
+    "action_time": "2026-05-26T06:27:33.546Z",
+    "user": 3,
+    "content_type": 11,
+    "object_id": "50",
+    "object_repr": "June Nyambura",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Is active\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 151,
+  "fields": {
+    "action_time": "2026-05-26T06:27:40.127Z",
+    "user": 3,
+    "content_type": 11,
+    "object_id": "51",
+    "object_repr": "Kevin Ngari",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Is active\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 152,
+  "fields": {
+    "action_time": "2026-05-26T06:27:46.204Z",
+    "user": 3,
+    "content_type": 11,
+    "object_id": "52",
+    "object_repr": "Mary Ngari",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Is active\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 153,
+  "fields": {
+    "action_time": "2026-05-26T06:27:52.781Z",
+    "user": 3,
+    "content_type": 11,
+    "object_id": "53",
+    "object_repr": "Nelius Nduku",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Is active\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 154,
+  "fields": {
+    "action_time": "2026-05-26T06:28:26.510Z",
+    "user": 3,
+    "content_type": 11,
+    "object_id": "34",
+    "object_repr": "Daniel Murigi",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Is active\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 155,
+  "fields": {
+    "action_time": "2026-05-26T06:30:49.198Z",
+    "user": 3,
+    "content_type": 11,
+    "object_id": "49",
+    "object_repr": "Wakesho Mngwana",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Is active\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 156,
+  "fields": {
+    "action_time": "2026-05-26T09:22:47.940Z",
+    "user": 3,
+    "content_type": 8,
+    "object_id": "1",
+    "object_repr": "Day off",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 157,
+  "fields": {
+    "action_time": "2026-05-26T11:51:55.853Z",
+    "user": 3,
+    "content_type": 14,
+    "object_id": "21",
+    "object_repr": "Third Service - 2026-05-24",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 158,
+  "fields": {
+    "action_time": "2026-05-26T11:51:55.853Z",
+    "user": 3,
+    "content_type": 14,
+    "object_id": "20",
+    "object_repr": "Second Service - 2026-05-24",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 159,
+  "fields": {
+    "action_time": "2026-05-26T11:51:55.853Z",
+    "user": 3,
+    "content_type": 14,
+    "object_id": "19",
+    "object_repr": "First Service - 2026-05-24",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 160,
+  "fields": {
+    "action_time": "2026-05-26T11:52:39.673Z",
+    "user": 3,
+    "content_type": 7,
+    "object_id": "1",
+    "object_repr": "Day off → Dennis Karuti (2026-05-26)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "fpx6s65dsjq50a6iwilfu6p9042ru9lt",
+  "fields": {
+    "session_data": ".eJxVjMsOgjAQRf-la9O0ZRiKS_d-A5kHFdS0CYWV8d-VhIVu7znnvsxA2zoNWx2XYVZzNt6cfjcmeYx5B3qnfCtWSl6Xme2u2INWey06Pi-H-3cwUZ2-NSNBwhg0CEEXFRI0fWAiaDERAkbvWfuGEzggjYFd3zJ66TygODHvD-fTN8Y:1wLR6d:qUKqQpWMhNrnhqO-RsqvUHuvd_MIdAF8CvWNSLEwdNM",
+    "expire_date": "2026-05-22T19:43:27.351Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "s48vc9qxjlaid8cex14oglujnnqhoj9g",
+  "fields": {
+    "session_data": ".eJxVjDsOwyAQBe9CHSEDZvGmTO8zIHYXBScRSP5UUe4eW3KRtG9m3lvFtK0lbkue4yTqqpy6_G6U-JnrAeSR6r1pbnWdJ9KHok-66LFJft1O9--gpKXsNTnMxllEzxnEiSFyJpODoQMaOgIGZMvS72LPYMBiML7DwILsQ1CfL9u_N1M:1wQjkV:z4G578MbmDgsJaeSRcJx-qZ_1MS_Rfx8nprRjpuwckY",
+    "expire_date": "2026-06-06T10:38:31.569Z"
+  }
+},
+{
+  "model": "token_blacklist.outstandingtoken",
+  "pk": 1,
+  "fields": {
+    "user": 2,
+    "jti": "d54788b3c10b40f3a5f72c128180bcf1",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc3OTQ1NDU1MywiaWF0IjoxNzc4ODQ5NzUzLCJqdGkiOiJkNTQ3ODhiM2MxMGI0MGYzYTVmNzJjMTI4MTgwYmNmMSIsInVzZXJfaWQiOiIyIn0.efq41wPA9DLbUd7VpFrEU0dBNPn6cUMMjM0KCo6a3Zo",
+    "created_at": "2026-05-15T12:55:53.485Z",
+    "expires_at": "2026-05-22T12:55:53Z"
+  }
+},
+{
+  "model": "token_blacklist.outstandingtoken",
+  "pk": 2,
+  "fields": {
+    "user": 2,
+    "jti": "be9f6fda6a0844f586ebc3847b71ba44",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc3OTQ3ODk5NCwiaWF0IjoxNzc4ODc0MTk0LCJqdGkiOiJiZTlmNmZkYTZhMDg0NGY1ODZlYmMzODQ3YjcxYmE0NCIsInVzZXJfaWQiOiIyIn0.x8O8QCY-Gy7DTILhIhoLKSFFm62j9kpCoJZx5sJlPx0",
+    "created_at": "2026-05-15T19:43:14.192Z",
+    "expires_at": "2026-05-22T19:43:14Z"
+  }
+},
+{
+  "model": "token_blacklist.outstandingtoken",
+  "pk": 3,
+  "fields": {
+    "user": 2,
+    "jti": "1f6e31c9ea594fdfa4e0327e6a99a4f6",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc3OTY0OTg5OSwiaWF0IjoxNzc5MDQ1MDk5LCJqdGkiOiIxZjZlMzFjOWVhNTk0ZmRmYTRlMDMyN2U2YTk5YTRmNiIsInVzZXJfaWQiOiIyIn0.94Ci6wmHieZ1Gw5xzY2RHIR7cxm6MYUPOKqG6DNGdlw",
+    "created_at": "2026-05-17T19:11:39.649Z",
+    "expires_at": "2026-05-24T19:11:39Z"
+  }
+},
+{
+  "model": "token_blacklist.outstandingtoken",
+  "pk": 4,
+  "fields": {
+    "user": 2,
+    "jti": "ef20a1a33aed4c249889409749c53bfb",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc3OTY1MTA4MCwiaWF0IjoxNzc5MDQ2MjgwLCJqdGkiOiJlZjIwYTFhMzNhZWQ0YzI0OTg4OTQwOTc0OWM1M2JmYiIsInVzZXJfaWQiOiIyIn0.jNaH_jjdeC_eyQOb8xoBrqJR1x1cmxaG1rh7ryTuH1Q",
+    "created_at": "2026-05-17T19:31:20.814Z",
+    "expires_at": "2026-05-24T19:31:20Z"
+  }
+},
+{
+  "model": "token_blacklist.outstandingtoken",
+  "pk": 5,
+  "fields": {
+    "user": 2,
+    "jti": "b9fe3837e31c4981979f627c4a3e1201",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc3OTY4NzA1MSwiaWF0IjoxNzc5MDgyMjUxLCJqdGkiOiJiOWZlMzgzN2UzMWM0OTgxOTc5ZjYyN2M0YTNlMTIwMSIsInVzZXJfaWQiOiIyIn0.VVMdCvVsj8q7qdliMbeQSMzPvrQHidfKaTuKQgJTJMI",
+    "created_at": "2026-05-18T05:30:51.859Z",
+    "expires_at": "2026-05-25T05:30:51Z"
+  }
+},
+{
+  "model": "token_blacklist.outstandingtoken",
+  "pk": 6,
+  "fields": {
+    "user": 2,
+    "jti": "0e2dbc0351bc4084a8dcc42ac6c2ccba",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc3OTcwMDcwMiwiaWF0IjoxNzc5MDk1OTAyLCJqdGkiOiIwZTJkYmMwMzUxYmM0MDg0YThkY2M0MmFjNmMyY2NiYSIsInVzZXJfaWQiOiIyIn0.b473L3jtTz49psr5xAg17a5FEuz7BX4DgY_XaxyEHzI",
+    "created_at": "2026-05-18T09:18:22.557Z",
+    "expires_at": "2026-05-25T09:18:22Z"
+  }
+},
+{
+  "model": "token_blacklist.outstandingtoken",
+  "pk": 7,
+  "fields": {
+    "user": 2,
+    "jti": "04d55b6da4314695b787488ba51b4a1f",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc3OTcwMTY5OSwiaWF0IjoxNzc5MDk2ODk5LCJqdGkiOiIwNGQ1NWI2ZGE0MzE0Njk1Yjc4NzQ4OGJhNTFiNGExZiIsInVzZXJfaWQiOiIyIn0.Lqz4_ZlSAchocshItVAeQgYv9ghiCI1udKxPbh6cPlA",
+    "created_at": "2026-05-18T09:34:59.501Z",
+    "expires_at": "2026-05-25T09:34:59Z"
+  }
+},
+{
+  "model": "token_blacklist.outstandingtoken",
+  "pk": 8,
+  "fields": {
+    "user": 2,
+    "jti": "5e3993bd6a8a4fe98dd881f7b7204777",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc3OTcwMTk1MCwiaWF0IjoxNzc5MDk3MTUwLCJqdGkiOiI1ZTM5OTNiZDZhOGE0ZmU5OGRkODgxZjdiNzIwNDc3NyIsInVzZXJfaWQiOiIyIn0._CWEUom5U16kvfZIXYlZR-7SuPZud1bFmnStDxBROSc",
+    "created_at": "2026-05-18T09:39:10.022Z",
+    "expires_at": "2026-05-25T09:39:10Z"
+  }
+},
+{
+  "model": "token_blacklist.outstandingtoken",
+  "pk": 9,
+  "fields": {
+    "user": 2,
+    "jti": "21ac87dbc2a34677b637ff42a0f432d6",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc3OTcwMzUwOCwiaWF0IjoxNzc5MDk4NzA4LCJqdGkiOiIyMWFjODdkYmMyYTM0Njc3YjYzN2ZmNDJhMGY0MzJkNiIsInVzZXJfaWQiOiIyIn0.o3h3EIkesU2V2Ymc_-qUZGt-ePqF4ebVFUboHggSRqU",
+    "created_at": "2026-05-18T10:05:08.750Z",
+    "expires_at": "2026-05-25T10:05:08Z"
+  }
+},
+{
+  "model": "token_blacklist.outstandingtoken",
+  "pk": 10,
+  "fields": {
+    "user": 2,
+    "jti": "ae91cad7dc464c438576902265b85b09",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc3OTcwNDYxNSwiaWF0IjoxNzc5MDk5ODE1LCJqdGkiOiJhZTkxY2FkN2RjNDY0YzQzODU3NjkwMjI2NWI4NWIwOSIsInVzZXJfaWQiOiIyIn0.6Z710Vi0KHDlZ1gpfjS1ZXMBBl2-VFGpc65p1cas0dE",
+    "created_at": "2026-05-18T10:23:35.255Z",
+    "expires_at": "2026-05-25T10:23:35Z"
+  }
+},
+{
+  "model": "token_blacklist.outstandingtoken",
+  "pk": 11,
+  "fields": {
+    "user": 2,
+    "jti": "47e5bc43c4ec4223a071c534d8f892c7",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc3OTcwNzQzMywiaWF0IjoxNzc5MTAyNjMzLCJqdGkiOiI0N2U1YmM0M2M0ZWM0MjIzYTA3MWM1MzRkOGY4OTJjNyIsInVzZXJfaWQiOiIyIn0.2FtWUFd-YRlwcUSvFLVXblkQoalg8wJpO-3JgtB6kco",
+    "created_at": "2026-05-18T11:10:33.389Z",
+    "expires_at": "2026-05-25T11:10:33Z"
+  }
+},
+{
+  "model": "token_blacklist.outstandingtoken",
+  "pk": 12,
+  "fields": {
+    "user": 2,
+    "jti": "1dab939b1a564c5b92b532f8e48ec4e8",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc3OTcwNzQ2OCwiaWF0IjoxNzc5MTAyNjY4LCJqdGkiOiIxZGFiOTM5YjFhNTY0YzViOTJiNTMyZjhlNDhlYzRlOCIsInVzZXJfaWQiOiIyIn0.j8PNKdEeEOtfmkYXDqURk7FRJtzghe4T_w154okIj7A",
+    "created_at": "2026-05-18T11:11:08.288Z",
+    "expires_at": "2026-05-25T11:11:08Z"
+  }
+},
+{
+  "model": "token_blacklist.outstandingtoken",
+  "pk": 13,
+  "fields": {
+    "user": 2,
+    "jti": "5ebfb161e5134005bc5c72fde0df3b4d",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc3OTcwODcwNCwiaWF0IjoxNzc5MTAzOTA0LCJqdGkiOiI1ZWJmYjE2MWU1MTM0MDA1YmM1YzcyZmRlMGRmM2I0ZCIsInVzZXJfaWQiOiIyIn0.ogC0NkESLnsbx26S5irdx0-IucFkuzq96Doe6Ta5Mxc",
+    "created_at": "2026-05-18T11:31:44.853Z",
+    "expires_at": "2026-05-25T11:31:44Z"
+  }
+},
+{
+  "model": "token_blacklist.outstandingtoken",
+  "pk": 14,
+  "fields": {
+    "user": 2,
+    "jti": "e92a8b722b614056b62b046502106fef",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc3OTg5MzY0MywiaWF0IjoxNzc5Mjg4ODQzLCJqdGkiOiJlOTJhOGI3MjJiNjE0MDU2YjYyYjA0NjUwMjEwNmZlZiIsInVzZXJfaWQiOiIyIn0.yIkjBAIpEYCHbrtsfE1xMafE4KeZr7fzXA8RIfmBA2U",
+    "created_at": "2026-05-20T14:54:03.880Z",
+    "expires_at": "2026-05-27T14:54:03Z"
+  }
+},
+{
+  "model": "token_blacklist.outstandingtoken",
+  "pk": 15,
+  "fields": {
+    "user": 2,
+    "jti": "0e77228278e84a46bc617a16c546e227",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc3OTg5NDU1NiwiaWF0IjoxNzc5Mjg5NzU2LCJqdGkiOiIwZTc3MjI4Mjc4ZTg0YTQ2YmM2MTdhMTZjNTQ2ZTIyNyIsInVzZXJfaWQiOiIyIn0.nVs-fsZt41DfdReo_DZSgzhmLIbmE5yG9p2WP3C0Qb0",
+    "created_at": "2026-05-20T15:09:16.147Z",
+    "expires_at": "2026-05-27T15:09:16Z"
+  }
+},
+{
+  "model": "token_blacklist.outstandingtoken",
+  "pk": 16,
+  "fields": {
+    "user": 2,
+    "jti": "81e5043ee72a4e7593cac6bc28e3307f",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc3OTkwMTgwMSwiaWF0IjoxNzc5Mjk3MDAxLCJqdGkiOiI4MWU1MDQzZWU3MmE0ZTc1OTNjYWM2YmMyOGUzMzA3ZiIsInVzZXJfaWQiOiIyIn0.-rFGAbyDHOvxbPMQeBS3qZwCO6wdOIBRucbpnhhHy50",
+    "created_at": "2026-05-20T17:10:01.360Z",
+    "expires_at": "2026-05-27T17:10:01Z"
+  }
+},
+{
+  "model": "token_blacklist.outstandingtoken",
+  "pk": 17,
+  "fields": {
+    "user": 2,
+    "jti": "15da187413484b89a0148481a81cad1e",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc3OTk1NDAxNSwiaWF0IjoxNzc5MzQ5MjE1LCJqdGkiOiIxNWRhMTg3NDEzNDg0Yjg5YTAxNDg0ODFhODFjYWQxZSIsInVzZXJfaWQiOiIyIn0.KZ6CLfoT2chxSSQ2mec1y7Ip-iGre21GLIqAHz6DkMQ",
+    "created_at": "2026-05-21T07:40:15.351Z",
+    "expires_at": "2026-05-28T07:40:15Z"
+  }
+},
+{
+  "model": "token_blacklist.outstandingtoken",
+  "pk": 18,
+  "fields": {
+    "user": 2,
+    "jti": "14bd79d498c3407f962c1fa4c33bee80",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc3OTk1NDAxNSwiaWF0IjoxNzc5MzQ5MjE1LCJqdGkiOiIxNGJkNzlkNDk4YzM0MDdmOTYyYzFmYTRjMzNiZWU4MCIsInVzZXJfaWQiOiIyIn0.Pxn64xbrMOwC8WcVU5C8hiY1quJgM47Tx87nBOCTgFE",
+    "created_at": "2026-05-21T07:40:15.453Z",
+    "expires_at": "2026-05-28T07:40:15Z"
+  }
+},
+{
+  "model": "token_blacklist.outstandingtoken",
+  "pk": 19,
+  "fields": {
+    "user": 2,
+    "jti": "a28fa20b10a641039ad7b6abe260cb3d",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc3OTk3Mjk5OCwiaWF0IjoxNzc5MzY4MTk4LCJqdGkiOiJhMjhmYTIwYjEwYTY0MTAzOWFkN2I2YWJlMjYwY2IzZCIsInVzZXJfaWQiOiIyIn0._EjTxKy9BblGhm7X4ln4rnZ74X-0phXwI_Nyydl2CDo",
+    "created_at": "2026-05-21T12:56:38.291Z",
+    "expires_at": "2026-05-28T12:56:38Z"
+  }
+},
+{
+  "model": "token_blacklist.outstandingtoken",
+  "pk": 20,
+  "fields": {
+    "user": 2,
+    "jti": "192bec96a53f4f58a5b158c62d60e2f5",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc3OTk4MjYyNSwiaWF0IjoxNzc5Mzc3ODI1LCJqdGkiOiIxOTJiZWM5NmE1M2Y0ZjU4YTViMTU4YzYyZDYwZTJmNSIsInVzZXJfaWQiOiIyIn0.u7HI8E6VVhfkV_s7QfkMmaHbfmLVc4_xV0koJP8Iar4",
+    "created_at": "2026-05-21T15:37:05.022Z",
+    "expires_at": "2026-05-28T15:37:05Z"
+  }
+},
+{
+  "model": "token_blacklist.outstandingtoken",
+  "pk": 21,
+  "fields": {
+    "user": 2,
+    "jti": "3d72a589c08b496a8b4766c5c08c04d4",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDAyOTg3MiwiaWF0IjoxNzc5NDI1MDcyLCJqdGkiOiIzZDcyYTU4OWMwOGI0OTZhOGI0NzY2YzVjMDhjMDRkNCIsInVzZXJfaWQiOiIyIn0.iL-4YbiQyzXMk1PyzuVNdEy3kQ_jtBdIsAv2ibjMxyQ",
+    "created_at": "2026-05-22T04:44:32.035Z",
+    "expires_at": "2026-05-29T04:44:32Z"
+  }
+},
+{
+  "model": "token_blacklist.outstandingtoken",
+  "pk": 22,
+  "fields": {
+    "user": 2,
+    "jti": "c28ec7272d404641ab1ccc47c777f019",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDAyOTg3MiwiaWF0IjoxNzc5NDI1MDcyLCJqdGkiOiJjMjhlYzcyNzJkNDA0NjQxYWIxY2NjNDdjNzc3ZjAxOSIsInVzZXJfaWQiOiIyIn0.YoI7AxRSKmwuvnXu9WFU0Jxpmjsz-JM4bjp41C6MqXQ",
+    "created_at": "2026-05-22T04:44:32.245Z",
+    "expires_at": "2026-05-29T04:44:32Z"
+  }
+},
+{
+  "model": "token_blacklist.outstandingtoken",
+  "pk": 23,
+  "fields": {
+    "user": 2,
+    "jti": "560dd1763ec1497b9fd1f33923f2ab6d",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDAyOTg3MiwiaWF0IjoxNzc5NDI1MDcyLCJqdGkiOiI1NjBkZDE3NjNlYzE0OTdiOWZkMWYzMzkyM2YyYWI2ZCIsInVzZXJfaWQiOiIyIn0.FDwzyPDeQAG39-v3Nb3lJMfyQw2vgoyV6QPQd_HmeuI",
+    "created_at": "2026-05-22T04:44:32.439Z",
+    "expires_at": "2026-05-29T04:44:32Z"
+  }
+},
+{
+  "model": "token_blacklist.outstandingtoken",
+  "pk": 24,
+  "fields": {
+    "user": 2,
+    "jti": "c0db50cd99004225a64a5db05f50243f",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDAzMDg1MCwiaWF0IjoxNzc5NDI2MDUwLCJqdGkiOiJjMGRiNTBjZDk5MDA0MjI1YTY0YTVkYjA1ZjUwMjQzZiIsInVzZXJfaWQiOiIyIn0.d_LJ2FhBH8mpQLshgkna1L4y069ZFjpGvDuN7b2edxM",
+    "created_at": "2026-05-22T05:00:50.597Z",
+    "expires_at": "2026-05-29T05:00:50Z"
+  }
+},
+{
+  "model": "token_blacklist.outstandingtoken",
+  "pk": 25,
+  "fields": {
+    "user": 2,
+    "jti": "cdd048b915f64879a9f7505ffe015066",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDAzNTA3NSwiaWF0IjoxNzc5NDMwMjc1LCJqdGkiOiJjZGQwNDhiOTE1ZjY0ODc5YTlmNzUwNWZmZTAxNTA2NiIsInVzZXJfaWQiOiIyIn0.ETKJL47cmYWmK9hPhEEtQoDi_Ekzf4EWTi1OUd7TAZc",
+    "created_at": "2026-05-22T06:11:15.540Z",
+    "expires_at": "2026-05-29T06:11:15Z"
+  }
+},
+{
+  "model": "token_blacklist.outstandingtoken",
+  "pk": 26,
+  "fields": {
+    "user": 2,
+    "jti": "cb03914a9f6e404f890a5014aad0c4d2",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDEzNjY4OCwiaWF0IjoxNzc5NTMxODg4LCJqdGkiOiJjYjAzOTE0YTlmNmU0MDRmODkwYTUwMTRhYWQwYzRkMiIsInVzZXJfaWQiOiIyIn0.MQMnpQe7lQhWu5Ia5hJJJ0N-5GCJSzzn00U1Xm0oE4I",
+    "created_at": "2026-05-23T10:24:48.637Z",
+    "expires_at": "2026-05-30T10:24:48Z"
+  }
+},
+{
+  "model": "token_blacklist.outstandingtoken",
+  "pk": 27,
+  "fields": {
+    "user": 2,
+    "jti": "2989ab710133463d93585d4af8652b34",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDEzNzU5NiwiaWF0IjoxNzc5NTMyNzk2LCJqdGkiOiIyOTg5YWI3MTAxMzM0NjNkOTM1ODVkNGFmODY1MmIzNCIsInVzZXJfaWQiOiIyIn0.2HC4E3UjsstVkWA-x5rI1H_OccsgJ6t8rayc0jmlWs0",
+    "created_at": "2026-05-23T10:39:56.564Z",
+    "expires_at": "2026-05-30T10:39:56Z"
+  }
+},
+{
+  "model": "token_blacklist.outstandingtoken",
+  "pk": 28,
+  "fields": {
+    "user": 2,
+    "jti": "904918deaa1f4ba2a77a2c63354f22b9",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDI1MDgwOSwiaWF0IjoxNzc5NjQ2MDA5LCJqdGkiOiI5MDQ5MThkZWFhMWY0YmEyYTc3YTJjNjMzNTRmMjJiOSIsInVzZXJfaWQiOiIyIn0.1fouCo_Q33Bh9SOZvpNo6eIg8SYeyN5Rm96qKLvUkmM",
+    "created_at": "2026-05-24T18:06:49.430Z",
+    "expires_at": "2026-05-31T18:06:49Z"
+  }
+},
+{
+  "model": "token_blacklist.outstandingtoken",
+  "pk": 29,
+  "fields": {
+    "user": 2,
+    "jti": "b2bd96ca6e0647d9ad04f96df40d0b65",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDMwMDYzNSwiaWF0IjoxNzc5Njk1ODM1LCJqdGkiOiJiMmJkOTZjYTZlMDY0N2Q5YWQwNGY5NmRmNDBkMGI2NSIsInVzZXJfaWQiOiIyIn0.BfhRq_rxNylvniHknly1KT4o3zeCropLBOZQlgTDfMk",
+    "created_at": "2026-05-25T07:57:15.675Z",
+    "expires_at": "2026-06-01T07:57:15Z"
+  }
+},
+{
+  "model": "token_blacklist.outstandingtoken",
+  "pk": 30,
+  "fields": {
+    "user": 2,
+    "jti": "36cc3a2a544245699d90b02bb1558155",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDMwMjMwMCwiaWF0IjoxNzc5Njk3NTAwLCJqdGkiOiIzNmNjM2EyYTU0NDI0NTY5OWQ5MGIwMmJiMTU1ODE1NSIsInVzZXJfaWQiOiIyIn0.5jlYqoImNn51rSeAhqz3joEJZvWXbx8FNlpwzhrqjzc",
+    "created_at": "2026-05-25T08:25:00.278Z",
+    "expires_at": "2026-06-01T08:25:00Z"
+  }
+},
+{
+  "model": "token_blacklist.outstandingtoken",
+  "pk": 31,
+  "fields": {
+    "user": 2,
+    "jti": "a0fd52d6121b4a8b92b24a0888ddd1fa",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDM4MDkwOCwiaWF0IjoxNzc5Nzc2MTA4LCJqdGkiOiJhMGZkNTJkNjEyMWI0YThiOTJiMjRhMDg4OGRkZDFmYSIsInVzZXJfaWQiOiIyIn0.dwL-sFn3NwBHVxisJKNLzVY4sEFjyzifa37oWslzgLM",
+    "created_at": "2026-05-26T06:15:08.512Z",
+    "expires_at": "2026-06-02T06:15:08Z"
+  }
+},
+{
+  "model": "token_blacklist.outstandingtoken",
+  "pk": 32,
+  "fields": {
+    "user": 2,
+    "jti": "9e591f4720b54b91ab3c2a0f7ac938f3",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDM4MTg1OCwiaWF0IjoxNzc5Nzc3MDU4LCJqdGkiOiI5ZTU5MWY0NzIwYjU0YjkxYWIzYzJhMGY3YWM5MzhmMyIsInVzZXJfaWQiOiIyIn0.F2zrFJuilclm5Hwn4N4fLn2ScET6mJcjpNazl9S-AnI",
+    "created_at": "2026-05-26T06:30:58.141Z",
+    "expires_at": "2026-06-02T06:30:58Z"
+  }
+},
+{
+  "model": "token_blacklist.outstandingtoken",
+  "pk": 33,
+  "fields": {
+    "user": 2,
+    "jti": "b5a7c69ef1354f128a5e4fe2fecfd0c7",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDM4MTg1OCwiaWF0IjoxNzc5Nzc3MDU4LCJqdGkiOiJiNWE3YzY5ZWYxMzU0ZjEyOGE1ZTRmZTJmZWNmZDBjNyIsInVzZXJfaWQiOiIyIn0.lUHDAOeUkKWjLrKJ_unkynYSyj4cMetC3Q2W-jsA1_k",
+    "created_at": "2026-05-26T06:30:58.220Z",
+    "expires_at": "2026-06-02T06:30:58Z"
+  }
+},
+{
+  "model": "token_blacklist.outstandingtoken",
+  "pk": 34,
+  "fields": {
+    "user": 2,
+    "jti": "52756e2e528b4664986da2185c9cdb08",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDM4ODg4NSwiaWF0IjoxNzc5Nzg0MDg1LCJqdGkiOiI1Mjc1NmUyZTUyOGI0NjY0OTg2ZGEyMTg1YzljZGIwOCIsInVzZXJfaWQiOiIyIn0.putmPN2f5BS_FoAcv_fzgFCax79_lWiMARNYK0IRrv4",
+    "created_at": "2026-05-26T08:28:05.308Z",
+    "expires_at": "2026-06-02T08:28:05Z"
+  }
+},
+{
+  "model": "token_blacklist.outstandingtoken",
+  "pk": 35,
+  "fields": {
+    "user": 2,
+    "jti": "01c16559da5143cebf173a6348693a43",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDM5MDE1NSwiaWF0IjoxNzc5Nzg1MzU1LCJqdGkiOiIwMWMxNjU1OWRhNTE0M2NlYmYxNzNhNjM0ODY5M2E0MyIsInVzZXJfaWQiOiIyIn0.KuIZLzSa0IKTnmdqsTExC5JRwcV6tqm3GecYiP6_2xY",
+    "created_at": "2026-05-26T08:49:15.380Z",
+    "expires_at": "2026-06-02T08:49:15Z"
+  }
+},
+{
+  "model": "token_blacklist.outstandingtoken",
+  "pk": 36,
+  "fields": {
+    "user": 2,
+    "jti": "fe6e05c7a54543f7a371fc8b823b332a",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDM5MDE1NSwiaWF0IjoxNzc5Nzg1MzU1LCJqdGkiOiJmZTZlMDVjN2E1NDU0M2Y3YTM3MWZjOGI4MjNiMzMyYSIsInVzZXJfaWQiOiIyIn0.vEHxRlPp2ukqbpUxozyfuIepNueAk95yQTu6PbwnsaM",
+    "created_at": "2026-05-26T08:49:15.483Z",
+    "expires_at": "2026-06-02T08:49:15Z"
+  }
+},
+{
+  "model": "token_blacklist.outstandingtoken",
+  "pk": 37,
+  "fields": {
+    "user": 2,
+    "jti": "4a61f026fe164559afbbb675f195795c",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDM5MTYyNCwiaWF0IjoxNzc5Nzg2ODI0LCJqdGkiOiI0YTYxZjAyNmZlMTY0NTU5YWZiYmI2NzVmMTk1Nzk1YyIsInVzZXJfaWQiOiIyIn0.fWMhhNEn57lNnKeI0xAbYWtJ2cupzIaS2yvjaJNArvU",
+    "created_at": "2026-05-26T09:13:44.705Z",
+    "expires_at": "2026-06-02T09:13:44Z"
+  }
+},
+{
+  "model": "token_blacklist.outstandingtoken",
+  "pk": 38,
+  "fields": {
+    "user": 2,
+    "jti": "134178f06bc4402cb4d832ff3ebd4faf",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDM5MTcwMywiaWF0IjoxNzc5Nzg2OTAzLCJqdGkiOiIxMzQxNzhmMDZiYzQ0MDJjYjRkODMyZmYzZWJkNGZhZiIsInVzZXJfaWQiOiIyIn0.MtdJap8pAl-kV3ljQB7w06sQIx24ePPg4mZ2vuaZDGc",
+    "created_at": "2026-05-26T09:15:03.014Z",
+    "expires_at": "2026-06-02T09:15:03Z"
+  }
+},
+{
+  "model": "token_blacklist.outstandingtoken",
+  "pk": 39,
+  "fields": {
+    "user": 2,
+    "jti": "36e9fe8ffc2641f19db55d05e83bb5ac",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDM5MTcyMCwiaWF0IjoxNzc5Nzg2OTIwLCJqdGkiOiIzNmU5ZmU4ZmZjMjY0MWYxOWRiNTVkMDVlODNiYjVhYyIsInVzZXJfaWQiOiIyIn0.nTztzGDSDqqLhFl1JOYwW5rmNywNNX0HlKuFBEFKEQY",
+    "created_at": "2026-05-26T09:15:20.194Z",
+    "expires_at": "2026-06-02T09:15:20Z"
+  }
+},
+{
+  "model": "token_blacklist.outstandingtoken",
+  "pk": 40,
+  "fields": {
+    "user": 2,
+    "jti": "9fb2b963c23e41c8bec90db41963ac14",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDM5MjY2NywiaWF0IjoxNzc5Nzg3ODY3LCJqdGkiOiI5ZmIyYjk2M2MyM2U0MWM4YmVjOTBkYjQxOTYzYWMxNCIsInVzZXJfaWQiOiIyIn0.noJwaCFvjJ4wRP4tsbq5OCtvdSIqyofK_FecFeTtZwM",
+    "created_at": "2026-05-26T09:31:07.080Z",
+    "expires_at": "2026-06-02T09:31:07Z"
+  }
+},
+{
+  "model": "token_blacklist.outstandingtoken",
+  "pk": 41,
+  "fields": {
+    "user": 2,
+    "jti": "f9ec585e9f434a939114fa643ccf1151",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDM5MzM2OSwiaWF0IjoxNzc5Nzg4NTY5LCJqdGkiOiJmOWVjNTg1ZTlmNDM0YTkzOTExNGZhNjQzY2NmMTE1MSIsInVzZXJfaWQiOiIyIn0.YN9UJ9VWW3XqysfC6vJUqagjToQTeL8qZz9qVz2pd7U",
+    "created_at": "2026-05-26T09:42:49.859Z",
+    "expires_at": "2026-06-02T09:42:49Z"
+  }
+},
+{
+  "model": "token_blacklist.outstandingtoken",
+  "pk": 42,
+  "fields": {
+    "user": 2,
+    "jti": "a356e24373c340978a69a02e8f2b29b9",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDQwMTA0NiwiaWF0IjoxNzc5Nzk2MjQ2LCJqdGkiOiJhMzU2ZTI0MzczYzM0MDk3OGE2OWEwMmU4ZjJiMjliOSIsInVzZXJfaWQiOiIyIn0.F7P--621FIsjZp9cjsdZPbNjqveyfET2SKLAAz4jGN4",
+    "created_at": "2026-05-26T11:50:46.205Z",
+    "expires_at": "2026-06-02T11:50:46Z"
+  }
+},
+{
+  "model": "token_blacklist.outstandingtoken",
+  "pk": 43,
+  "fields": {
+    "user": 2,
+    "jti": "3d0962331f154aaaabfb845c3d0a78b7",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDQwMTA0NiwiaWF0IjoxNzc5Nzk2MjQ2LCJqdGkiOiIzZDA5NjIzMzFmMTU0YWFhYWJmYjg0NWMzZDBhNzhiNyIsInVzZXJfaWQiOiIyIn0.6qChB_nNIf9xmv-QIb6NxwfsglnKQP3519ctFjr5hNI",
+    "created_at": "2026-05-26T11:50:46.592Z",
+    "expires_at": "2026-06-02T11:50:46Z"
+  }
+},
+{
+  "model": "token_blacklist.outstandingtoken",
+  "pk": 44,
+  "fields": {
+    "user": 2,
+    "jti": "ae116cc7dd01497486b64f84b0d8bc79",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDU1NjA2NiwiaWF0IjoxNzc5OTUxMjY2LCJqdGkiOiJhZTExNmNjN2RkMDE0OTc0ODZiNjRmODRiMGQ4YmM3OSIsInVzZXJfaWQiOiIyIn0.Q4tL3fEgCwERqB4L95kxOwNOhJjJI1WJ2n2b2QMCYoI",
+    "created_at": "2026-05-28T06:54:26.794Z",
+    "expires_at": "2026-06-04T06:54:26Z"
+  }
+},
+{
+  "model": "token_blacklist.outstandingtoken",
+  "pk": 45,
+  "fields": {
+    "user": 2,
+    "jti": "7dc57656b5314f1bbd0d1349f30a0255",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDU1NjA2NiwiaWF0IjoxNzc5OTUxMjY2LCJqdGkiOiI3ZGM1NzY1NmI1MzE0ZjFiYmQwZDEzNDlmMzBhMDI1NSIsInVzZXJfaWQiOiIyIn0.DJF_TvqVsGPct2lfG5dHsEjzyntyg4_3o-mHKPUy8ls",
+    "created_at": "2026-05-28T06:54:26.932Z",
+    "expires_at": "2026-06-04T06:54:26Z"
+  }
+},
+{
+  "model": "token_blacklist.outstandingtoken",
+  "pk": 46,
+  "fields": {
+    "user": 2,
+    "jti": "e0f6728f3e0e43a197a50fe3c88e3fe9",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDU1NzI0NSwiaWF0IjoxNzc5OTUyNDQ1LCJqdGkiOiJlMGY2NzI4ZjNlMGU0M2ExOTdhNTBmZTNjODhlM2ZlOSIsInVzZXJfaWQiOiIyIn0.TcYM2aCrrms-Sn5WNgCLYVYRDQj1dkDE6szHrJSkSOM",
+    "created_at": "2026-05-28T07:14:05.322Z",
+    "expires_at": "2026-06-04T07:14:05Z"
+  }
+},
+{
+  "model": "token_blacklist.outstandingtoken",
+  "pk": 47,
+  "fields": {
+    "user": 2,
+    "jti": "c77dbffd6a7a47fda1fa815516dfce62",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDU1ODU4NiwiaWF0IjoxNzc5OTUzNzg2LCJqdGkiOiJjNzdkYmZmZDZhN2E0N2ZkYTFmYTgxNTUxNmRmY2U2MiIsInVzZXJfaWQiOiIyIn0.IEAqzj5HoR724_qBVV4Z974hvmoqxv2paJ7iwGCUWPs",
+    "created_at": "2026-05-28T07:36:26.251Z",
+    "expires_at": "2026-06-04T07:36:26Z"
+  }
+},
+{
+  "model": "token_blacklist.outstandingtoken",
+  "pk": 48,
+  "fields": {
+    "user": 2,
+    "jti": "63ccea56346a46238977250048562e51",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDU2MDAyMSwiaWF0IjoxNzc5OTU1MjIxLCJqdGkiOiI2M2NjZWE1NjM0NmE0NjIzODk3NzI1MDA0ODU2MmU1MSIsInVzZXJfaWQiOiIyIn0.dqKrSIodZO5Bpq_bwlswQoCCAYFbHJlnwnU4P6JRb1g",
+    "created_at": "2026-05-28T08:00:21.343Z",
+    "expires_at": "2026-06-04T08:00:21Z"
+  }
+},
+{
+  "model": "token_blacklist.outstandingtoken",
+  "pk": 49,
+  "fields": {
+    "user": 2,
+    "jti": "58df2c111a9848c79b5ec744dcee7123",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDU2MDkzOSwiaWF0IjoxNzc5OTU2MTM5LCJqdGkiOiI1OGRmMmMxMTFhOTg0OGM3OWI1ZWM3NDRkY2VlNzEyMyIsInVzZXJfaWQiOiIyIn0.jEEsXCEbWPIOqf-MyBBTSstjb2FAQ9UaFOZKCPDBQvE",
+    "created_at": "2026-05-28T08:15:39.572Z",
+    "expires_at": "2026-06-04T08:15:39Z"
+  }
+},
+{
+  "model": "token_blacklist.blacklistedtoken",
+  "pk": 1,
+  "fields": {
+    "token": 3,
+    "blacklisted_at": "2026-05-17T19:31:20.819Z"
+  }
+},
+{
+  "model": "token_blacklist.blacklistedtoken",
+  "pk": 2,
+  "fields": {
+    "token": 4,
+    "blacklisted_at": "2026-05-18T05:30:51.866Z"
+  }
+},
+{
+  "model": "token_blacklist.blacklistedtoken",
+  "pk": 3,
+  "fields": {
+    "token": 5,
+    "blacklisted_at": "2026-05-18T09:18:22.565Z"
+  }
+},
+{
+  "model": "token_blacklist.blacklistedtoken",
+  "pk": 4,
+  "fields": {
+    "token": 6,
+    "blacklisted_at": "2026-05-18T09:34:59.506Z"
+  }
+},
+{
+  "model": "token_blacklist.blacklistedtoken",
+  "pk": 5,
+  "fields": {
+    "token": 8,
+    "blacklisted_at": "2026-05-18T10:05:08.753Z"
+  }
+},
+{
+  "model": "token_blacklist.blacklistedtoken",
+  "pk": 6,
+  "fields": {
+    "token": 9,
+    "blacklisted_at": "2026-05-18T10:23:35.258Z"
+  }
+},
+{
+  "model": "token_blacklist.blacklistedtoken",
+  "pk": 7,
+  "fields": {
+    "token": 10,
+    "blacklisted_at": "2026-05-18T11:10:33.392Z"
+  }
+},
+{
+  "model": "token_blacklist.blacklistedtoken",
+  "pk": 8,
+  "fields": {
+    "token": 12,
+    "blacklisted_at": "2026-05-18T11:31:44.857Z"
+  }
+},
+{
+  "model": "token_blacklist.blacklistedtoken",
+  "pk": 9,
+  "fields": {
+    "token": 13,
+    "blacklisted_at": "2026-05-20T14:54:03.887Z"
+  }
+},
+{
+  "model": "token_blacklist.blacklistedtoken",
+  "pk": 10,
+  "fields": {
+    "token": 14,
+    "blacklisted_at": "2026-05-20T15:09:16.154Z"
+  }
+},
+{
+  "model": "token_blacklist.blacklistedtoken",
+  "pk": 11,
+  "fields": {
+    "token": 15,
+    "blacklisted_at": "2026-05-20T17:10:01.371Z"
+  }
+},
+{
+  "model": "token_blacklist.blacklistedtoken",
+  "pk": 12,
+  "fields": {
+    "token": 16,
+    "blacklisted_at": "2026-05-21T07:40:15.357Z"
+  }
+},
+{
+  "model": "token_blacklist.blacklistedtoken",
+  "pk": 13,
+  "fields": {
+    "token": 17,
+    "blacklisted_at": "2026-05-21T07:40:15.457Z"
+  }
+},
+{
+  "model": "token_blacklist.blacklistedtoken",
+  "pk": 14,
+  "fields": {
+    "token": 18,
+    "blacklisted_at": "2026-05-21T12:56:38.304Z"
+  }
+},
+{
+  "model": "token_blacklist.blacklistedtoken",
+  "pk": 15,
+  "fields": {
+    "token": 19,
+    "blacklisted_at": "2026-05-21T15:37:05.033Z"
+  }
+},
+{
+  "model": "token_blacklist.blacklistedtoken",
+  "pk": 16,
+  "fields": {
+    "token": 20,
+    "blacklisted_at": "2026-05-22T04:44:32.051Z"
+  }
+},
+{
+  "model": "token_blacklist.blacklistedtoken",
+  "pk": 17,
+  "fields": {
+    "token": 21,
+    "blacklisted_at": "2026-05-22T04:44:32.252Z"
+  }
+},
+{
+  "model": "token_blacklist.blacklistedtoken",
+  "pk": 18,
+  "fields": {
+    "token": 22,
+    "blacklisted_at": "2026-05-22T04:44:32.445Z"
+  }
+},
+{
+  "model": "token_blacklist.blacklistedtoken",
+  "pk": 19,
+  "fields": {
+    "token": 23,
+    "blacklisted_at": "2026-05-22T05:00:50.602Z"
+  }
+},
+{
+  "model": "token_blacklist.blacklistedtoken",
+  "pk": 20,
+  "fields": {
+    "token": 24,
+    "blacklisted_at": "2026-05-22T06:11:15.548Z"
+  }
+},
+{
+  "model": "token_blacklist.blacklistedtoken",
+  "pk": 21,
+  "fields": {
+    "token": 25,
+    "blacklisted_at": "2026-05-23T10:24:48.647Z"
+  }
+},
+{
+  "model": "token_blacklist.blacklistedtoken",
+  "pk": 22,
+  "fields": {
+    "token": 26,
+    "blacklisted_at": "2026-05-23T10:39:56.574Z"
+  }
+},
+{
+  "model": "token_blacklist.blacklistedtoken",
+  "pk": 23,
+  "fields": {
+    "token": 27,
+    "blacklisted_at": "2026-05-24T18:06:49.447Z"
+  }
+},
+{
+  "model": "token_blacklist.blacklistedtoken",
+  "pk": 24,
+  "fields": {
+    "token": 28,
+    "blacklisted_at": "2026-05-25T07:57:15.687Z"
+  }
+},
+{
+  "model": "token_blacklist.blacklistedtoken",
+  "pk": 25,
+  "fields": {
+    "token": 29,
+    "blacklisted_at": "2026-05-25T08:25:00.282Z"
+  }
+},
+{
+  "model": "token_blacklist.blacklistedtoken",
+  "pk": 26,
+  "fields": {
+    "token": 30,
+    "blacklisted_at": "2026-05-26T06:15:08.526Z"
+  }
+},
+{
+  "model": "token_blacklist.blacklistedtoken",
+  "pk": 27,
+  "fields": {
+    "token": 31,
+    "blacklisted_at": "2026-05-26T06:30:58.145Z"
+  }
+},
+{
+  "model": "token_blacklist.blacklistedtoken",
+  "pk": 28,
+  "fields": {
+    "token": 32,
+    "blacklisted_at": "2026-05-26T06:30:58.227Z"
+  }
+},
+{
+  "model": "token_blacklist.blacklistedtoken",
+  "pk": 29,
+  "fields": {
+    "token": 33,
+    "blacklisted_at": "2026-05-26T08:28:05.313Z"
+  }
+},
+{
+  "model": "token_blacklist.blacklistedtoken",
+  "pk": 30,
+  "fields": {
+    "token": 34,
+    "blacklisted_at": "2026-05-26T08:49:15.386Z"
+  }
+},
+{
+  "model": "token_blacklist.blacklistedtoken",
+  "pk": 31,
+  "fields": {
+    "token": 35,
+    "blacklisted_at": "2026-05-26T08:49:15.487Z"
+  }
+},
+{
+  "model": "token_blacklist.blacklistedtoken",
+  "pk": 32,
+  "fields": {
+    "token": 36,
+    "blacklisted_at": "2026-05-26T09:13:44.720Z"
+  }
+},
+{
+  "model": "token_blacklist.blacklistedtoken",
+  "pk": 33,
+  "fields": {
+    "token": 39,
+    "blacklisted_at": "2026-05-26T09:31:07.089Z"
+  }
+},
+{
+  "model": "token_blacklist.blacklistedtoken",
+  "pk": 34,
+  "fields": {
+    "token": 41,
+    "blacklisted_at": "2026-05-26T11:50:46.433Z"
+  }
+},
+{
+  "model": "token_blacklist.blacklistedtoken",
+  "pk": 35,
+  "fields": {
+    "token": 42,
+    "blacklisted_at": "2026-05-26T11:50:46.596Z"
+  }
+},
+{
+  "model": "token_blacklist.blacklistedtoken",
+  "pk": 36,
+  "fields": {
+    "token": 43,
+    "blacklisted_at": "2026-05-28T06:54:26.805Z"
+  }
+},
+{
+  "model": "token_blacklist.blacklistedtoken",
+  "pk": 37,
+  "fields": {
+    "token": 44,
+    "blacklisted_at": "2026-05-28T06:54:26.954Z"
+  }
+},
+{
+  "model": "token_blacklist.blacklistedtoken",
+  "pk": 38,
+  "fields": {
+    "token": 45,
+    "blacklisted_at": "2026-05-28T07:14:05.331Z"
+  }
+},
+{
+  "model": "token_blacklist.blacklistedtoken",
+  "pk": 39,
+  "fields": {
+    "token": 46,
+    "blacklisted_at": "2026-05-28T07:36:26.261Z"
+  }
+},
+{
+  "model": "token_blacklist.blacklistedtoken",
+  "pk": 40,
+  "fields": {
+    "token": 47,
+    "blacklisted_at": "2026-05-28T08:00:21.357Z"
+  }
+},
+{
+  "model": "token_blacklist.blacklistedtoken",
+  "pk": 41,
+  "fields": {
+    "token": 48,
+    "blacklisted_at": "2026-05-28T08:15:39.579Z"
+  }
+},
+{
+  "model": "small_app.user",
+  "pk": 1,
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$Mxtsw8JWgCB9Iswkusjs0m$Cec1Q5trrpRcyb3VjIF7rSGdbjD8Q4V8qk1J97p2flI=",
+    "last_login": "2026-05-08T19:43:27.340Z",
+    "is_superuser": true,
+    "username": "admin",
+    "first_name": "",
+    "last_name": "",
+    "email": "admin@gmail.com",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2026-05-08T19:43:10.226Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "small_app.user",
+  "pk": 2,
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$k2QwGwgotpJzOlrKSRv00h$YLzhB1cDXA+b0kwrByf7pwdJ3QeIOU07rK9Q67lhCj8=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "smalladmin@gmail.com",
+    "first_name": "Small",
+    "last_name": "Admin",
+    "email": "smalladmin@gmail.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-05-11T05:18:42.935Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "small_app.user",
+  "pk": 3,
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$1scUoyg6bgXpRRYZJVYZQT$nDZt32Hwkuzf3aBtczvRIfpnNyd6hetYLvpLZVAoJ+M=",
+    "last_login": "2026-05-23T10:38:31.556Z",
+    "is_superuser": true,
+    "username": "adminmwangi",
+    "first_name": "",
+    "last_name": "",
+    "email": "adminmwangi@gmail.com",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2026-05-23T10:38:09.775Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "small_app.persons",
+  "pk": 1,
+  "fields": {
+    "first_name": "Dennis",
+    "last_name": "Karuti",
+    "email": "dennis.karuti@gmail.com",
+    "phone_number": "0700000000",
+    "area_of_residence": "",
+    "is_producer": true,
+    "is_assistant_producer": true,
+    "is_present": true,
+    "is_active": true,
+    "created_at": "2026-05-08T06:26:06.717Z",
+    "updated_at": "2026-05-23T10:39:20.286Z",
+    "roles": [
+      3,
+      5,
+      6,
+      7
+    ]
+  }
+},
+{
+  "model": "small_app.persons",
+  "pk": 2,
+  "fields": {
+    "first_name": "Mirriam",
+    "last_name": "Githinji",
+    "email": "mirriam.githinji@gmail.com",
+    "phone_number": "0700000000",
+    "area_of_residence": "",
+    "is_producer": true,
+    "is_assistant_producer": true,
+    "is_present": true,
+    "is_active": true,
+    "created_at": "2026-05-08T06:26:06.732Z",
+    "updated_at": "2026-05-23T10:39:07.288Z",
+    "roles": [
+      1,
+      6,
+      7,
+      8
+    ]
+  }
+},
+{
+  "model": "small_app.persons",
+  "pk": 3,
+  "fields": {
+    "first_name": "Patrick",
+    "last_name": "Collins",
+    "email": "patrick.collins@gmail.com",
+    "phone_number": "0700000000",
+    "area_of_residence": "",
+    "is_producer": true,
+    "is_assistant_producer": true,
+    "is_present": true,
+    "is_active": true,
+    "created_at": "2026-05-08T06:26:06.745Z",
+    "updated_at": "2026-05-08T06:54:26.621Z",
+    "roles": [
+      1,
+      3,
+      4,
+      6
+    ]
+  }
+},
+{
+  "model": "small_app.persons",
+  "pk": 4,
+  "fields": {
+    "first_name": "Dennis",
+    "last_name": "Mwangi",
+    "email": "dennis.mwangi@gmail.com",
+    "phone_number": "0700000000",
+    "area_of_residence": "",
+    "is_producer": true,
+    "is_assistant_producer": true,
+    "is_present": true,
+    "is_active": true,
+    "created_at": "2026-05-08T06:26:06.756Z",
+    "updated_at": "2026-05-08T06:54:42.161Z",
+    "roles": [
+      1,
+      2,
+      5,
+      6,
+      7,
+      8
+    ]
+  }
+},
+{
+  "model": "small_app.persons",
+  "pk": 5,
+  "fields": {
+    "first_name": "Emmanuel",
+    "last_name": "Wawire",
+    "email": "emmanuel.wawire@gmail.com",
+    "phone_number": "0700000000",
+    "area_of_residence": "",
+    "is_producer": true,
+    "is_assistant_producer": true,
+    "is_present": true,
+    "is_active": true,
+    "created_at": "2026-05-08T06:26:06.768Z",
+    "updated_at": "2026-05-08T06:54:59.583Z",
+    "roles": [
+      1,
+      2,
+      5,
+      6,
+      7,
+      8
+    ]
+  }
+},
+{
+  "model": "small_app.persons",
+  "pk": 6,
+  "fields": {
+    "first_name": "Hilda",
+    "last_name": "Ndegwa",
+    "email": "hilda.ndegwa@gmail.com",
+    "phone_number": "0700000000",
+    "area_of_residence": "",
+    "is_producer": true,
+    "is_assistant_producer": true,
+    "is_present": true,
+    "is_active": true,
+    "created_at": "2026-05-08T06:26:06.781Z",
+    "updated_at": "2026-05-08T06:55:18.569Z",
+    "roles": [
+      1,
+      5,
+      6,
+      7,
+      8
+    ]
+  }
+},
+{
+  "model": "small_app.persons",
+  "pk": 7,
+  "fields": {
+    "first_name": "Eliud",
+    "last_name": "Muiruri",
+    "email": "eliud.muiruri@gmail.com",
+    "phone_number": "0700000000",
+    "area_of_residence": "",
+    "is_producer": true,
+    "is_assistant_producer": true,
+    "is_present": true,
+    "is_active": true,
+    "created_at": "2026-05-08T06:26:06.794Z",
+    "updated_at": "2026-05-08T06:55:41.003Z",
+    "roles": [
+      1,
+      2,
+      3,
+      6,
+      8
+    ]
+  }
+},
+{
+  "model": "small_app.persons",
+  "pk": 8,
+  "fields": {
+    "first_name": "Pacique",
+    "last_name": "Birori",
+    "email": "pacique.birori@gmail.com",
+    "phone_number": "0700000000",
+    "area_of_residence": "",
+    "is_producer": false,
+    "is_assistant_producer": true,
+    "is_present": true,
+    "is_active": true,
+    "created_at": "2026-05-08T06:26:06.806Z",
+    "updated_at": "2026-05-08T06:55:57.272Z",
+    "roles": [
+      1,
+      2,
+      4,
+      6,
+      7,
+      8
+    ]
+  }
+},
+{
+  "model": "small_app.persons",
+  "pk": 9,
+  "fields": {
+    "first_name": "Albert",
+    "last_name": "Lopete",
+    "email": "albert.lopete@gmail.com",
+    "phone_number": "0700000000",
+    "area_of_residence": "",
+    "is_producer": false,
+    "is_assistant_producer": true,
+    "is_present": true,
+    "is_active": true,
+    "created_at": "2026-05-08T06:26:06.821Z",
+    "updated_at": "2026-05-08T06:56:20.444Z",
+    "roles": [
+      1,
+      2,
+      4,
+      6,
+      7,
+      8
+    ]
+  }
+},
+{
+  "model": "small_app.persons",
+  "pk": 10,
+  "fields": {
+    "first_name": "Austin",
+    "last_name": "Kagema",
+    "email": "austine.kagema@gmail.com",
+    "phone_number": "0700000000",
+    "area_of_residence": "",
+    "is_producer": false,
+    "is_assistant_producer": false,
+    "is_present": true,
+    "is_active": false,
+    "created_at": "2026-05-08T06:26:06.833Z",
+    "updated_at": "2026-05-18T09:44:27.326Z",
+    "roles": []
+  }
+},
+{
+  "model": "small_app.persons",
+  "pk": 11,
+  "fields": {
+    "first_name": "Kevin",
+    "last_name": "Kagema",
+    "email": "kevin.kagema@gmail.com",
+    "phone_number": "0700000000",
+    "area_of_residence": "",
+    "is_producer": false,
+    "is_assistant_producer": false,
+    "is_present": true,
+    "is_active": false,
+    "created_at": "2026-05-08T06:26:06.845Z",
+    "updated_at": "2026-05-08T06:53:08.857Z",
+    "roles": []
+  }
+},
+{
+  "model": "small_app.persons",
+  "pk": 12,
+  "fields": {
+    "first_name": "Edward",
+    "last_name": "Kibugi",
+    "email": "edward.kibugi@gmail.com",
+    "phone_number": "0700000000",
+    "area_of_residence": "",
+    "is_producer": true,
+    "is_assistant_producer": true,
+    "is_present": true,
+    "is_active": true,
+    "created_at": "2026-05-08T06:26:06.856Z",
+    "updated_at": "2026-05-08T06:53:02.465Z",
+    "roles": [
+      3,
+      5,
+      6
+    ]
+  }
+},
+{
+  "model": "small_app.persons",
+  "pk": 13,
+  "fields": {
+    "first_name": "Joy",
+    "last_name": "Wanjiku",
+    "email": "joy.wanjiku@gmail.com",
+    "phone_number": "0700000000",
+    "area_of_residence": "",
+    "is_producer": true,
+    "is_assistant_producer": true,
+    "is_present": true,
+    "is_active": true,
+    "created_at": "2026-05-08T06:26:06.868Z",
+    "updated_at": "2026-05-08T06:52:41.697Z",
+    "roles": [
+      4,
+      6,
+      7
+    ]
+  }
+},
+{
+  "model": "small_app.persons",
+  "pk": 14,
+  "fields": {
+    "first_name": "Faith",
+    "last_name": "Maina",
+    "email": "faith.maina@gmail.com",
+    "phone_number": "0700000000",
+    "area_of_residence": "",
+    "is_producer": true,
+    "is_assistant_producer": true,
+    "is_present": true,
+    "is_active": true,
+    "created_at": "2026-05-08T06:26:06.880Z",
+    "updated_at": "2026-05-08T06:52:24.637Z",
+    "roles": [
+      3,
+      6,
+      7
+    ]
+  }
+},
+{
+  "model": "small_app.persons",
+  "pk": 15,
+  "fields": {
+    "first_name": "Cynthia",
+    "last_name": "Wanjiru",
+    "email": "cynthia.wanjiru@gmail.com",
+    "phone_number": "0700000000",
+    "area_of_residence": "",
+    "is_producer": false,
+    "is_assistant_producer": false,
+    "is_present": true,
+    "is_active": true,
+    "created_at": "2026-05-08T06:26:06.893Z",
+    "updated_at": "2026-05-08T06:52:11.807Z",
+    "roles": [
+      1,
+      3,
+      6,
+      7,
+      8
+    ]
+  }
+},
+{
+  "model": "small_app.persons",
+  "pk": 16,
+  "fields": {
+    "first_name": "Grace",
+    "last_name": "Nyigena",
+    "email": "grace.nyigena@gmail.com",
+    "phone_number": "0700000000",
+    "area_of_residence": "",
+    "is_producer": false,
+    "is_assistant_producer": false,
+    "is_present": true,
+    "is_active": false,
+    "created_at": "2026-05-08T06:26:06.906Z",
+    "updated_at": "2026-05-08T06:51:53.172Z",
+    "roles": []
+  }
+},
+{
+  "model": "small_app.persons",
+  "pk": 17,
+  "fields": {
+    "first_name": "Waithaka",
+    "last_name": "Njoroge",
+    "email": "waithaka.njoroge@gmail.com",
+    "phone_number": "0700000000",
+    "area_of_residence": "",
+    "is_producer": false,
+    "is_assistant_producer": false,
+    "is_present": true,
+    "is_active": true,
+    "created_at": "2026-05-08T06:26:06.919Z",
+    "updated_at": "2026-05-08T06:51:48.375Z",
+    "roles": [
+      1,
+      2,
+      6,
+      8
+    ]
+  }
+},
+{
+  "model": "small_app.persons",
+  "pk": 18,
+  "fields": {
+    "first_name": "Maureen",
+    "last_name": "Mugambi",
+    "email": "maureen.mugambi@gmail.com",
+    "phone_number": "0700000000",
+    "area_of_residence": "",
+    "is_producer": false,
+    "is_assistant_producer": true,
+    "is_present": true,
+    "is_active": true,
+    "created_at": "2026-05-08T06:26:06.931Z",
+    "updated_at": "2026-05-08T06:51:35.202Z",
+    "roles": [
+      3,
+      6,
+      7
+    ]
+  }
+},
+{
+  "model": "small_app.persons",
+  "pk": 19,
+  "fields": {
+    "first_name": "Mercy",
+    "last_name": "Makena",
+    "email": "mercy.makena@gmail.com",
+    "phone_number": "0700000000",
+    "area_of_residence": "",
+    "is_producer": true,
+    "is_assistant_producer": true,
+    "is_present": true,
+    "is_active": true,
+    "created_at": "2026-05-08T06:26:06.944Z",
+    "updated_at": "2026-05-08T06:51:21.146Z",
+    "roles": [
+      3,
+      4,
+      7,
+      8
+    ]
+  }
+},
+{
+  "model": "small_app.persons",
+  "pk": 20,
+  "fields": {
+    "first_name": "Bonface",
+    "last_name": "Theuri",
+    "email": "bonface.theuri@gmail.com",
+    "phone_number": "0700000000",
+    "area_of_residence": "",
+    "is_producer": true,
+    "is_assistant_producer": true,
+    "is_present": false,
+    "is_active": true,
+    "created_at": "2026-05-08T06:26:06.956Z",
+    "updated_at": "2026-05-15T12:46:30.503Z",
+    "roles": [
+      3,
+      6,
+      7,
+      8
+    ]
+  }
+},
+{
+  "model": "small_app.persons",
+  "pk": 21,
+  "fields": {
+    "first_name": "Lewis",
+    "last_name": "Kirimi",
+    "email": "lewis.kirimi@gmail.com",
+    "phone_number": "0700000000",
+    "area_of_residence": "",
+    "is_producer": false,
+    "is_assistant_producer": false,
+    "is_present": true,
+    "is_active": true,
+    "created_at": "2026-05-08T06:26:06.972Z",
+    "updated_at": "2026-05-08T06:50:47.322Z",
+    "roles": [
+      3,
+      6
+    ]
+  }
+},
+{
+  "model": "small_app.persons",
+  "pk": 22,
+  "fields": {
+    "first_name": "David",
+    "last_name": "Gachuru",
+    "email": "david.gachuru@gmail.com",
+    "phone_number": "0700000000",
+    "area_of_residence": "",
+    "is_producer": false,
+    "is_assistant_producer": false,
+    "is_present": true,
+    "is_active": true,
+    "created_at": "2026-05-08T06:26:06.985Z",
+    "updated_at": "2026-05-08T06:50:38.917Z",
+    "roles": [
+      1,
+      2,
+      4
+    ]
+  }
+},
+{
+  "model": "small_app.persons",
+  "pk": 23,
+  "fields": {
+    "first_name": "Anthony",
+    "last_name": "Muriithi",
+    "email": "anthony.muriithi@gmail.com",
+    "phone_number": "0700000000",
+    "area_of_residence": "",
+    "is_producer": false,
+    "is_assistant_producer": false,
+    "is_present": true,
+    "is_active": true,
+    "created_at": "2026-05-08T06:26:06.999Z",
+    "updated_at": "2026-05-08T06:50:27.401Z",
+    "roles": [
+      1,
+      2,
+      6,
+      8
+    ]
+  }
+},
+{
+  "model": "small_app.persons",
+  "pk": 24,
+  "fields": {
+    "first_name": "Wangari",
+    "last_name": "Njuguna",
+    "email": "wangari.njuguna@gmail.com",
+    "phone_number": "0700000000",
+    "area_of_residence": "",
+    "is_producer": false,
+    "is_assistant_producer": false,
+    "is_present": true,
+    "is_active": false,
+    "created_at": "2026-05-08T06:26:07.012Z",
+    "updated_at": "2026-05-08T06:50:15.861Z",
+    "roles": []
+  }
+},
+{
+  "model": "small_app.persons",
+  "pk": 25,
+  "fields": {
+    "first_name": "George",
+    "last_name": "Hinga",
+    "email": "george.hinga@gmail.com",
+    "phone_number": "0700000000",
+    "area_of_residence": "",
+    "is_producer": false,
+    "is_assistant_producer": false,
+    "is_present": true,
+    "is_active": false,
+    "created_at": "2026-05-08T06:26:07.024Z",
+    "updated_at": "2026-05-08T06:50:01.125Z",
+    "roles": []
+  }
+},
+{
+  "model": "small_app.persons",
+  "pk": 26,
+  "fields": {
+    "first_name": "Victor",
+    "last_name": "Reuben",
+    "email": "victor.reuben@gmail.com",
+    "phone_number": "0700000000",
+    "area_of_residence": "",
+    "is_producer": false,
+    "is_assistant_producer": false,
+    "is_present": true,
+    "is_active": true,
+    "created_at": "2026-05-08T06:26:07.037Z",
+    "updated_at": "2026-05-08T06:49:55.979Z",
+    "roles": [
+      3,
+      7
+    ]
+  }
+},
+{
+  "model": "small_app.persons",
+  "pk": 27,
+  "fields": {
+    "first_name": "Vickram",
+    "last_name": "Kimwere",
+    "email": "vickram.kimwere@gmail.com",
+    "phone_number": "0700000000",
+    "area_of_residence": "",
+    "is_producer": true,
+    "is_assistant_producer": true,
+    "is_present": true,
+    "is_active": true,
+    "created_at": "2026-05-08T06:26:07.049Z",
+    "updated_at": "2026-05-08T06:56:45.417Z",
+    "roles": [
+      1,
+      4,
+      5,
+      6
+    ]
+  }
+},
+{
+  "model": "small_app.persons",
+  "pk": 29,
+  "fields": {
+    "first_name": "Bonface",
+    "last_name": "Ndirangu",
+    "email": "bonface.ndirangu@gmail.com",
+    "phone_number": "0700000000",
+    "area_of_residence": "",
+    "is_producer": true,
+    "is_assistant_producer": true,
+    "is_present": false,
+    "is_active": false,
+    "created_at": "2026-05-08T06:26:07.076Z",
+    "updated_at": "2026-05-08T06:56:51.890Z",
+    "roles": [
+      5,
+      6,
+      7
+    ]
+  }
+},
+{
+  "model": "small_app.persons",
+  "pk": 31,
+  "fields": {
+    "first_name": "David",
+    "last_name": "Kariuki",
+    "email": "david.kariuki@gmail.com",
+    "phone_number": "0700000000",
+    "area_of_residence": "",
+    "is_producer": false,
+    "is_assistant_producer": true,
+    "is_present": false,
+    "is_active": true,
+    "created_at": "2026-05-08T06:26:07.102Z",
+    "updated_at": "2026-05-08T06:57:03.147Z",
+    "roles": [
+      1,
+      2,
+      3,
+      4,
+      7,
+      8
+    ]
+  }
+},
+{
+  "model": "small_app.persons",
+  "pk": 32,
+  "fields": {
+    "first_name": "Victor",
+    "last_name": "Mwangi",
+    "email": "victor.mwangi@gmail.com",
+    "phone_number": "0700000000",
+    "area_of_residence": "",
+    "is_producer": false,
+    "is_assistant_producer": false,
+    "is_present": true,
+    "is_active": false,
+    "created_at": "2026-05-08T06:26:07.114Z",
+    "updated_at": "2026-05-08T06:48:40.510Z",
+    "roles": []
+  }
+},
+{
+  "model": "small_app.persons",
+  "pk": 34,
+  "fields": {
+    "first_name": "Daniel",
+    "last_name": "Murigi",
+    "email": "daniel.murigi@gmail.com",
+    "phone_number": "0700000000",
+    "area_of_residence": "",
+    "is_producer": false,
+    "is_assistant_producer": false,
+    "is_present": true,
+    "is_active": true,
+    "created_at": "2026-05-08T06:26:07.139Z",
+    "updated_at": "2026-05-26T06:28:26.509Z",
+    "roles": [
+      1,
+      2,
+      6
+    ]
+  }
+},
+{
+  "model": "small_app.persons",
+  "pk": 36,
+  "fields": {
+    "first_name": "Patrick",
+    "last_name": "Mbugua",
+    "email": "patrick.mbugua@gmail.com",
+    "phone_number": "0700000000",
+    "area_of_residence": "",
+    "is_producer": false,
+    "is_assistant_producer": false,
+    "is_present": true,
+    "is_active": true,
+    "created_at": "2026-05-08T06:26:07.165Z",
+    "updated_at": "2026-05-08T06:48:05.704Z",
+    "roles": [
+      1,
+      2,
+      6,
+      7,
+      8
+    ]
+  }
+},
+{
+  "model": "small_app.persons",
+  "pk": 37,
+  "fields": {
+    "first_name": "David",
+    "last_name": "Gituku",
+    "email": "david.gituku@gmail.com",
+    "phone_number": "0700000000",
+    "area_of_residence": "",
+    "is_producer": false,
+    "is_assistant_producer": false,
+    "is_present": true,
+    "is_active": true,
+    "created_at": "2026-05-08T06:26:07.179Z",
+    "updated_at": "2026-05-08T06:47:53.256Z",
+    "roles": [
+      1,
+      2,
+      6,
+      7,
+      8
+    ]
+  }
+},
+{
+  "model": "small_app.persons",
+  "pk": 38,
+  "fields": {
+    "first_name": "Kenneth",
+    "last_name": "Irungu",
+    "email": "kenneth.irungu@gmail.com",
+    "phone_number": "0700000000",
+    "area_of_residence": "",
+    "is_producer": false,
+    "is_assistant_producer": false,
+    "is_present": true,
+    "is_active": false,
+    "created_at": "2026-05-08T06:26:07.193Z",
+    "updated_at": "2026-05-08T06:47:38.952Z",
+    "roles": []
+  }
+},
+{
+  "model": "small_app.persons",
+  "pk": 43,
+  "fields": {
+    "first_name": "Abigail",
+    "last_name": "Mbula",
+    "email": "abigail.mbula@gmail.com",
+    "phone_number": "0700000000",
+    "area_of_residence": "",
+    "is_producer": false,
+    "is_assistant_producer": false,
+    "is_present": true,
+    "is_active": false,
+    "created_at": "2026-05-08T06:26:07.265Z",
+    "updated_at": "2026-05-08T06:28:07.386Z",
+    "roles": []
+  }
+},
+{
+  "model": "small_app.persons",
+  "pk": 44,
+  "fields": {
+    "first_name": "Rose",
+    "last_name": "Murugi",
+    "email": "rose.murugi@gmail.com",
+    "phone_number": "0700000000",
+    "area_of_residence": "",
+    "is_producer": false,
+    "is_assistant_producer": false,
+    "is_present": true,
+    "is_active": true,
+    "created_at": "2026-05-08T06:26:07.278Z",
+    "updated_at": "2026-05-08T06:47:05.302Z",
+    "roles": [
+      6,
+      7,
+      8
+    ]
+  }
+},
+{
+  "model": "small_app.persons",
+  "pk": 45,
+  "fields": {
+    "first_name": "Grace",
+    "last_name": "Muriithi",
+    "email": "grace.muriithi@gmail.com",
+    "phone_number": "0700000000",
+    "area_of_residence": "",
+    "is_producer": false,
+    "is_assistant_producer": false,
+    "is_present": true,
+    "is_active": false,
+    "created_at": "2026-05-08T06:26:07.291Z",
+    "updated_at": "2026-05-08T06:27:56.221Z",
+    "roles": []
+  }
+},
+{
+  "model": "small_app.persons",
+  "pk": 47,
+  "fields": {
+    "first_name": "Timothy",
+    "last_name": "Karani",
+    "email": "timothy.karani@gmail.com",
+    "phone_number": "0700000000",
+    "area_of_residence": "",
+    "is_producer": false,
+    "is_assistant_producer": false,
+    "is_present": false,
+    "is_active": false,
+    "created_at": "2026-05-18T11:23:04.289Z",
+    "updated_at": "2026-05-26T06:27:16.305Z",
+    "roles": []
+  }
+},
+{
+  "model": "small_app.persons",
+  "pk": 48,
+  "fields": {
+    "first_name": "Lilian",
+    "last_name": "Njambi",
+    "email": "lilian.njambi@gmail.com",
+    "phone_number": "0700000000",
+    "area_of_residence": "",
+    "is_producer": false,
+    "is_assistant_producer": false,
+    "is_present": true,
+    "is_active": false,
+    "created_at": "2026-05-18T11:23:04.301Z",
+    "updated_at": "2026-05-26T06:27:27.168Z",
+    "roles": []
+  }
+},
+{
+  "model": "small_app.persons",
+  "pk": 50,
+  "fields": {
+    "first_name": "June",
+    "last_name": "Nyambura",
+    "email": "june.nyambura@gmail.com",
+    "phone_number": "0700000000",
+    "area_of_residence": "",
+    "is_producer": false,
+    "is_assistant_producer": false,
+    "is_present": true,
+    "is_active": false,
+    "created_at": "2026-05-18T11:23:04.328Z",
+    "updated_at": "2026-05-26T06:27:33.545Z",
+    "roles": []
+  }
+},
+{
+  "model": "small_app.persons",
+  "pk": 51,
+  "fields": {
+    "first_name": "Kevin",
+    "last_name": "Ngari",
+    "email": "kevin.ngari@gmail.com",
+    "phone_number": "0700000000",
+    "area_of_residence": "",
+    "is_producer": false,
+    "is_assistant_producer": false,
+    "is_present": true,
+    "is_active": false,
+    "created_at": "2026-05-18T11:23:04.348Z",
+    "updated_at": "2026-05-26T06:27:40.126Z",
+    "roles": []
+  }
+},
+{
+  "model": "small_app.persons",
+  "pk": 52,
+  "fields": {
+    "first_name": "Mary",
+    "last_name": "Ngari",
+    "email": "mary.ngari@gmail.com",
+    "phone_number": "0700000000",
+    "area_of_residence": "",
+    "is_producer": false,
+    "is_assistant_producer": false,
+    "is_present": true,
+    "is_active": false,
+    "created_at": "2026-05-18T11:23:04.364Z",
+    "updated_at": "2026-05-26T06:27:46.202Z",
+    "roles": []
+  }
+},
+{
+  "model": "small_app.persons",
+  "pk": 53,
+  "fields": {
+    "first_name": "Nelius",
+    "last_name": "Nduku",
+    "email": "nelius.nduku@gmail.com",
+    "phone_number": "0700000000",
+    "area_of_residence": "",
+    "is_producer": false,
+    "is_assistant_producer": false,
+    "is_present": true,
+    "is_active": false,
+    "created_at": "2026-05-18T11:23:04.376Z",
+    "updated_at": "2026-05-26T06:27:52.779Z",
+    "roles": []
+  }
+},
+{
+  "model": "small_app.roles",
+  "pk": 1,
+  "fields": {
+    "name": "Camera 1",
+    "description": "Video work",
+    "is_special_role": false,
+    "max_assignments": 1,
+    "created_at": "2026-05-08T06:28:49.467Z",
+    "updated_at": "2026-05-08T06:28:49.467Z"
+  }
+},
+{
+  "model": "small_app.roles",
+  "pk": 2,
+  "fields": {
+    "name": "Camera 2",
+    "description": "Video Work",
+    "is_special_role": false,
+    "max_assignments": 1,
+    "created_at": "2026-05-08T06:36:49.035Z",
+    "updated_at": "2026-05-08T06:36:49.035Z"
+  }
+},
+{
+  "model": "small_app.roles",
+  "pk": 3,
+  "fields": {
+    "name": "Projecting",
+    "description": "Visual Display",
+    "is_special_role": false,
+    "max_assignments": 1,
+    "created_at": "2026-05-08T06:37:18.291Z",
+    "updated_at": "2026-05-08T06:37:18.291Z"
+  }
+},
+{
+  "model": "small_app.roles",
+  "pk": 4,
+  "fields": {
+    "name": "Still Images",
+    "description": "Camera work",
+    "is_special_role": false,
+    "max_assignments": 1,
+    "created_at": "2026-05-08T06:37:37.573Z",
+    "updated_at": "2026-05-08T06:37:37.573Z"
+  }
+},
+{
+  "model": "small_app.roles",
+  "pk": 5,
+  "fields": {
+    "name": "Streaming",
+    "description": "Live broadcasts",
+    "is_special_role": false,
+    "max_assignments": 1,
+    "created_at": "2026-05-08T06:38:07.882Z",
+    "updated_at": "2026-05-08T06:38:07.882Z"
+  }
+},
+{
+  "model": "small_app.roles",
+  "pk": 6,
+  "fields": {
+    "name": "Time Keeper",
+    "description": "Managing time",
+    "is_special_role": false,
+    "max_assignments": 1,
+    "created_at": "2026-05-08T06:38:29.298Z",
+    "updated_at": "2026-05-08T06:38:29.299Z"
+  }
+},
+{
+  "model": "small_app.roles",
+  "pk": 7,
+  "fields": {
+    "name": "Media Desk",
+    "description": "Information Desk",
+    "is_special_role": false,
+    "max_assignments": 1,
+    "created_at": "2026-05-08T06:38:59.126Z",
+    "updated_at": "2026-05-08T06:38:59.126Z"
+  }
+},
+{
+  "model": "small_app.roles",
+  "pk": 8,
+  "fields": {
+    "name": "Hospitality",
+    "description": "Serving refreshments",
+    "is_special_role": true,
+    "max_assignments": 2,
+    "created_at": "2026-05-08T06:42:52.883Z",
+    "updated_at": "2026-05-08T06:42:52.883Z"
+  }
+},
+{
+  "model": "small_app.roles",
+  "pk": 9,
+  "fields": {
+    "name": "Producer",
+    "description": "Producer",
+    "is_special_role": false,
+    "max_assignments": 1,
+    "created_at": "2026-05-08T06:57:50.801Z",
+    "updated_at": "2026-05-08T06:57:50.801Z"
+  }
+},
+{
+  "model": "small_app.roles",
+  "pk": 10,
+  "fields": {
+    "name": "Assistant Producer",
+    "description": "Assistant Producer",
+    "is_special_role": false,
+    "max_assignments": 1,
+    "created_at": "2026-05-08T06:57:50.802Z",
+    "updated_at": "2026-05-08T06:57:50.802Z"
+  }
+},
+{
+  "model": "small_app.events",
+  "pk": 1,
+  "fields": {
+    "name": "First Service",
+    "start_time": "07:00:00",
+    "end_time": "09:00:00",
+    "description": "Early Morning Service",
+    "is_active": true,
+    "created_at": "2026-05-08T06:40:18.390Z",
+    "updated_at": "2026-05-08T06:40:18.390Z"
+  }
+},
+{
+  "model": "small_app.events",
+  "pk": 2,
+  "fields": {
+    "name": "Second Service",
+    "start_time": "09:00:00",
+    "end_time": "11:00:00",
+    "description": "Mid-Morning Service",
+    "is_active": true,
+    "created_at": "2026-05-08T06:40:53.972Z",
+    "updated_at": "2026-05-08T06:40:53.972Z"
+  }
+},
+{
+  "model": "small_app.events",
+  "pk": 3,
+  "fields": {
+    "name": "Third Service",
+    "start_time": "11:00:00",
+    "end_time": "01:00:00",
+    "description": "Afternoon service",
+    "is_active": true,
+    "created_at": "2026-05-08T06:41:26.151Z",
+    "updated_at": "2026-05-08T06:41:26.151Z"
+  }
+},
+{
+  "model": "small_app.rosters",
+  "pk": 22,
+  "fields": {
+    "event": 1,
+    "date": "2026-05-31",
+    "created_at": "2026-05-28T07:14:05.441Z",
+    "updated_at": "2026-05-28T07:14:05.441Z"
+  }
+},
+{
+  "model": "small_app.rosters",
+  "pk": 23,
+  "fields": {
+    "event": 2,
+    "date": "2026-05-31",
+    "created_at": "2026-05-28T07:14:05.452Z",
+    "updated_at": "2026-05-28T07:14:05.452Z"
+  }
+},
+{
+  "model": "small_app.rosters",
+  "pk": 24,
+  "fields": {
+    "event": 3,
+    "date": "2026-05-31",
+    "created_at": "2026-05-28T07:14:05.459Z",
+    "updated_at": "2026-05-28T07:14:05.459Z"
+  }
+},
+{
+  "model": "small_app.assignment",
+  "pk": 495,
+  "fields": {
+    "roster": 22,
+    "role": 1,
+    "person": 4
+  }
+},
+{
+  "model": "small_app.assignment",
+  "pk": 496,
+  "fields": {
+    "roster": 22,
+    "role": 2,
+    "person": 5
+  }
+},
+{
+  "model": "small_app.assignment",
+  "pk": 497,
+  "fields": {
+    "roster": 22,
+    "role": 3,
+    "person": 3
+  }
+},
+{
+  "model": "small_app.assignment",
+  "pk": 498,
+  "fields": {
+    "roster": 22,
+    "role": 4,
+    "person": 8
+  }
+},
+{
+  "model": "small_app.assignment",
+  "pk": 499,
+  "fields": {
+    "roster": 22,
+    "role": 5,
+    "person": 6
+  }
+},
+{
+  "model": "small_app.assignment",
+  "pk": 500,
+  "fields": {
+    "roster": 22,
+    "role": 6,
+    "person": 9
+  }
+},
+{
+  "model": "small_app.assignment",
+  "pk": 501,
+  "fields": {
+    "roster": 22,
+    "role": 7,
+    "person": 2
+  }
+},
+{
+  "model": "small_app.assignment",
+  "pk": 502,
+  "fields": {
+    "roster": 23,
+    "role": 1,
+    "person": 31
+  }
+},
+{
+  "model": "small_app.assignment",
+  "pk": 503,
+  "fields": {
+    "roster": 23,
+    "role": 2,
+    "person": 36
+  }
+},
+{
+  "model": "small_app.assignment",
+  "pk": 504,
+  "fields": {
+    "roster": 23,
+    "role": 3,
+    "person": 18
+  }
+},
+{
+  "model": "small_app.assignment",
+  "pk": 505,
+  "fields": {
+    "roster": 23,
+    "role": 4,
+    "person": 27
+  }
+},
+{
+  "model": "small_app.assignment",
+  "pk": 506,
+  "fields": {
+    "roster": 23,
+    "role": 5,
+    "person": 1
+  }
+},
+{
+  "model": "small_app.assignment",
+  "pk": 507,
+  "fields": {
+    "roster": 23,
+    "role": 6,
+    "person": 15
+  }
+},
+{
+  "model": "small_app.assignment",
+  "pk": 508,
+  "fields": {
+    "roster": 23,
+    "role": 7,
+    "person": 14
+  }
+},
+{
+  "model": "small_app.assignment",
+  "pk": 509,
+  "fields": {
+    "roster": 24,
+    "role": 1,
+    "person": 34
+  }
+},
+{
+  "model": "small_app.assignment",
+  "pk": 510,
+  "fields": {
+    "roster": 24,
+    "role": 2,
+    "person": 23
+  }
+},
+{
+  "model": "small_app.assignment",
+  "pk": 511,
+  "fields": {
+    "roster": 24,
+    "role": 3,
+    "person": 19
+  }
+},
+{
+  "model": "small_app.assignment",
+  "pk": 512,
+  "fields": {
+    "roster": 24,
+    "role": 4,
+    "person": 22
+  }
+},
+{
+  "model": "small_app.assignment",
+  "pk": 513,
+  "fields": {
+    "roster": 24,
+    "role": 5,
+    "person": 12
+  }
+},
+{
+  "model": "small_app.assignment",
+  "pk": 514,
+  "fields": {
+    "roster": 24,
+    "role": 6,
+    "person": 13
+  }
+},
+{
+  "model": "small_app.assignment",
+  "pk": 515,
+  "fields": {
+    "roster": 24,
+    "role": 7,
+    "person": 37
+  }
+},
+{
+  "model": "small_app.assignment",
+  "pk": 516,
+  "fields": {
+    "roster": 22,
+    "role": 9,
+    "person": 7
+  }
+},
+{
+  "model": "small_app.assignment",
+  "pk": 517,
+  "fields": {
+    "roster": 22,
+    "role": 10,
+    "person": 19
+  }
+},
+{
+  "model": "small_app.assignment",
+  "pk": 518,
+  "fields": {
+    "roster": 22,
+    "role": 8,
+    "person": 44
+  }
+},
+{
+  "model": "small_app.assignment",
+  "pk": 519,
+  "fields": {
+    "roster": 22,
+    "role": 8,
+    "person": 17
+  }
+},
+{
+  "model": "small_app.awardtype",
+  "pk": 1,
+  "fields": {
+    "name": "Day off",
+    "description": "Have one day off",
+    "is_active": true,
+    "created_at": "2026-05-26T09:22:47.940Z",
+    "updated_at": "2026-05-26T09:22:47.940Z"
+  }
+},
+{
+  "model": "small_app.rosterfeedback",
+  "pk": 24,
+  "fields": {
+    "roster": 22,
+    "person": 2,
+    "is_present": true,
+    "feedback": "",
+    "rating": null,
+    "feedback_category": null,
+    "created_at": "2026-05-28T08:27:05.382Z",
+    "updated_at": "2026-05-28T08:29:59.148Z"
+  }
+},
+{
+  "model": "small_app.rosterfeedback",
+  "pk": 25,
+  "fields": {
+    "roster": 22,
+    "person": 3,
+    "is_present": true,
+    "feedback": "",
+    "rating": null,
+    "feedback_category": null,
+    "created_at": "2026-05-28T08:27:05.385Z",
+    "updated_at": "2026-05-28T08:29:59.151Z"
+  }
+},
+{
+  "model": "small_app.rosterfeedback",
+  "pk": 26,
+  "fields": {
+    "roster": 22,
+    "person": 4,
+    "is_present": true,
+    "feedback": "",
+    "rating": null,
+    "feedback_category": null,
+    "created_at": "2026-05-28T08:27:05.386Z",
+    "updated_at": "2026-05-28T08:29:59.152Z"
+  }
+},
+{
+  "model": "small_app.rosterfeedback",
+  "pk": 27,
+  "fields": {
+    "roster": 22,
+    "person": 5,
+    "is_present": true,
+    "feedback": "",
+    "rating": null,
+    "feedback_category": null,
+    "created_at": "2026-05-28T08:27:05.386Z",
+    "updated_at": "2026-05-28T08:29:59.153Z"
+  }
+},
+{
+  "model": "small_app.rosterfeedback",
+  "pk": 28,
+  "fields": {
+    "roster": 22,
+    "person": 6,
+    "is_present": true,
+    "feedback": "",
+    "rating": null,
+    "feedback_category": null,
+    "created_at": "2026-05-28T08:27:05.387Z",
+    "updated_at": "2026-05-28T08:29:59.154Z"
+  }
+},
+{
+  "model": "small_app.rosterfeedback",
+  "pk": 29,
+  "fields": {
+    "roster": 22,
+    "person": 7,
+    "is_present": true,
+    "feedback": "",
+    "rating": null,
+    "feedback_category": null,
+    "created_at": "2026-05-28T08:27:05.387Z",
+    "updated_at": "2026-05-28T08:29:59.154Z"
+  }
+},
+{
+  "model": "small_app.rosterfeedback",
+  "pk": 30,
+  "fields": {
+    "roster": 22,
+    "person": 8,
+    "is_present": true,
+    "feedback": "",
+    "rating": null,
+    "feedback_category": null,
+    "created_at": "2026-05-28T08:27:05.388Z",
+    "updated_at": "2026-05-28T08:29:59.155Z"
+  }
+},
+{
+  "model": "small_app.rosterfeedback",
+  "pk": 31,
+  "fields": {
+    "roster": 22,
+    "person": 9,
+    "is_present": true,
+    "feedback": "",
+    "rating": null,
+    "feedback_category": null,
+    "created_at": "2026-05-28T08:27:05.389Z",
+    "updated_at": "2026-05-28T08:29:59.156Z"
+  }
+},
+{
+  "model": "small_app.rosterfeedback",
+  "pk": 32,
+  "fields": {
+    "roster": 22,
+    "person": 44,
+    "is_present": true,
+    "feedback": "",
+    "rating": null,
+    "feedback_category": null,
+    "created_at": "2026-05-28T08:27:05.389Z",
+    "updated_at": "2026-05-28T08:29:59.156Z"
+  }
+},
+{
+  "model": "small_app.rosterfeedback",
+  "pk": 33,
+  "fields": {
+    "roster": 22,
+    "person": 17,
+    "is_present": true,
+    "feedback": "",
+    "rating": null,
+    "feedback_category": null,
+    "created_at": "2026-05-28T08:27:05.390Z",
+    "updated_at": "2026-05-28T08:29:59.157Z"
+  }
+},
+{
+  "model": "small_app.rosterfeedback",
+  "pk": 34,
+  "fields": {
+    "roster": 22,
+    "person": 19,
+    "is_present": true,
+    "feedback": "",
+    "rating": null,
+    "feedback_category": null,
+    "created_at": "2026-05-28T08:27:05.391Z",
+    "updated_at": "2026-05-28T08:29:59.157Z"
+  }
+},
+{
+  "model": "small_app.rosterfeedback",
+  "pk": 35,
+  "fields": {
+    "roster": 23,
+    "person": 1,
+    "is_present": true,
+    "feedback": "",
+    "rating": null,
+    "feedback_category": null,
+    "created_at": "2026-05-28T08:27:05.392Z",
+    "updated_at": "2026-05-28T08:29:59.158Z"
+  }
+},
+{
+  "model": "small_app.rosterfeedback",
+  "pk": 36,
+  "fields": {
+    "roster": 23,
+    "person": 36,
+    "is_present": false,
+    "feedback": "",
+    "rating": null,
+    "feedback_category": null,
+    "created_at": "2026-05-28T08:27:05.393Z",
+    "updated_at": "2026-05-28T08:29:59.159Z"
+  }
+},
+{
+  "model": "small_app.rosterfeedback",
+  "pk": 37,
+  "fields": {
+    "roster": 23,
+    "person": 14,
+    "is_present": true,
+    "feedback": "",
+    "rating": null,
+    "feedback_category": null,
+    "created_at": "2026-05-28T08:27:05.394Z",
+    "updated_at": "2026-05-28T08:29:59.159Z"
+  }
+},
+{
+  "model": "small_app.rosterfeedback",
+  "pk": 38,
+  "fields": {
+    "roster": 23,
+    "person": 15,
+    "is_present": true,
+    "feedback": "",
+    "rating": null,
+    "feedback_category": null,
+    "created_at": "2026-05-28T08:27:05.394Z",
+    "updated_at": "2026-05-28T08:29:59.160Z"
+  }
+},
+{
+  "model": "small_app.rosterfeedback",
+  "pk": 39,
+  "fields": {
+    "roster": 23,
+    "person": 18,
+    "is_present": true,
+    "feedback": "",
+    "rating": null,
+    "feedback_category": null,
+    "created_at": "2026-05-28T08:27:05.395Z",
+    "updated_at": "2026-05-28T08:29:59.160Z"
+  }
+},
+{
+  "model": "small_app.rosterfeedback",
+  "pk": 40,
+  "fields": {
+    "roster": 23,
+    "person": 27,
+    "is_present": true,
+    "feedback": "",
+    "rating": null,
+    "feedback_category": null,
+    "created_at": "2026-05-28T08:27:05.396Z",
+    "updated_at": "2026-05-28T08:29:59.161Z"
+  }
+},
+{
+  "model": "small_app.rosterfeedback",
+  "pk": 41,
+  "fields": {
+    "roster": 23,
+    "person": 31,
+    "is_present": true,
+    "feedback": "",
+    "rating": null,
+    "feedback_category": null,
+    "created_at": "2026-05-28T08:27:05.397Z",
+    "updated_at": "2026-05-28T08:29:59.161Z"
+  }
+},
+{
+  "model": "small_app.rosterfeedback",
+  "pk": 42,
+  "fields": {
+    "roster": 24,
+    "person": 34,
+    "is_present": true,
+    "feedback": "",
+    "rating": null,
+    "feedback_category": null,
+    "created_at": "2026-05-28T08:27:05.398Z",
+    "updated_at": "2026-05-28T08:29:59.162Z"
+  }
+},
+{
+  "model": "small_app.rosterfeedback",
+  "pk": 43,
+  "fields": {
+    "roster": 24,
+    "person": 37,
+    "is_present": true,
+    "feedback": "",
+    "rating": null,
+    "feedback_category": null,
+    "created_at": "2026-05-28T08:27:05.399Z",
+    "updated_at": "2026-05-28T08:29:59.163Z"
+  }
+},
+{
+  "model": "small_app.rosterfeedback",
+  "pk": 44,
+  "fields": {
+    "roster": 24,
+    "person": 12,
+    "is_present": true,
+    "feedback": "",
+    "rating": null,
+    "feedback_category": null,
+    "created_at": "2026-05-28T08:27:05.400Z",
+    "updated_at": "2026-05-28T08:29:59.163Z"
+  }
+},
+{
+  "model": "small_app.rosterfeedback",
+  "pk": 45,
+  "fields": {
+    "roster": 24,
+    "person": 13,
+    "is_present": true,
+    "feedback": "",
+    "rating": null,
+    "feedback_category": null,
+    "created_at": "2026-05-28T08:27:05.401Z",
+    "updated_at": "2026-05-28T08:29:59.164Z"
+  }
+},
+{
+  "model": "small_app.rosterfeedback",
+  "pk": 46,
+  "fields": {
+    "roster": 24,
+    "person": 19,
+    "is_present": true,
+    "feedback": "",
+    "rating": null,
+    "feedback_category": null,
+    "created_at": "2026-05-28T08:27:05.401Z",
+    "updated_at": "2026-05-28T08:29:59.164Z"
+  }
+},
+{
+  "model": "small_app.rosterfeedback",
+  "pk": 47,
+  "fields": {
+    "roster": 24,
+    "person": 22,
+    "is_present": true,
+    "feedback": "",
+    "rating": null,
+    "feedback_category": null,
+    "created_at": "2026-05-28T08:27:05.402Z",
+    "updated_at": "2026-05-28T08:29:59.165Z"
+  }
+},
+{
+  "model": "small_app.rosterfeedback",
+  "pk": 48,
+  "fields": {
+    "roster": 24,
+    "person": 23,
+    "is_present": true,
+    "feedback": "",
+    "rating": null,
+    "feedback_category": null,
+    "created_at": "2026-05-28T08:27:05.403Z",
+    "updated_at": "2026-05-28T08:29:59.165Z"
+  }
+},
+{
+  "model": "small_app.memberstreak",
+  "pk": 1,
+  "fields": {
+    "person": 7,
+    "current_streak": 1,
+    "longest_streak": 1,
+    "last_updated": "2026-05-28T08:29:59.263Z"
+  }
+},
+{
+  "model": "small_app.memberstreak",
+  "pk": 2,
+  "fields": {
+    "person": 5,
+    "current_streak": 1,
+    "longest_streak": 1,
+    "last_updated": "2026-05-28T08:29:59.240Z"
+  }
+},
+{
+  "model": "small_app.memberstreak",
+  "pk": 3,
+  "fields": {
+    "person": 3,
+    "current_streak": 1,
+    "longest_streak": 1,
+    "last_updated": "2026-05-28T08:29:59.217Z"
+  }
+},
+{
+  "model": "small_app.memberstreak",
+  "pk": 4,
+  "fields": {
+    "person": 9,
+    "current_streak": 1,
+    "longest_streak": 1,
+    "last_updated": "2026-05-28T08:29:59.286Z"
+  }
+},
+{
+  "model": "small_app.memberstreak",
+  "pk": 5,
+  "fields": {
+    "person": 27,
+    "current_streak": 1,
+    "longest_streak": 1,
+    "last_updated": "2026-05-28T08:29:59.399Z"
+  }
+},
+{
+  "model": "small_app.memberstreak",
+  "pk": 6,
+  "fields": {
+    "person": 13,
+    "current_streak": 1,
+    "longest_streak": 1,
+    "last_updated": "2026-05-28T08:29:59.308Z"
+  }
+},
+{
+  "model": "small_app.memberstreak",
+  "pk": 7,
+  "fields": {
+    "person": 36,
+    "current_streak": 0,
+    "longest_streak": 1,
+    "last_updated": "2026-05-28T08:29:59.433Z"
+  }
+},
+{
+  "model": "small_app.memberstreak",
+  "pk": 8,
+  "fields": {
+    "person": 4,
+    "current_streak": 1,
+    "longest_streak": 1,
+    "last_updated": "2026-05-28T08:29:59.229Z"
+  }
+},
+{
+  "model": "small_app.memberstreak",
+  "pk": 9,
+  "fields": {
+    "person": 44,
+    "current_streak": 1,
+    "longest_streak": 1,
+    "last_updated": "2026-05-28T08:29:59.455Z"
+  }
+},
+{
+  "model": "small_app.memberstreak",
+  "pk": 10,
+  "fields": {
+    "person": 15,
+    "current_streak": 1,
+    "longest_streak": 1,
+    "last_updated": "2026-05-28T08:29:59.330Z"
+  }
+},
+{
+  "model": "small_app.memberstreak",
+  "pk": 11,
+  "fields": {
+    "person": 8,
+    "current_streak": 1,
+    "longest_streak": 1,
+    "last_updated": "2026-05-28T08:29:59.274Z"
+  }
+},
+{
+  "model": "small_app.memberstreak",
+  "pk": 12,
+  "fields": {
+    "person": 23,
+    "current_streak": 1,
+    "longest_streak": 1,
+    "last_updated": "2026-05-28T08:29:59.388Z"
+  }
+},
+{
+  "model": "small_app.memberstreak",
+  "pk": 13,
+  "fields": {
+    "person": 12,
+    "current_streak": 1,
+    "longest_streak": 1,
+    "last_updated": "2026-05-28T08:29:59.297Z"
+  }
+},
+{
+  "model": "small_app.memberstreak",
+  "pk": 14,
+  "fields": {
+    "person": 19,
+    "current_streak": 2,
+    "longest_streak": 2,
+    "last_updated": "2026-05-28T08:29:59.365Z"
+  }
+},
+{
+  "model": "small_app.memberstreak",
+  "pk": 15,
+  "fields": {
+    "person": 1,
+    "current_streak": 1,
+    "longest_streak": 1,
+    "last_updated": "2026-05-28T08:29:59.192Z"
+  }
+},
+{
+  "model": "small_app.memberstreak",
+  "pk": 16,
+  "fields": {
+    "person": 2,
+    "current_streak": 1,
+    "longest_streak": 1,
+    "last_updated": "2026-05-28T08:29:59.204Z"
+  }
+},
+{
+  "model": "small_app.memberstreak",
+  "pk": 17,
+  "fields": {
+    "person": 26,
+    "current_streak": 1,
+    "longest_streak": 1,
+    "last_updated": "2026-05-26T09:17:24.604Z"
+  }
+},
+{
+  "model": "small_app.memberstreak",
+  "pk": 18,
+  "fields": {
+    "person": 17,
+    "current_streak": 1,
+    "longest_streak": 1,
+    "last_updated": "2026-05-28T08:29:59.342Z"
+  }
+},
+{
+  "model": "small_app.memberstreak",
+  "pk": 19,
+  "fields": {
+    "person": 22,
+    "current_streak": 1,
+    "longest_streak": 1,
+    "last_updated": "2026-05-28T08:29:59.376Z"
+  }
+},
+{
+  "model": "small_app.memberstreak",
+  "pk": 20,
+  "fields": {
+    "person": 31,
+    "current_streak": 1,
+    "longest_streak": 1,
+    "last_updated": "2026-05-28T08:29:59.411Z"
+  }
+},
+{
+  "model": "small_app.memberstreak",
+  "pk": 21,
+  "fields": {
+    "person": 6,
+    "current_streak": 1,
+    "longest_streak": 1,
+    "last_updated": "2026-05-28T08:29:59.252Z"
+  }
+},
+{
+  "model": "small_app.memberstreak",
+  "pk": 22,
+  "fields": {
+    "person": 37,
+    "current_streak": 1,
+    "longest_streak": 1,
+    "last_updated": "2026-05-28T08:29:59.444Z"
+  }
+},
+{
+  "model": "small_app.memberstreak",
+  "pk": 23,
+  "fields": {
+    "person": 18,
+    "current_streak": 1,
+    "longest_streak": 1,
+    "last_updated": "2026-05-28T08:29:59.353Z"
+  }
+},
+{
+  "model": "small_app.memberstreak",
+  "pk": 24,
+  "fields": {
+    "person": 14,
+    "current_streak": 1,
+    "longest_streak": 1,
+    "last_updated": "2026-05-28T08:29:59.319Z"
+  }
+},
+{
+  "model": "small_app.memberstreak",
+  "pk": 25,
+  "fields": {
+    "person": 34,
+    "current_streak": 1,
+    "longest_streak": 1,
+    "last_updated": "2026-05-28T08:29:59.422Z"
+  }
+},
+{
+  "model": "small_app.feedbacksharelink",
+  "pk": 1,
+  "fields": {
+    "token": "a6fu0bw2sYpHHh6Pa1UAQM5AJ-G8ToYqzIvV7K8_E7g",
+    "date": "2026-05-31",
+    "is_used": false,
+    "used_at": null,
+    "global_feedback": null,
+    "created_by": 2,
+    "created_at": "2026-05-28T08:26:00.752Z"
+  }
+},
+{
+  "model": "small_app.feedbacksharelink",
+  "pk": 2,
+  "fields": {
+    "token": "VKdWpi3N3ahS1-1uPMZgGVxpP0EgoxeunVuOtBylJpE",
+    "date": "2026-05-31",
+    "is_used": true,
+    "used_at": "2026-05-28T08:27:05.403Z",
+    "global_feedback": "demo for the feedback\n",
+    "created_by": 2,
+    "created_at": "2026-05-28T08:26:12.934Z"
+  }
+},
+{
+  "model": "small_app.feedbacksharelink",
+  "pk": 3,
+  "fields": {
+    "token": "WiMAtHlfVvPve-GrSmpD6klNnIoOgB-ZZKDRt1kE5A4",
+    "date": "2026-05-31",
+    "is_used": true,
+    "used_at": "2026-05-28T08:29:59.166Z",
+    "global_feedback": "",
+    "created_by": 2,
+    "created_at": "2026-05-28T08:28:02.264Z"
+  }
+},
+{
+  "model": "small_app.membersbulkupload",
+  "pk": 1,
+  "fields": {
+    "json_data": [
+      {
+        "first_name": "Dennis",
+        "last_name": "Karuti",
+        "phone": "0708 038 573"
+      },
+      {
+        "first_name": "Mirriam",
+        "last_name": "Githinji",
+        "phone": "0726 808 519"
+      },
+      {
+        "first_name": "Patrick",
+        "last_name": "Collins",
+        "phone": "0791 211 797"
+      },
+      {
+        "first_name": "Dennis",
+        "last_name": "Mwangi",
+        "phone": "0111 331 164"
+      },
+      {
+        "first_name": "Emmanuel",
+        "last_name": "Wawire",
+        "phone": "0742 825 115"
+      },
+      {
+        "first_name": "Hilda",
+        "last_name": "Ndegwa",
+        "phone": "0798 705 464"
+      },
+      {
+        "first_name": "Eliud",
+        "last_name": "Muiruri",
+        "phone": "0742 136 714"
+      },
+      {
+        "first_name": "Pacique",
+        "last_name": "Birori",
+        "phone": "0115 944 087"
+      },
+      {
+        "first_name": "Albert",
+        "last_name": "Lopete",
+        "phone": "0704 233 693"
+      },
+      {
+        "first_name": "Austine",
+        "last_name": "Kagema",
+        "phone": "0793 639 859"
+      },
+      {
+        "first_name": "Kevin",
+        "last_name": "Kagema",
+        "phone": "0796 626 358"
+      },
+      {
+        "first_name": "Edward",
+        "last_name": "Kibugi",
+        "phone": "0704 670 727"
+      },
+      {
+        "first_name": "Joy",
+        "last_name": "Wanjiku",
+        "phone": "0114 144 248"
+      },
+      {
+        "first_name": "Faith",
+        "last_name": "Maina",
+        "phone": "0743 310 587"
+      },
+      {
+        "first_name": "Cynthia",
+        "last_name": "Wanjiru",
+        "phone": "0742 422 764"
+      },
+      {
+        "first_name": "Grace",
+        "last_name": "Nyigena",
+        "phone": "0794 691 677"
+      },
+      {
+        "first_name": "Waithaka",
+        "last_name": "Njoroge",
+        "phone": "0786 862 348"
+      },
+      {
+        "first_name": "Maureen",
+        "last_name": "Mugambi",
+        "phone": "0797 441 828"
+      },
+      {
+        "first_name": "Mercy",
+        "last_name": "Makena",
+        "phone": "0797 231 805"
+      },
+      {
+        "first_name": "Bonface",
+        "last_name": "Theuri",
+        "phone": "0782 826481"
+      },
+      {
+        "first_name": "Lewis",
+        "last_name": "Kirimi",
+        "phone": "0720 597 075"
+      },
+      {
+        "first_name": "David",
+        "last_name": "Gachuru",
+        "phone": "0720 750 053"
+      },
+      {
+        "first_name": "Anthony",
+        "last_name": "Muriithi",
+        "phone": "0702 487 235"
+      },
+      {
+        "first_name": "Wangari",
+        "last_name": "Njuguna",
+        "phone": "0750 071 837"
+      },
+      {
+        "first_name": "George",
+        "last_name": "Hinga",
+        "phone": "0724 174 459"
+      },
+      {
+        "first_name": "Victor",
+        "last_name": "Reuben",
+        "phone": "0745 153 461"
+      },
+      {
+        "first_name": "Vickram",
+        "last_name": "Kimwere",
+        "phone": "0728 361 329"
+      },
+      {
+        "first_name": "Timothy",
+        "last_name": "Karani",
+        "phone": "0711 618 616"
+      },
+      {
+        "first_name": "Bonface",
+        "last_name": "Ndirangu",
+        "phone": "0728 382 216"
+      },
+      {
+        "first_name": "Lilian",
+        "last_name": "Njambi",
+        "phone": "0700 902 126"
+      },
+      {
+        "first_name": "David",
+        "last_name": "Kariuki",
+        "phone": "Diaspora"
+      },
+      {
+        "first_name": "Victor",
+        "last_name": "Mwangi",
+        "phone": "Diaspora"
+      },
+      {
+        "first_name": "Wakesho",
+        "last_name": "Mngwana",
+        "phone": "Diaspora"
+      },
+      {
+        "first_name": "Daniel",
+        "last_name": "Murigi",
+        "phone": "0727 289 870"
+      },
+      {
+        "first_name": "June",
+        "last_name": "Nyambura",
+        "phone": "0733 901 572"
+      },
+      {
+        "first_name": "Patrick",
+        "last_name": "Mbugua",
+        "phone": "0724 361 176"
+      },
+      {
+        "first_name": "David",
+        "last_name": "Gituku",
+        "phone": "0746 343 862"
+      },
+      {
+        "first_name": "Kenneth",
+        "last_name": "Irungu",
+        "phone": "0700 484 146"
+      },
+      {
+        "first_name": "Kevin",
+        "last_name": "Ngari",
+        "phone": "0743 475 797"
+      },
+      {
+        "first_name": "Mary",
+        "last_name": "Ngari",
+        "phone": "0791 913 509"
+      },
+      {
+        "first_name": "Nelius",
+        "last_name": "Nduku",
+        "phone": "0706 493 062"
+      },
+      {
+        "first_name": "Samuel",
+        "last_name": "Mwangi",
+        "phone": "0706 384 089"
+      },
+      {
+        "first_name": "Abigail",
+        "last_name": "Mbula",
+        "phone": "0708 739 363"
+      },
+      {
+        "first_name": "Rose",
+        "last_name": "Murugi",
+        "phone": "0790 295 259"
+      },
+      {
+        "first_name": "Grace",
+        "last_name": "Muriithi",
+        "phone": "0707 937 103"
+      },
+      {
+        "first_name": ""
+      }
+    ],
+    "status": false,
+    "number_of_records": 46,
+    "success_products": 0,
+    "failed_products": 0,
+    "created_at": "2026-05-08",
+    "updated_at": "2026-05-08"
+  }
+},
+{
+  "model": "small_app.membersbulkupload",
+  "pk": 2,
+  "fields": {
+    "json_data": [
+      {
+        "first_name": "Dennis",
+        "last_name": "Karuti",
+        "phone": "0708 038 573"
+      },
+      {
+        "first_name": "Mirriam",
+        "last_name": "Githinji",
+        "phone": "0726 808 519"
+      },
+      {
+        "first_name": "Patrick",
+        "last_name": "Collins",
+        "phone": "0791 211 797"
+      },
+      {
+        "first_name": "Dennis",
+        "last_name": "Mwangi",
+        "phone": "0111 331 164"
+      },
+      {
+        "first_name": "Emmanuel",
+        "last_name": "Wawire",
+        "phone": "0742 825 115"
+      },
+      {
+        "first_name": "Hilda",
+        "last_name": "Ndegwa",
+        "phone": "0798 705 464"
+      },
+      {
+        "first_name": "Eliud",
+        "last_name": "Muiruri",
+        "phone": "0742 136 714"
+      },
+      {
+        "first_name": "Pacique",
+        "last_name": "Birori",
+        "phone": "0115 944 087"
+      },
+      {
+        "first_name": "Albert",
+        "last_name": "Lopete",
+        "phone": "0704 233 693"
+      },
+      {
+        "first_name": "Austine",
+        "last_name": "Kagema",
+        "phone": "0793 639 859"
+      },
+      {
+        "first_name": "Kevin",
+        "last_name": "Kagema",
+        "phone": "0796 626 358"
+      },
+      {
+        "first_name": "Edward",
+        "last_name": "Kibugi",
+        "phone": "0704 670 727"
+      },
+      {
+        "first_name": "Joy",
+        "last_name": "Wanjiku",
+        "phone": "0114 144 248"
+      },
+      {
+        "first_name": "Faith",
+        "last_name": "Maina",
+        "phone": "0743 310 587"
+      },
+      {
+        "first_name": "Cynthia",
+        "last_name": "Wanjiru",
+        "phone": "0742 422 764"
+      },
+      {
+        "first_name": "Grace",
+        "last_name": "Nyigena",
+        "phone": "0794 691 677"
+      },
+      {
+        "first_name": "Waithaka",
+        "last_name": "Njoroge",
+        "phone": "0786 862 348"
+      },
+      {
+        "first_name": "Maureen",
+        "last_name": "Mugambi",
+        "phone": "0797 441 828"
+      },
+      {
+        "first_name": "Mercy",
+        "last_name": "Makena",
+        "phone": "0797 231 805"
+      },
+      {
+        "first_name": "Bonface",
+        "last_name": "Theuri",
+        "phone": "0782 826481"
+      },
+      {
+        "first_name": "Lewis",
+        "last_name": "Kirimi",
+        "phone": "0720 597 075"
+      },
+      {
+        "first_name": "David",
+        "last_name": "Gachuru",
+        "phone": "0720 750 053"
+      },
+      {
+        "first_name": "Anthony",
+        "last_name": "Muriithi",
+        "phone": "0702 487 235"
+      },
+      {
+        "first_name": "Wangari",
+        "last_name": "Njuguna",
+        "phone": "0750 071 837"
+      },
+      {
+        "first_name": "George",
+        "last_name": "Hinga",
+        "phone": "0724 174 459"
+      },
+      {
+        "first_name": "Victor",
+        "last_name": "Reuben",
+        "phone": "0745 153 461"
+      },
+      {
+        "first_name": "Vickram",
+        "last_name": "Kimwere",
+        "phone": "0728 361 329"
+      },
+      {
+        "first_name": "Timothy",
+        "last_name": "Karani",
+        "phone": "0711 618 616"
+      },
+      {
+        "first_name": "Bonface",
+        "last_name": "Ndirangu",
+        "phone": "0728 382 216"
+      },
+      {
+        "first_name": "Lilian",
+        "last_name": "Njambi",
+        "phone": "0700 902 126"
+      },
+      {
+        "first_name": "David",
+        "last_name": "Kariuki",
+        "phone": "Diaspora"
+      },
+      {
+        "first_name": "Victor",
+        "last_name": "Mwangi",
+        "phone": "Diaspora"
+      },
+      {
+        "first_name": "Wakesho",
+        "last_name": "Mngwana",
+        "phone": "Diaspora"
+      },
+      {
+        "first_name": "Daniel",
+        "last_name": "Murigi",
+        "phone": "0727 289 870"
+      },
+      {
+        "first_name": "June",
+        "last_name": "Nyambura",
+        "phone": "0733 901 572"
+      },
+      {
+        "first_name": "Patrick",
+        "last_name": "Mbugua",
+        "phone": "0724 361 176"
+      },
+      {
+        "first_name": "David",
+        "last_name": "Gituku",
+        "phone": "0746 343 862"
+      },
+      {
+        "first_name": "Kenneth",
+        "last_name": "Irungu",
+        "phone": "0700 484 146"
+      },
+      {
+        "first_name": "Kevin",
+        "last_name": "Ngari",
+        "phone": "0743 475 797"
+      },
+      {
+        "first_name": "Mary",
+        "last_name": "Ngari",
+        "phone": "0791 913 509"
+      },
+      {
+        "first_name": "Nelius",
+        "last_name": "Nduku",
+        "phone": "0706 493 062"
+      },
+      {
+        "first_name": "Samuel",
+        "last_name": "Mwangi",
+        "phone": "0706 384 089"
+      },
+      {
+        "first_name": "Abigail",
+        "last_name": "Mbula",
+        "phone": "0708 739 363"
+      },
+      {
+        "first_name": "Rose",
+        "last_name": "Murugi",
+        "phone": "0790 295 259"
+      },
+      {
+        "first_name": "Grace",
+        "last_name": "Muriithi",
+        "phone": "0707 937 103"
+      },
+      {
+        "first_name": ""
+      }
+    ],
+    "status": false,
+    "number_of_records": 46,
+    "success_products": 0,
+    "failed_products": 0,
+    "created_at": "2026-05-18",
+    "updated_at": "2026-05-18"
+  }
+}
+]
