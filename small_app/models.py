@@ -38,6 +38,9 @@ class Events(models.Model):
     end_time = models.TimeField(null=True, blank=True)
     description = models.TextField(blank=True, null=True)
     is_active = models.BooleanField(default=True)
+    # Roles required for this event. The roster generator only fills these roles
+    # for this event; an event with no roles produces no assignments.
+    roles = models.ManyToManyField('Roles', blank=True, related_name='events')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

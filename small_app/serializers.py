@@ -9,7 +9,7 @@ from .models import (
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'password']
+        fields = ['id', 'username', 'email', 'password', 'first_name', 'last_name']
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
@@ -69,12 +69,21 @@ class RolesSerializer(serializers.ModelSerializer):
 class EventsSerializer(serializers.ModelSerializer):
     # Add duration field for Flutter app compatibility
     duration = serializers.SerializerMethodField()
-    
+    roles = serializers.PrimaryKeyRelatedField(
+        many=True, queryset=Roles.objects.all(), required=False
+    )
+    role_names = serializers.SlugRelatedField(
+        many=True, read_only=True, slug_field='name', source='roles'
+    )
+
     class Meta:
         model = Events
-        fields = ['id','name', 'start_time', 'end_time', 'description', 'is_active', 'duration', 'created_at', 'updated_at']
+        fields = [
+            'id', 'name', 'start_time', 'end_time', 'description', 'is_active',
+            'roles', 'role_names', 'duration', 'created_at', 'updated_at',
+        ]
         read_only_fields = ['created_at', 'updated_at']
-    
+
     def get_duration(self, obj):
         # Return duration in minutes - you can customize this logic
         return 60  # Default 60 minutes

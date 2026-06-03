@@ -111,7 +111,8 @@ def _user_payload(user):
 def user_profile(request):
     user = request.user
     if request.method == 'GET':
-        return Response(_user_payload(user))
+        serializer = UserSerializer(user)
+        return Response(serializer.data, status=200)
 
     data = request.data
     for field in ['username', 'email', 'first_name', 'last_name']:
@@ -906,10 +907,20 @@ def create_feedback_share_link(request):
         date=target_date,
         created_by=request.user if request.user.is_authenticated else None,
     )
+
+    # Build an absolute, reachable URL when FRONTEND_BASE_URL is configured.
+    # Otherwise return None and let the frontend fall back to its own origin.
+    from django.conf import settings
+    share_url = (
+        f"{settings.FRONTEND_BASE_URL}/feedback/share/{link.token}"
+        if settings.FRONTEND_BASE_URL else None
+    )
+
     return Response({
         'token': link.token,
         'date': str(link.date),
         'created_at': link.created_at.isoformat(),
+        'share_url': share_url,
     }, status=201)
 
 
@@ -962,6 +973,19 @@ def feedback_share_submit(request, token):
 
     affected_person_ids = set()
     with transaction.atomic():
+        # Atomically claim the link: only one request can flip is_used False->True.
+        # If a concurrent submit already claimed it, claimed == 0 and we bail out,
+        # so the feedback writes below never run twice.
+        claimed = FeedbackShareLink.objects.filter(
+            pk=link.pk, is_used=False
+        ).update(
+            is_used=True,
+            used_at=timezone.now(),
+            global_feedback=global_feedback,
+        )
+        if not claimed:
+            return Response({'error': 'This link has already been used.'}, status=410)
+
         for roster in rosters_for_day:
             assigned_person_ids = set(
                 Assignment.objects.filter(roster=roster).values_list('person_id', flat=True)
@@ -977,11 +1001,6 @@ def feedback_share_submit(request, token):
                     },
                 )
                 affected_person_ids.add(person_id)
-
-        link.is_used = True
-        link.used_at = timezone.now()
-        link.global_feedback = global_feedback
-        link.save(update_fields=['is_used', 'used_at', 'global_feedback'])
 
     for pid in affected_person_ids:
         _recalculate_streak(pid)

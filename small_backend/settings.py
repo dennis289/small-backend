@@ -26,6 +26,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-dev-key-change-me')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'False').lower() == 'true'
+
+# Public base URL of the FRONTEND app (e.g. https://app.example.com or
+# http://192.168.1.50:5173 for LAN demos). Used to build shareable feedback links
+# so they're always reachable, regardless of where the admin's browser is pointed.
+# Leave blank in local dev — the frontend then falls back to window.location.origin.
+FRONTEND_BASE_URL = os.environ.get('FRONTEND_BASE_URL', '').rstrip('/')
     
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 
