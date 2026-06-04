@@ -901,6 +901,14 @@ def create_feedback_share_link(request):
             status=400,
         )
 
+    # Once feedback has been collected for a date, don't allow another link —
+    # the day's attendance is final.
+    if RosterFeedback.objects.filter(roster__date=target_date).exists():
+        return Response(
+            {'error': f'Feedback has already been collected for {date_str}.'},
+            status=409,
+        )
+
     token = secrets.token_urlsafe(32)
     link = FeedbackShareLink.objects.create(
         token=token,
@@ -1010,4 +1018,65 @@ def feedback_share_submit(request, token):
         'date': str(link.date),
         'affected_members': len(affected_person_ids),
     }, status=200)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def feedback_summary(request):
+    """Per-date summary of collected feedback: who was present and the day's note.
+
+    Used by the admin feedback page to list already-collected days and to know
+    which dates should no longer offer link generation.
+    """
+    feedbacks = (
+        RosterFeedback.objects
+        .select_related('person', 'roster')
+        .order_by('-roster__date')
+    )
+
+    # Day-level note preferred from the share link used for that date.
+    link_notes = {
+        str(link.date): link.global_feedback
+        for link in FeedbackShareLink.objects.filter(is_used=True)
+        if link.global_feedback
+    }
+
+    by_date = {}
+    for fb in feedbacks:
+        key = str(fb.roster.date)
+        entry = by_date.get(key)
+        if entry is None:
+            entry = {
+                'date': key,
+                'present': {},
+                'absent': {},
+                'notes': set(),
+                'submitted_at': fb.updated_at,
+            }
+            by_date[key] = entry
+        name = f"{fb.person.first_name} {fb.person.last_name}".strip()
+        if fb.is_present:
+            entry['present'][fb.person_id] = name
+            entry['absent'].pop(fb.person_id, None)
+        elif fb.person_id not in entry['present']:
+            entry['absent'][fb.person_id] = name
+        if fb.feedback:
+            entry['notes'].add(fb.feedback)
+        if fb.updated_at > entry['submitted_at']:
+            entry['submitted_at'] = fb.updated_at
+
+    result = []
+    for key, entry in by_date.items():
+        day_note = link_notes.get(key) or ' / '.join(sorted(entry['notes']))
+        result.append({
+            'date': entry['date'],
+            'present': sorted(entry['present'].values()),
+            'absent': sorted(entry['absent'].values()),
+            'present_count': len(entry['present']),
+            'absent_count': len(entry['absent']),
+            'feedback': day_note,
+            'submitted_at': entry['submitted_at'].isoformat(),
+        })
+    result.sort(key=lambda x: x['date'], reverse=True)
+    return Response(result, status=200)
 
