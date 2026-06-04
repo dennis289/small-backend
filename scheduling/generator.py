@@ -202,7 +202,11 @@ class RosterGenerator:
     # ------------------------------------------------------------------
 
     def _assign_event_roles(self, event: Events, available_people: QuerySet, roles: List[Roles]) -> List[RoleAssignment]:
-        """Assign every non-special role for a single event."""
+        """Assign the non-special roles bound to a single event.
+
+        ``roles`` is the event's own role list, so an event with no bound roles
+        produces no assignments.
+        """
         event_assignments = []
         non_special_roles = [r for r in roles if not r.is_special_role]
 
@@ -301,7 +305,7 @@ class RosterGenerator:
         self.global_assigned.clear()
         self._load_assignment_history(target_date)
 
-        events = Events.objects.filter(is_active=True).order_by('id')
+        events = Events.objects.filter(is_active=True).order_by('id').prefetch_related('roles')
         roles = list(Roles.objects.all())
         available_people = Persons.objects.filter(
             is_present=True, is_active=True
@@ -313,10 +317,17 @@ class RosterGenerator:
         producer = self._select_producer(available_people)
         assistant_producer = self._select_assistant_producer(available_people)
 
-        # Event roles
+        # Event roles — each event only fills the roles bound to it.
         event_list = []
+        special_role_pool: Dict[int, Roles] = {}
         for event in events:
-            assignments = self._assign_event_roles(event, available_people, roles)
+            event_roles = list(event.roles.all())
+            # Collect special roles bound to any event for the union pass below.
+            for r in event_roles:
+                if r.is_special_role:
+                    special_role_pool[r.pk] = r
+
+            assignments = self._assign_event_roles(event, available_people, event_roles)
             event_list.append({
                 "event_id": event.pk,
                 "event_name": event.name or event.description or "Unknown Event",
@@ -326,8 +337,10 @@ class RosterGenerator:
                 ],
             })
 
-        # Special roles (fully dynamic)
-        special_roles = self._assign_special_roles(available_people, roles)
+        # Special roles — only those bound to at least one active event.
+        special_roles = self._assign_special_roles(
+            available_people, list(special_role_pool.values())
+        )
 
         logger.info("Roster generated successfully. Total assigned: %d", len(self.global_assigned))
 
