@@ -967,6 +967,7 @@ def feedback_share_submit(request, token):
 
     attendance = request.data.get('attendance', [])
     global_feedback = request.data.get('global_feedback', '') or ''
+    global_recommendations = request.data.get('global_recommendations', '') or ''
 
     presence_by_person = {}
     for item in attendance:
@@ -990,6 +991,7 @@ def feedback_share_submit(request, token):
             is_used=True,
             used_at=timezone.now(),
             global_feedback=global_feedback,
+            global_recommendations=global_recommendations,
         )
         if not claimed:
             return Response({'error': 'This link has already been used.'}, status=410)
@@ -1006,6 +1008,7 @@ def feedback_share_submit(request, token):
                     defaults={
                         'is_present': is_present,
                         'feedback': global_feedback,
+                        'recommendations': global_recommendations,
                     },
                 )
                 affected_person_ids.add(person_id)
@@ -1035,10 +1038,16 @@ def feedback_summary(request):
     )
 
     # Day-level note preferred from the share link used for that date.
+    used_links = FeedbackShareLink.objects.filter(is_used=True)
     link_notes = {
         str(link.date): link.global_feedback
-        for link in FeedbackShareLink.objects.filter(is_used=True)
+        for link in used_links
         if link.global_feedback
+    }
+    link_recommendations = {
+        str(link.date): link.global_recommendations
+        for link in used_links
+        if link.global_recommendations
     }
 
     by_date = {}
@@ -1051,6 +1060,7 @@ def feedback_summary(request):
                 'present': {},
                 'absent': {},
                 'notes': set(),
+                'recommendations': set(),
                 'submitted_at': fb.updated_at,
             }
             by_date[key] = entry
@@ -1062,6 +1072,8 @@ def feedback_summary(request):
             entry['absent'][fb.person_id] = name
         if fb.feedback:
             entry['notes'].add(fb.feedback)
+        if fb.recommendations:
+            entry['recommendations'].add(fb.recommendations)
         if fb.updated_at > entry['submitted_at']:
             entry['submitted_at'] = fb.updated_at
 
@@ -1075,8 +1087,47 @@ def feedback_summary(request):
             'present_count': len(entry['present']),
             'absent_count': len(entry['absent']),
             'feedback': day_note,
+            'recommendations': link_recommendations.get(key) or ' / '.join(sorted(entry['recommendations'])),
             'submitted_at': entry['submitted_at'].isoformat(),
         })
     result.sort(key=lambda x: x['date'], reverse=True)
     return Response(result, status=200)
+
+
+@api_view(['PATCH'])
+@permission_classes([IsAuthenticated])
+def update_day_feedback(request, date_str):
+    """Edit the day-level feedback note and recommendations for a collected date.
+
+    Updates both possible sources the summary reads from so the change shows up
+    regardless of how the day was collected:
+      * the used FeedbackShareLink for that date (its global_* fields), and
+      * every RosterFeedback row for that date's rosters.
+    """
+    try:
+        target_date = datetime.strptime(date_str, '%Y-%m-%d').date()
+    except (ValueError, TypeError):
+        return Response({'error': 'Invalid date. Use YYYY-MM-DD.'}, status=400)
+
+    feedback = (request.data.get('feedback') or '').strip()
+    recommendations = (request.data.get('recommendations') or '').strip()
+
+    affected = RosterFeedback.objects.filter(roster__date=target_date)
+    if not affected.exists():
+        return Response(
+            {'error': f'No collected feedback found for {date_str}.'},
+            status=404,
+        )
+
+    affected.update(feedback=feedback, recommendations=recommendations)
+    FeedbackShareLink.objects.filter(date=target_date, is_used=True).update(
+        global_feedback=feedback,
+        global_recommendations=recommendations,
+    )
+
+    return Response({
+        'date': date_str,
+        'feedback': feedback,
+        'recommendations': recommendations,
+    }, status=200)
 

@@ -42,6 +42,7 @@ urlpatterns = [
     path('rosters/<int:roster_id>/feedback/list/', roster_feedback, name='roster_feedback'),
     # Shareable feedback link
     path('feedback/summary/', feedback_summary, name='feedback_summary'),
+    path('feedback/summary/<str:date_str>/', update_day_feedback, name='update_day_feedback'),
     path('feedback/share/links/', create_feedback_share_link, name='create_feedback_share_link'),
     path('feedback/share/<str:token>/', feedback_share_get, name='feedback_share_get'),
     path('feedback/share/<str:token>/submit/', feedback_share_submit, name='feedback_share_submit'),
