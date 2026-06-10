@@ -136,6 +136,7 @@ class RosterFeedback(models.Model):
     )
     is_present = models.BooleanField(default=False)
     feedback = models.TextField(blank=True, null=True)
+    recommendations = models.TextField(blank=True, null=True)
     rating = models.PositiveSmallIntegerField(null=True, blank=True)
     feedback_category = models.CharField(
         max_length=50, blank=True, null=True, choices=CATEGORY_CHOICES
@@ -181,6 +182,7 @@ class FeedbackShareLink(models.Model):
     is_used = models.BooleanField(default=False)
     used_at = models.DateTimeField(null=True, blank=True)
     global_feedback = models.TextField(blank=True, null=True)
+    global_recommendations = models.TextField(blank=True, null=True)
     created_by = models.ForeignKey(
         User, on_delete=models.SET_NULL, null=True, blank=True,
         related_name='feedback_links_created',
