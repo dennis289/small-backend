@@ -11,7 +11,7 @@ from django.utils import timezone
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.pagination import PageNumberPagination
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 
@@ -19,13 +19,30 @@ from scheduling.generator import RosterGenerator
 from scheduling.services import generate_roster
 
 from .models import (
-    User, Persons, Roles, Events, Rosters, Assignment, MembersBulkUpload,
+    User, Client, Persons, Roles, Events, Rosters, Assignment, MembersBulkUpload,
     AwardType, Award, RosterFeedback, MemberStreak, FeedbackShareLink,
 )
+
+
+def current_client(request):
+    """The requesting user's client (None for platform/superadmin accounts)."""
+    return getattr(request.user, 'client', None)
+
+
+def scoped(model, request):
+    """A queryset of ``model`` limited to the requesting user's client.
+
+    Every tenant-facing endpoint reads through this so data never crosses
+    client boundaries. Writes must stamp ``client=current_client(request)``.
+    """
+    return model.objects.filter(client=current_client(request))
+from django.utils.text import slugify
+
 from .pdf import export_roster_pdf
+from .permissions import IsPlatformAdmin
 from .serializers import (
-    UserSerializer, PersonsSerializer, RolesSerializer, EventsSerializer,
-    RostersSerializer, AssignmentSerializer, AwardTypeSerializer,
+    UserSerializer, ClientSerializer, PersonsSerializer, RolesSerializer,
+    EventsSerializer, RostersSerializer, AssignmentSerializer, AwardTypeSerializer,
     AwardSerializer, RosterFeedbackSerializer,
 )
 
@@ -56,16 +73,19 @@ def parse_roles(roles):
 
     return [roles]
 
-# signing up users to the system
+# Public self-service sign-up is disabled in the multi-tenant setup: accounts
+# are provisioned by a platform admin (Clients console) or a client admin, so a
+# new user is always attached to the right client.
 @api_view(['POST'])
+@permission_classes([AllowAny])
 def signup(request):
-    serializer = UserSerializer(data=request.data)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data, status=201)
-    return Response(serializer.errors, status=400)
+    return Response(
+        {'error': 'Public sign-up is disabled. Ask your administrator for an account.'},
+        status=403,
+    )
     
 @api_view(['POST'])
+@permission_classes([AllowAny])
 def login(request):
     email = request.data.get('email')
     password = request.data.get('password')
@@ -85,6 +105,11 @@ def login(request):
             "message": "Login successful",
             "email": user.email,
             "username": user.username,
+            "client": (
+                {'id': user.client.id, 'name': user.client.name, 'slug': user.client.slug}
+                if user.client_id else None
+            ),
+            "is_platform_admin": user.client_id is None and user.is_superuser,
             "access": tokens['access'],
             "refresh": tokens['refresh']
         }, status=status.HTTP_200_OK)
@@ -131,17 +156,17 @@ def user_profile(request):
 def persons(request):
     if request.method == 'POST':
         mobile_number = request.data.get('phone_number')
-        number = Persons.objects.filter(phone_number=mobile_number).exists()
+        number = scoped(Persons, request).filter(phone_number=mobile_number).exists()
         if number:
             return Response({"error": "Person with this phone number already exists"}, status=400)
-        serializer = PersonsSerializer(data=request.data)
+        serializer = PersonsSerializer(data=request.data, context={'request': request})
         if serializer.is_valid():
-            serializer.save()
+            serializer.save(client=current_client(request))
             return Response(serializer.data, status=201)
         return Response(serializer.errors, status=400)
     elif request.method == 'GET':
         search_term = request.query_params.get('search', '').strip()
-        persons = Persons.objects.all()
+        persons = scoped(Persons, request)
         if search_term:
             persons = persons.filter(
                 Q(first_name__icontains=search_term) |
@@ -155,19 +180,19 @@ def persons(request):
 
 @api_view(['GET'])
 def active_members(request):
-    active_persons = Persons.objects.filter(is_active=True)
+    active_persons = scoped(Persons, request).filter(is_active=True)
     serializer = PersonsSerializer(active_persons, many=True)
     return Response(serializer.data, status=200)
-    
+
 @api_view(['PUT', 'DELETE'])
 def modify_person(request, id):
     try:
-        person = Persons.objects.get(id=id)
+        person = scoped(Persons, request).get(id=id)
     except Persons.DoesNotExist:
         return Response({"error": "Person not found"}, status=404)
 
     if request.method == 'PUT':
-        serializer = PersonsSerializer(person, data=request.data, partial=True)
+        serializer = PersonsSerializer(person, data=request.data, partial=True, context={'request': request})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=200)
@@ -178,7 +203,7 @@ def modify_person(request, id):
 @api_view(['GET'])
 def person_detail(request, pk):
     try:
-        person = Persons.objects.get(pk=pk)
+        person = scoped(Persons, request).get(pk=pk)
     except Persons.DoesNotExist:
         return Response({"error": "Person not found"}, status=404)
     serializer = PersonsSerializer(person)
@@ -191,8 +216,9 @@ def bulk_upload_persons(request):
     if not json_data:
         return Response({"error": "No data provided"}, status=400)
     number_of_records = len(json_data)
+    client = current_client(request)
     assortment_bulk_upload = MembersBulkUpload.objects.create(
-        json_data=json_data, number_of_records= number_of_records)
+        json_data=json_data, number_of_records=number_of_records, client=client)
     for record in json_data:
         first_name = record.get('first_name')
         last_name = record.get('last_name')
@@ -228,13 +254,15 @@ def bulk_upload_persons(request):
         if roles:
             roles = parse_roles(roles)
             for rname in roles:
-                role_obj, _ = Roles.objects.get_or_create(name__iexact=rname, defaults={'name': rname})
+                role_obj, _ = scoped(Roles, request).get_or_create(
+                    name__iexact=rname, defaults={'name': rname, 'client': client}
+                )
                 role_ids.append(role_obj.id)
 
         record.pop("roles", None)  # Remove roles to avoid issues in serializer
-        serializer = PersonsSerializer(data=record)
+        serializer = PersonsSerializer(data=record, context={'request': request})
         if serializer.is_valid():
-            person = serializer.save()
+            person = serializer.save(client=client)
             if role_ids:
                 person.roles.set(role_ids)
             assortment_bulk_upload.success_products += 1
@@ -250,17 +278,17 @@ def roles(request):
     if request.method == 'POST':
         serializer = RolesSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            serializer.save(client=current_client(request))
             return Response(serializer.data, status=201)
         return Response(serializer.errors, status=400)
     elif request.method == 'GET':
-        roles = Roles.objects.all()
+        roles = scoped(Roles, request)
         serializer = RolesSerializer(roles, many=True)
         return Response(serializer.data, status=200)
 @api_view(['PUT', 'DELETE'])
 def modify_role(request, id):
     try:
-        role = Roles.objects.get(id=id)
+        role = scoped(Roles, request).get(id=id)
     except Roles.DoesNotExist:
         return Response({"error": "Role not found"}, status=404)
 
@@ -277,7 +305,7 @@ def modify_role(request, id):
 @api_view(['GET'])
 def role_detail(request, pk):
     try:
-        role = Roles.objects.get(pk=pk)
+        role = scoped(Roles, request).get(pk=pk)
     except Roles.DoesNotExist:
         return Response({"error": "Role not found"}, status=404)
 
@@ -290,21 +318,21 @@ def events(request):
         event_name = request.data.get('name')
         if not event_name:
             return Response({"error": "Event name is required"}, status=400)
-        if Events.objects.filter(name__iexact=event_name).exists():
+        if scoped(Events, request).filter(name__iexact=event_name).exists():
             return Response({"error": "Event with this name already exists"}, status=400)
-        serializer = EventsSerializer(data=request.data)
+        serializer = EventsSerializer(data=request.data, context={'request': request})
         if serializer.is_valid():
-            serializer.save()
+            serializer.save(client=current_client(request))
             return Response(serializer.data, status=201)
         return Response(serializer.errors, status=400)
     elif request.method == 'GET':
-        events = Events.objects.all()
+        events = scoped(Events, request)
         serializer = EventsSerializer(events, many=True)
         return Response(serializer.data, status=200)
 @api_view(['PUT', 'DELETE'])
 def modify_event(request, id):
     try:
-        event = Events.objects.get(id=id)
+        event = scoped(Events, request).get(id=id)
     except Events.DoesNotExist:
         return Response({"error": "Event not found"}, status=404)
 
@@ -312,9 +340,9 @@ def modify_event(request, id):
         event_name = request.data.get('name')
         if not event_name:
             return Response({"error": "Event name is required"}, status=400)
-        if Events.objects.filter(name__iexact=event_name).exclude(id=id).exists():
+        if scoped(Events, request).filter(name__iexact=event_name).exclude(id=id).exists():
             return Response({"error": "Event with this name already exists"}, status=400)
-        serializer = EventsSerializer(event, data=request.data, partial=True)
+        serializer = EventsSerializer(event, data=request.data, partial=True, context={'request': request})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=200)
@@ -325,7 +353,7 @@ def modify_event(request, id):
 @api_view(['GET'])
 def event_detail(request, pk):
     try:
-        event = Events.objects.get(pk=pk)
+        event = scoped(Events, request).get(pk=pk)
     except Events.DoesNotExist:
         return Response({"error": "Event not found"}, status=404)
     serializer = EventsSerializer(event)
@@ -343,36 +371,33 @@ def rosters(request):
         except ValueError:
             return Response({'date': ['Invalid date format. Use YYYY-MM-DD.']}, status=status.HTTP_400_BAD_REQUEST)
         
+        client = current_client(request)
         absent_members = request.data.get('absent_members', [])
         inactive_events = request.data.get('inactive_events', [])
-        if absent_members:
-            Persons.objects.filter(id__in=absent_members).update(is_present=False)
-        if inactive_events:
-            Events.objects.filter(id__in=inactive_events).update(is_active=False)
 
-
+        # Absence / inactivity is per-generation only — exclude these for this
+        # roster without mutating the persisted is_present / is_active flags.
         try:
-            structured_roster = generate_roster(date)
+            structured_roster = generate_roster(
+                date,
+                client=client,
+                inactive_events=inactive_events,
+                absent_members=absent_members,
+            )
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
-        # Absence is per-generation: restore flags so the next roster starts clean.
-        # if absent_members:
-        #     Persons.objects.filter(id__in=absent_members).update(is_present=True)
-        # if inactive_events:
-        #     Events.objects.filter(id__in=inactive_events).update(is_active=True)
 
         return Response(structured_roster, status=status.HTTP_201_CREATED)
 
     elif request.method == 'GET':
-        rosters = Rosters.objects.all()
+        rosters = scoped(Rosters, request)
         serializer = RostersSerializer(rosters, many=True)
         return Response(serializer.data)
 
     elif request.method == 'PUT':
         roster_id = request.data.get('id')
         try:
-            roster = Rosters.objects.get(id=roster_id)
+            roster = scoped(Rosters, request).get(id=roster_id)
         except Rosters.DoesNotExist:
             return Response({"error": "Roster not found"}, status=404)
 
@@ -385,7 +410,7 @@ def rosters(request):
     elif request.method == 'DELETE':
         roster_id = request.data.get('id')
         try:
-            roster = Rosters.objects.get(id=roster_id)
+            roster = scoped(Rosters, request).get(id=roster_id)
             roster.delete()
             return Response({"message": "Roster deleted successfully"}, status=204)
         except Rosters.DoesNotExist:
@@ -406,23 +431,23 @@ def get_status(request):
 @api_view(['POST','GET','PUT','DELETE'])
 def assignments(request):
     if request.method == 'POST':
-        serializer = AssignmentSerializer(data=request.data)
+        serializer = AssignmentSerializer(data=request.data, context={'request': request})
         if serializer.is_valid():
-            serializer.save()
+            serializer.save(client=current_client(request))
             return Response(serializer.data, status=201)
         return Response(serializer.errors, status=400)
     elif request.method == 'GET':
-        assignments = Assignment.objects.all()
+        assignments = scoped(Assignment, request)
         serializer = AssignmentSerializer(assignments, many=True)
         return Response(serializer.data, status=200)
     elif request.method == 'PUT':
         assignment_id = request.data.get('id')
         try:
-            assignment = Assignment.objects.get(id=assignment_id)
+            assignment = scoped(Assignment, request).get(id=assignment_id)
         except Assignment.DoesNotExist:
             return Response({"error": "Assignment not found"}, status=404)
-        
-        serializer = AssignmentSerializer(assignment, data=request.data, partial=True)
+
+        serializer = AssignmentSerializer(assignment, data=request.data, partial=True, context={'request': request})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=200)
@@ -430,7 +455,7 @@ def assignments(request):
     elif request.method == 'DELETE':
         assignment_id = request.data.get('id')
         try:
-            assignment = Assignment.objects.get(id=assignment_id)
+            assignment = scoped(Assignment, request).get(id=assignment_id)
             assignment.delete()
             return Response({"message": "Assignment deleted successfully"}, status=204)
         except Assignment.DoesNotExist:
@@ -441,7 +466,7 @@ def assignments(request):
 @api_view(['GET'])
 def assignment_detail(request, pk):
     try:
-        assignment = Assignment.objects.get(pk=pk)
+        assignment = scoped(Assignment, request).get(pk=pk)
     except Assignment.DoesNotExist:
         return Response({"error": "Assignment not found"}, status=404)
 
@@ -470,7 +495,7 @@ def save_roster(request):
         )
 
     try:
-        generator = RosterGenerator()
+        generator = RosterGenerator(client=current_client(request))
         generator.save_roster_to_database(roster_data, target_date)
         return Response({"message": "Roster saved successfully."}, status=status.HTTP_200_OK)
     except Exception as e:
@@ -504,13 +529,13 @@ def generate_and_download_roster(request):
 @api_view(['GET', 'POST'])
 def award_types(request):
     if request.method == 'GET':
-        qs = AwardType.objects.all()
+        qs = scoped(AwardType, request)
         serializer = AwardTypeSerializer(qs, many=True)
         return Response(serializer.data, status=200)
     elif request.method == 'POST':
         serializer = AwardTypeSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            serializer.save(client=current_client(request))
             return Response(serializer.data, status=201)
         return Response(serializer.errors, status=400)
 
@@ -518,7 +543,7 @@ def award_types(request):
 @api_view(['GET', 'PUT', 'DELETE'])
 def award_type_detail(request, pk):
     try:
-        award_type = AwardType.objects.get(pk=pk)
+        award_type = scoped(AwardType, request).get(pk=pk)
     except AwardType.DoesNotExist:
         return Response({"error": "Award type not found"}, status=404)
 
@@ -551,7 +576,7 @@ def _parse_date(value):
 @api_view(['GET', 'POST'])
 def awards(request):
     if request.method == 'GET':
-        qs = Award.objects.select_related('person', 'award_type', 'given_by').all()
+        qs = scoped(Award, request).select_related('person', 'award_type', 'given_by')
 
         person_id = request.query_params.get('person')
         type_id = request.query_params.get('type')
@@ -575,21 +600,28 @@ def awards(request):
         return paginator.get_paginated_response(serializer.data)
 
     # POST
-    serializer = AwardSerializer(data=request.data)
+    serializer = AwardSerializer(data=request.data, context={'request': request})
     if not serializer.is_valid():
         return Response(serializer.errors, status=400)
 
     person = serializer.validated_data['person']
 
+    client = current_client(request)
+    # Guard against awarding a person that belongs to another client.
+    if person.client_id != getattr(client, 'id', None):
+        return Response({'error': 'Person not found'}, status=404)
+
     # Snapshot the streak *before* it resets, so the award shows the streak it earned.
-    streak, _ = MemberStreak.objects.get_or_create(person=person)
+    streak, _ = MemberStreak.objects.get_or_create(
+        person=person, defaults={'client': client}
+    )
     streak_snapshot = streak.current_streak
 
     given_by = request.user if request.user.is_authenticated else None
     if not serializer.validated_data.get('given_at'):
         serializer.validated_data['given_at'] = date.today()
 
-    award = serializer.save(streak_at_award=streak_snapshot, given_by=given_by)
+    award = serializer.save(streak_at_award=streak_snapshot, given_by=given_by, client=client)
 
     if streak.current_streak > streak.longest_streak:
         streak.longest_streak = streak.current_streak
@@ -602,7 +634,7 @@ def awards(request):
 @api_view(['GET', 'PUT', 'DELETE'])
 def award_detail(request, pk):
     try:
-        award = Award.objects.get(pk=pk)
+        award = scoped(Award, request).get(pk=pk)
     except Award.DoesNotExist:
         return Response({"error": "Award not found"}, status=404)
 
@@ -628,7 +660,7 @@ def award_stats(request):
 
     today = date.today()
     month_start = today.replace(day=1)
-    qs = Award.objects.all()
+    qs = scoped(Award, request)
 
     by_type = list(
         qs.values('award_type', 'award_type__name')
@@ -679,10 +711,10 @@ def award_stats(request):
 @api_view(['GET'])
 def person_awards(request, pk):
     """Return all awards received by a single person."""
-    if not Persons.objects.filter(pk=pk).exists():
+    if not scoped(Persons, request).filter(pk=pk).exists():
         return Response({"error": "Person not found"}, status=404)
     qs = (
-        Award.objects
+        scoped(Award, request)
         .filter(person_id=pk)
         .select_related('award_type', 'given_by')
     )
@@ -713,7 +745,9 @@ def _recalculate_streak(person_id):
         else:
             break
 
-    streak, _ = MemberStreak.objects.get_or_create(person=person)
+    streak, _ = MemberStreak.objects.get_or_create(
+        person=person, defaults={'client_id': person.client_id}
+    )
     if current_streak > streak.longest_streak:
         streak.longest_streak = current_streak
     streak.current_streak = current_streak
@@ -723,7 +757,7 @@ def _recalculate_streak(person_id):
 @api_view(['GET'])
 def person_streaks(request):
     """Return current and longest attendance streak for every active member."""
-    persons = Persons.objects.filter(is_active=True).select_related('streak')
+    persons = scoped(Persons, request).filter(is_active=True).select_related('streak')
     result = []
     for person in persons:
         streak = getattr(person, 'streak', None)
@@ -741,7 +775,7 @@ def person_streaks(request):
 def roster_persons(request, roster_id):
     """Return all persons assigned to a roster with their current feedback status."""
     try:
-        roster = Rosters.objects.get(pk=roster_id)
+        roster = scoped(Rosters, request).get(pk=roster_id)
     except Rosters.DoesNotExist:
         return Response({"error": "Roster not found"}, status=404)
 
@@ -780,7 +814,7 @@ def submit_feedback(request, roster_id):
     Expects: { "feedback": [ { "person_id": 1, "is_present": true, "feedback": "..." }, ... ] }
     """
     try:
-        roster = Rosters.objects.get(pk=roster_id)
+        roster = scoped(Rosters, request).get(pk=roster_id)
     except Rosters.DoesNotExist:
         return Response({"error": "Roster not found"}, status=404)
 
@@ -788,17 +822,24 @@ def submit_feedback(request, roster_id):
     if not items:
         return Response({"error": "No feedback data provided"}, status=400)
 
+    client = current_client(request)
+    # Only accept feedback for persons belonging to this client.
+    requested_ids = [item.get('person_id') for item in items if item.get('person_id')]
+    valid_ids = set(
+        scoped(Persons, request).filter(id__in=requested_ids).values_list('id', flat=True)
+    )
     created = 0
     updated = 0
     person_ids = []
     for item in items:
         person_id = item.get('person_id')
-        if not person_id:
+        if not person_id or int(person_id) not in valid_ids:
             continue
         obj, was_created = RosterFeedback.objects.update_or_create(
             roster=roster,
             person_id=person_id,
             defaults={
+                'client': client,
                 'is_present': item.get('is_present', False),
                 'feedback': item.get('feedback', ''),
                 'rating': item.get('rating') or None,
@@ -824,7 +865,7 @@ def submit_feedback(request, roster_id):
 @api_view(['GET'])
 def roster_feedback(request, roster_id):
     """Return all feedback entries for a roster."""
-    qs = RosterFeedback.objects.filter(
+    qs = scoped(RosterFeedback, request).filter(
         roster_id=roster_id
     ).select_related('person', 'roster__event')
     serializer = RosterFeedbackSerializer(qs, many=True)
@@ -838,7 +879,7 @@ def _build_share_payload(link):
     """Aggregate every roster + assignment for the link's date into a single payload."""
     rosters_qs = (
         Rosters.objects
-        .filter(date=link.date)
+        .filter(date=link.date, client_id=link.client_id)
         .select_related('event')
         .prefetch_related('assignments__person', 'assignments__role')
         .order_by('event__id')
@@ -895,7 +936,8 @@ def create_feedback_share_link(request):
     except ValueError:
         return Response({'error': 'Invalid date format'}, status=400)
 
-    if not Rosters.objects.filter(date=target_date).exists():
+    client = current_client(request)
+    if not scoped(Rosters, request).filter(date=target_date).exists():
         return Response(
             {'error': f'No saved roster for {date_str}. Save the roster before generating a share link.'},
             status=400,
@@ -903,7 +945,7 @@ def create_feedback_share_link(request):
 
     # Once feedback has been collected for a date, don't allow another link —
     # the day's attendance is final.
-    if RosterFeedback.objects.filter(roster__date=target_date).exists():
+    if scoped(RosterFeedback, request).filter(roster__date=target_date).exists():
         return Response(
             {'error': f'Feedback has already been collected for {date_str}.'},
             status=409,
@@ -913,6 +955,7 @@ def create_feedback_share_link(request):
     link = FeedbackShareLink.objects.create(
         token=token,
         date=target_date,
+        client=client,
         created_by=request.user if request.user.is_authenticated else None,
     )
 
@@ -933,6 +976,7 @@ def create_feedback_share_link(request):
 
 
 @api_view(['GET'])
+@permission_classes([AllowAny])
 def feedback_share_get(request, token):
     """Public: fetch the form data for a share link."""
     try:
@@ -945,6 +989,7 @@ def feedback_share_get(request, token):
 
 
 @api_view(['POST'])
+@permission_classes([AllowAny])
 def feedback_share_submit(request, token):
     """Public: submit feedback through a one-time share link.
 
@@ -976,7 +1021,7 @@ def feedback_share_submit(request, token):
             continue
         presence_by_person[int(pid)] = bool(item.get('is_present', True))
 
-    rosters_for_day = list(Rosters.objects.filter(date=link.date))
+    rosters_for_day = list(Rosters.objects.filter(date=link.date, client_id=link.client_id))
     if not rosters_for_day:
         return Response({'error': 'No rosters exist for that date anymore.'}, status=400)
 
@@ -1006,6 +1051,7 @@ def feedback_share_submit(request, token):
                     roster=roster,
                     person_id=person_id,
                     defaults={
+                        'client_id': link.client_id,
                         'is_present': is_present,
                         'feedback': global_feedback,
                         'recommendations': global_recommendations,
@@ -1032,13 +1078,13 @@ def feedback_summary(request):
     which dates should no longer offer link generation.
     """
     feedbacks = (
-        RosterFeedback.objects
+        scoped(RosterFeedback, request)
         .select_related('person', 'roster')
         .order_by('-roster__date')
     )
 
     # Day-level note preferred from the share link used for that date.
-    used_links = FeedbackShareLink.objects.filter(is_used=True)
+    used_links = scoped(FeedbackShareLink, request).filter(is_used=True)
     link_notes = {
         str(link.date): link.global_feedback
         for link in used_links
@@ -1112,7 +1158,7 @@ def update_day_feedback(request, date_str):
     feedback = (request.data.get('feedback') or '').strip()
     recommendations = (request.data.get('recommendations') or '').strip()
 
-    affected = RosterFeedback.objects.filter(roster__date=target_date)
+    affected = scoped(RosterFeedback, request).filter(roster__date=target_date)
     if not affected.exists():
         return Response(
             {'error': f'No collected feedback found for {date_str}.'},
@@ -1120,7 +1166,7 @@ def update_day_feedback(request, date_str):
         )
 
     affected.update(feedback=feedback, recommendations=recommendations)
-    FeedbackShareLink.objects.filter(date=target_date, is_used=True).update(
+    scoped(FeedbackShareLink, request).filter(date=target_date, is_used=True).update(
         global_feedback=feedback,
         global_recommendations=recommendations,
     )
@@ -1130,4 +1176,132 @@ def update_day_feedback(request, date_str):
         'feedback': feedback,
         'recommendations': recommendations,
     }, status=200)
+
+
+# ──────────────────────────────────────────
+# Platform superadmin — client (tenant) management
+# Only accessible to platform admins (client=None, is_superuser).
+# ──────────────────────────────────────────
+def _unique_client_slug(name, preferred=None):
+    base = slugify(preferred or name) or 'client'
+    slug = base
+    i = 2
+    while Client.objects.filter(slug=slug).exists():
+        slug = f"{base}-{i}"
+        i += 1
+    return slug
+
+
+def _create_client_user(client, data, is_staff=True):
+    """Create a login for a client. Returns (user, error_response)."""
+    username = (data.get('username') or '').strip()
+    password = data.get('password') or ''
+    if not username or not password:
+        return None, Response(
+            {'error': 'username and password are required'}, status=400
+        )
+    if User.objects.filter(username=username).exists():
+        return None, Response(
+            {'error': 'A user with that username already exists'}, status=409
+        )
+    user = User.objects.create_user(
+        username=username,
+        email=data.get('email') or '',
+        password=password,
+        first_name=data.get('first_name') or '',
+        last_name=data.get('last_name') or '',
+        client=client,
+        is_staff=is_staff,
+    )
+    return user, None
+
+
+@api_view(['GET', 'POST'])
+@permission_classes([IsPlatformAdmin])
+def admin_clients(request):
+    """List all clients, or create a new client (optionally with its first admin)."""
+    if request.method == 'GET':
+        qs = Client.objects.all()
+        return Response(ClientSerializer(qs, many=True).data, status=200)
+
+    name = (request.data.get('name') or '').strip()
+    if not name:
+        return Response({'error': 'name is required'}, status=400)
+    slug = _unique_client_slug(name, (request.data.get('slug') or '').strip())
+
+    admin = request.data.get('admin') or {}
+    has_admin = bool((admin.get('username') or '').strip())
+
+    with transaction.atomic():
+        client = Client.objects.create(name=name, slug=slug)
+        created_admin = None
+        if has_admin:
+            created_admin, err = _create_client_user(client, admin)
+            if err:
+                transaction.set_rollback(True)
+                return err
+
+    data = ClientSerializer(client).data
+    if created_admin:
+        data['admin'] = {'id': created_admin.id, 'username': created_admin.username}
+    return Response(data, status=201)
+
+
+@api_view(['GET', 'PATCH', 'DELETE'])
+@permission_classes([IsPlatformAdmin])
+def admin_client_detail(request, pk):
+    """Retrieve, update (name/slug/active), or delete a client and all its data."""
+    try:
+        client = Client.objects.get(pk=pk)
+    except Client.DoesNotExist:
+        return Response({'error': 'Client not found'}, status=404)
+
+    if request.method == 'GET':
+        return Response(ClientSerializer(client).data, status=200)
+
+    if request.method == 'PATCH':
+        name = request.data.get('name')
+        if name is not None:
+            name = name.strip()
+            if not name:
+                return Response({'error': 'name cannot be empty'}, status=400)
+            client.name = name
+        if 'is_active' in request.data:
+            client.is_active = bool(request.data.get('is_active'))
+        if request.data.get('slug'):
+            new_slug = slugify(request.data['slug'])
+            if Client.objects.filter(slug=new_slug).exclude(pk=client.pk).exists():
+                return Response({'error': 'That slug is already in use'}, status=409)
+            client.slug = new_slug
+        client.save()
+        return Response(ClientSerializer(client).data, status=200)
+
+    # DELETE — cascades to every row owned by the client.
+    client.delete()
+    return Response({'message': 'Client and all its data deleted'}, status=204)
+
+
+@api_view(['GET', 'POST'])
+@permission_classes([IsPlatformAdmin])
+def admin_client_users(request, pk):
+    """List or create login accounts for a specific client."""
+    try:
+        client = Client.objects.get(pk=pk)
+    except Client.DoesNotExist:
+        return Response({'error': 'Client not found'}, status=404)
+
+    if request.method == 'GET':
+        return Response([
+            {
+                'id': u.id, 'username': u.username, 'email': u.email,
+                'first_name': u.first_name, 'last_name': u.last_name,
+                'is_staff': u.is_staff,
+            }
+            for u in client.users.all()
+        ], status=200)
+
+    user, err = _create_client_user(client, request.data)
+    if err:
+        return err
+    return Response({'id': user.id, 'username': user.username}, status=201)
 

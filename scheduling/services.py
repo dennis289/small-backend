@@ -4,10 +4,24 @@ from small_app.models import Assignment
 from .generator import RosterGenerator
 
 
-def generate_roster(target_date: date, save_to_db: bool = True) -> Dict:
-    """Generate roster with effective rotation and automatic saving."""
-    generator = RosterGenerator()
-    roster_data = generator.generate(target_date)
+def generate_roster(
+    target_date: date,
+    save_to_db: bool = True,
+    client=None,
+    inactive_events=None,
+    absent_members=None,
+) -> Dict:
+    """Generate roster with effective rotation and automatic saving.
+
+    ``inactive_events`` and ``absent_members`` are excluded for this generation
+    only and do not change the persisted ``is_active`` / ``is_present`` flags.
+    """
+    generator = RosterGenerator(client=client)
+    roster_data = generator.generate(
+        target_date,
+        inactive_events=inactive_events or [],
+        absent_members=absent_members or [],
+    )
 
     # if save_to_db:
     #     try:

@@ -1,23 +1,71 @@
 from rest_framework import serializers
 
 from .models import (
-    User, Persons, Roles, Events, Rosters, Assignment,
+    User, Client, Persons, Roles, Events, Rosters, Assignment,
     AwardType, Award, RosterFeedback,
 )
 
 
+class ClientScopedPrimaryKeyRelatedField(serializers.PrimaryKeyRelatedField):
+    """A related field whose choices are limited to the request's client.
+
+    Prevents a client from referencing another client's rows by guessing IDs.
+    Falls back to the unscoped queryset when there's no request in context
+    (e.g. read-only serialization), since it only matters for write validation.
+    """
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        request = self.context.get('request', None)
+        if request is not None and qs is not None and hasattr(qs.model, 'client'):
+            client = getattr(getattr(request, 'user', None), 'client', None)
+            qs = qs.filter(client=client)
+        return qs
+
+
+class ClientSerializer(serializers.ModelSerializer):
+    """Tenant summary for the platform-admin console, with live member/user counts."""
+    user_count = serializers.SerializerMethodField()
+    person_count = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Client
+        fields = [
+            'id', 'name', 'slug', 'is_active',
+            'user_count', 'person_count', 'created_at', 'updated_at',
+        ]
+        read_only_fields = ['created_at', 'updated_at']
+
+    def get_user_count(self, obj):
+        return obj.users.count()
+
+    def get_person_count(self, obj):
+        return obj.persons.count()
+
+
 class UserSerializer(serializers.ModelSerializer):
+    client = serializers.SerializerMethodField()
+    is_platform_admin = serializers.BooleanField(read_only=True)
+
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'password', 'first_name', 'last_name']
+        fields = [
+            'id', 'username', 'email', 'password', 'first_name', 'last_name',
+            'client', 'is_platform_admin',
+        ]
         extra_kwargs = {'password': {'write_only': True}}
+
+    def get_client(self, obj):
+        if not obj.client_id:
+            return None
+        return {'id': obj.client.id, 'name': obj.client.name, 'slug': obj.client.slug}
 
     def create(self, validated_data):
         return User.objects.create_user(**validated_data)
 
 
 class PersonsSerializer(serializers.ModelSerializer):
-    roles = serializers.PrimaryKeyRelatedField(
+    roles = ClientScopedPrimaryKeyRelatedField(
         many=True,
         queryset=Roles.objects.all(),
         required=False
@@ -69,7 +117,7 @@ class RolesSerializer(serializers.ModelSerializer):
 class EventsSerializer(serializers.ModelSerializer):
     # Add duration field for Flutter app compatibility
     duration = serializers.SerializerMethodField()
-    roles = serializers.PrimaryKeyRelatedField(
+    roles = ClientScopedPrimaryKeyRelatedField(
         many=True, queryset=Roles.objects.all(), required=False
     )
     role_names = serializers.SlugRelatedField(
@@ -97,6 +145,9 @@ class RostersSerializer(serializers.ModelSerializer):
         read_only_fields = ['created_at', 'updated_at']
 
 class AssignmentSerializer(serializers.ModelSerializer):
+    roster = ClientScopedPrimaryKeyRelatedField(queryset=Rosters.objects.all())
+    person = ClientScopedPrimaryKeyRelatedField(queryset=Persons.objects.all())
+    role = ClientScopedPrimaryKeyRelatedField(queryset=Roles.objects.all())
     person_name = serializers.SerializerMethodField()
     role_name = serializers.CharField(source='role.name', read_only=True)
     event_name = serializers.CharField(source='roster.event.name', read_only=True)
@@ -118,6 +169,8 @@ class AwardTypeSerializer(serializers.ModelSerializer):
 
 
 class AwardSerializer(serializers.ModelSerializer):
+    person = ClientScopedPrimaryKeyRelatedField(queryset=Persons.objects.all())
+    award_type = ClientScopedPrimaryKeyRelatedField(queryset=AwardType.objects.all())
     person_name = serializers.SerializerMethodField()
     award_type_name = serializers.CharField(source='award_type.name', read_only=True)
     given_by_name = serializers.SerializerMethodField()

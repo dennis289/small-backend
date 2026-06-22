@@ -43,6 +43,10 @@ urlpatterns = [
     # Shareable feedback link
     path('feedback/summary/', feedback_summary, name='feedback_summary'),
     path('feedback/summary/<str:date_str>/', update_day_feedback, name='update_day_feedback'),
+    # Platform superadmin — client (tenant) management
+    path('admin/clients/', admin_clients, name='admin_clients'),
+    path('admin/clients/<int:pk>/', admin_client_detail, name='admin_client_detail'),
+    path('admin/clients/<int:pk>/users/', admin_client_users, name='admin_client_users'),
     path('feedback/share/links/', create_feedback_share_link, name='create_feedback_share_link'),
     path('feedback/share/<str:token>/', feedback_share_get, name='feedback_share_get'),
     path('feedback/share/<str:token>/submit/', feedback_share_submit, name='feedback_share_submit'),

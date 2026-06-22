@@ -25,7 +25,9 @@ class RosterGenerator:
 
     COOLDOWN_GENERATIONS = 3  # Generations a person must sit out before repeating a role
 
-    def __init__(self):
+    def __init__(self, client=None):
+        # All queries and writes are scoped to this client (tenant).
+        self.client = client
         self.global_assigned: Set[int] = set()
         self.assignment_history: Dict[int, Dict[str, int]] = {}
         self.role_assignment_counts: Dict[str, Dict[int, int]] = {}
@@ -44,6 +46,7 @@ class RosterGenerator:
         start_date = target_date - timedelta(days=lookback_days)
 
         recent_assignments = Assignment.objects.filter(
+            client=self.client,
             roster__date__gte=start_date,
             roster__date__lt=target_date
         ).select_related('person', 'role', 'roster__event')
@@ -76,7 +79,7 @@ class RosterGenerator:
 
         recent_dates = list(
             Rosters.objects
-            .filter(date__lt=target_date)
+            .filter(client=self.client, date__lt=target_date)
             .values_list('date', flat=True)
             .distinct()
             .order_by('-date')[:self.COOLDOWN_GENERATIONS]
@@ -88,6 +91,7 @@ class RosterGenerator:
         most_recent_date = recent_dates[0]
 
         cooldown_assignments = Assignment.objects.filter(
+            client=self.client,
             roster__date__in=recent_dates
         ).select_related('person', 'role', 'roster')
 
@@ -298,18 +302,34 @@ class RosterGenerator:
     # Main generation
     # ------------------------------------------------------------------
 
-    def generate(self, target_date: date) -> Dict:
-        """Generate a roster for the given date — fully driven by database roles."""
+    def generate(
+        self,
+        target_date: date,
+        inactive_events: Optional[List[int]] = None,
+        absent_members: Optional[List[int]] = None,
+    ) -> Dict:
+        """Generate a roster for the given date — fully driven by database roles.
+
+        ``inactive_events`` and ``absent_members`` exclude events/people for this
+        single generation only — they do not mutate the persisted ``is_active`` /
+        ``is_present`` flags.
+        """
         logger.info("Starting roster generation for date: %s", target_date)
 
         self.global_assigned.clear()
         self._load_assignment_history(target_date)
 
-        events = Events.objects.filter(is_active=True).order_by('id').prefetch_related('roles')
-        roles = list(Roles.objects.all())
+        events = Events.objects.filter(
+            client=self.client, is_active=True
+        ).order_by('id').prefetch_related('roles')
+        if inactive_events:
+            events = events.exclude(id__in=inactive_events)
+        roles = list(Roles.objects.filter(client=self.client))
         available_people = Persons.objects.filter(
-            is_present=True, is_active=True
+            client=self.client, is_present=True, is_active=True
         ).prefetch_related('roles')
+        if absent_members:
+            available_people = available_people.exclude(id__in=absent_members)
 
         self._validate_initial_data(events, roles, available_people)
 
@@ -386,7 +406,7 @@ class RosterGenerator:
         """Save the generated roster to the database for tracking assignment history."""
         try:
             with transaction.atomic():
-                events = Events.objects.filter(is_active=True)
+                events = Events.objects.filter(client=self.client, is_active=True)
                 first_roster_entry = None
 
                 for event in events:
@@ -400,6 +420,7 @@ class RosterGenerator:
                     roster_entry, _ = Rosters.objects.get_or_create(
                         event=event,
                         date=target_date,
+                        defaults={'client': self.client},
                     )
 
                     if first_roster_entry is None:
@@ -410,10 +431,15 @@ class RosterGenerator:
 
                     for assignment_data in event_data.get('assignments', []):
                         try:
-                            person = Persons.objects.get(id=assignment_data['person_id'])
-                            role = Roles.objects.filter(name__iexact=assignment_data['role']).first()
+                            person = Persons.objects.get(
+                                id=assignment_data['person_id'], client=self.client
+                            )
+                            role = Roles.objects.filter(
+                                client=self.client, name__iexact=assignment_data['role']
+                            ).first()
                             if role:
                                 Assignment.objects.create(
+                                    client=self.client,
                                     roster=roster_entry,
                                     role=role,
                                     person=person,
@@ -443,11 +469,12 @@ class RosterGenerator:
             if not person_data:
                 continue
             try:
-                person = Persons.objects.get(id=person_data['id'])
+                person = Persons.objects.get(id=person_data['id'], client=self.client)
             except Persons.DoesNotExist:
                 logger.warning("Person not found for %s assignment", role_display_name)
                 continue
             role, _ = Roles.objects.get_or_create(
+                client=self.client,
                 name=role_display_name,
                 defaults={"description": role_display_name, "is_special_role": False},
             )
@@ -455,22 +482,24 @@ class RosterGenerator:
                 roster=roster_entry,
                 role=role,
                 person=person,
+                defaults={'client': self.client},
             )
 
     def _save_special_role_assignments(self, roster_data: Dict, roster_entry: Rosters) -> None:
         """Save special role assignments for cooldown tracking."""
         special_roles = roster_data.get('special_roles', {})
         for role_key, people in special_roles.items():
-            role = Roles.objects.filter(name__iexact=role_key).first()
+            role = Roles.objects.filter(client=self.client, name__iexact=role_key).first()
             if not role:
                 continue
             for person_data in people:
                 try:
-                    person = Persons.objects.get(id=person_data['person_id'])
+                    person = Persons.objects.get(id=person_data['person_id'], client=self.client)
                     Assignment.objects.get_or_create(
                         roster=roster_entry,
                         role=role,
                         person=person,
+                        defaults={'client': self.client},
                     )
                 except Persons.DoesNotExist:
                     logger.warning(

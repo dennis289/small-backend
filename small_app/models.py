@@ -1,38 +1,91 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
+
+class Client(models.Model):
+    """A tenant — one customer organisation. All domain data is scoped to a
+    client, and every (non-platform) user belongs to exactly one client."""
+    name = models.CharField(max_length=150)
+    slug = models.SlugField(max_length=160, unique=True)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['name']
+
+    def __str__(self):
+        return self.name
+
+
 class User(AbstractUser):
-    pass
+    # A user with client=None is a platform-level account (superadmin) who can
+    # manage clients across the board. Everyone else belongs to one client.
+    client = models.ForeignKey(
+        Client, on_delete=models.CASCADE, null=True, blank=True,
+        related_name='users',
+    )
+
+    @property
+    def is_platform_admin(self):
+        """Platform superadmin: no client and Django superuser."""
+        return self.client_id is None and self.is_superuser
 
 
 class Persons(models.Model):
+    client = models.ForeignKey(
+        Client, on_delete=models.CASCADE, null=False, blank=True, related_name='persons'
+    )
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
-    email = models.EmailField(unique=True)
+    email = models.EmailField()
     phone_number = models.CharField(max_length=15, blank=True, null=True)
     area_of_residence = models.TextField(blank=True, null=True)
     is_producer = models.BooleanField(default=False)
     is_assistant_producer = models.BooleanField(default=False)
     is_present = models.BooleanField(default=True, null=False, blank=False)
     is_active = models.BooleanField(default=True)
-    roles = models.ManyToManyField('Roles', blank=True) 
+    roles = models.ManyToManyField('Roles', blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['client', 'email'],
+                name='unique_person_email_per_client'
+            )
+        ]
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
 
 class Roles(models.Model):
-    name = models.CharField(max_length=100, unique=True)
+    client = models.ForeignKey(
+        Client, on_delete=models.CASCADE, null=False, blank=True, related_name='roles'
+    )
+    name = models.CharField(max_length=100)
     description = models.TextField(blank=True, null=True)
     is_special_role = models.BooleanField(default=False)
     max_assignments = models.PositiveIntegerField(default=1)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['client', 'name'],
+                name='unique_role_name_per_client'
+            )
+        ]
+
     def __str__(self):
         return self.name or "Unnamed Service"
 
 class Events(models.Model):
+    client = models.ForeignKey(
+        Client, on_delete=models.CASCADE, null=False, blank=True, related_name='events'
+    )
     name = models.CharField(max_length=100, blank=True, null=True)
     start_time = models.TimeField(null=True, blank=True)
     end_time = models.TimeField(null=True, blank=True)
@@ -46,8 +99,11 @@ class Events(models.Model):
 
     def __str__(self):
         return self.name or "Unnamed Event"
-    
+
 class Rosters(models.Model):
+    client = models.ForeignKey(
+        Client, on_delete=models.CASCADE, null=False, blank=True, related_name='rosters'
+    )
     event = models.ForeignKey(Events, on_delete=models.CASCADE, null=True)
     date = models.DateField(null=False, blank=False)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -58,8 +114,11 @@ class Rosters(models.Model):
 
     def __str__(self):
         return f"{self.event} - {self.date}"
-    
+
 class Assignment(models.Model):
+    client = models.ForeignKey(
+        Client, on_delete=models.CASCADE, null=False, blank=True, related_name='assignments'
+    )
     roster = models.ForeignKey(Rosters,on_delete=models.CASCADE, related_name="assignments")
     role = models.ForeignKey(Roles, on_delete=models.CASCADE)
     person = models.ForeignKey(Persons, on_delete=models.CASCADE)
@@ -74,14 +133,25 @@ class Assignment(models.Model):
 
     def __str__(self):
         return f"{self.person} _ {self.role} on {self.roster.event.name} ({self.roster.date})"
-    
+
 class AwardType(models.Model):
     """Dynamic list of award types (e.g. Day off, Appreciation email, Gift)."""
-    name = models.CharField(max_length=150, unique=True)
+    client = models.ForeignKey(
+        Client, on_delete=models.CASCADE, null=False, blank=True, related_name='award_types'
+    )
+    name = models.CharField(max_length=150)
     description = models.TextField(blank=True, null=True)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['client', 'name'],
+                name='unique_award_type_name_per_client'
+            )
+        ]
 
     def __str__(self):
         return self.name
@@ -89,6 +159,9 @@ class AwardType(models.Model):
 
 class Award(models.Model):
     """Recognition record — a person, an award type, and the streak it ended."""
+    client = models.ForeignKey(
+        Client, on_delete=models.CASCADE, null=False, blank=True, related_name='awards'
+    )
     person = models.ForeignKey(
         Persons, on_delete=models.CASCADE, related_name='awards'
     )
@@ -128,6 +201,9 @@ class RosterFeedback(models.Model):
         ('excellent', 'Excellent Service'),
     ]
 
+    client = models.ForeignKey(
+        Client, on_delete=models.CASCADE, null=False, blank=True, related_name='roster_feedback'
+    )
     roster = models.ForeignKey(
         Rosters, on_delete=models.CASCADE, related_name='feedback'
     )
@@ -159,6 +235,9 @@ class RosterFeedback(models.Model):
 
 class MemberStreak(models.Model):
     """Tracks consecutive attendance streaks per person."""
+    client = models.ForeignKey(
+        Client, on_delete=models.CASCADE, null=False, blank=True, related_name='member_streaks'
+    )
     person = models.OneToOneField(
         Persons, on_delete=models.CASCADE, related_name='streak'
     )
@@ -177,6 +256,9 @@ class FeedbackShareLink(models.Model):
     once. After submission, ``is_used`` flips to True and the form rejects further
     posts. ``global_feedback`` stores the single overall note attached to the form.
     """
+    client = models.ForeignKey(
+        Client, on_delete=models.CASCADE, null=False, blank=True, related_name='feedback_links'
+    )
     token = models.CharField(max_length=64, unique=True, db_index=True)
     date = models.DateField()
     is_used = models.BooleanField(default=False)
@@ -198,6 +280,9 @@ class FeedbackShareLink(models.Model):
 
 
 class MembersBulkUpload(models.Model):
+    client = models.ForeignKey(
+        Client, on_delete=models.CASCADE, null=False, blank=True, related_name='bulk_uploads'
+    )
     json_data = models.JSONField()
     status = models.BooleanField(default=False)
     number_of_records = models.IntegerField(default=0)
@@ -205,4 +290,3 @@ class MembersBulkUpload(models.Model):
     failed_products = models.IntegerField(default=0)
     created_at = models.DateField(auto_now_add=True)
     updated_at = models.DateField(auto_now=True)
-    
