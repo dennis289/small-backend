@@ -14,9 +14,16 @@ from pathlib import Path
 from datetime import timedelta
 import os
 import dj_database_url
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Load BASE_DIR/.env into the environment for local development.
+# Real environment variables always win, so platforms that inject their own
+# config (Render, systemd, docker-compose) are unaffected — and a missing
+# .env is simply a no-op, leaving the defaults below in place.
+load_dotenv(BASE_DIR / '.env', override=False)
 
 
 # Quick-start development settings - unsuitable for production
@@ -72,7 +79,12 @@ MIDDLEWARE = [
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    )
+    ),
+    # Authenticated by default so every endpoint has request.user.client to
+    # scope by. Genuinely public endpoints opt out with @permission_classes([AllowAny]).
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
 }
 
 SIMPLE_JWT = {
@@ -114,10 +126,28 @@ DATABASES = {
 
 CORS_ALLOWED_ORIGINS = os.environ.get(
     'CORS_ALLOWED_ORIGINS',
-    'http://localhost:3000,http://127.0.0.1:3000'
+    'http://localhost:3000,http://127.0.0.1:3000,http://localhost:3002'
 ).split(',')
 
 CORS_ALLOW_ALL_ORIGINS = os.environ.get('CORS_ALLOW_ALL_ORIGINS', 'False').lower() == 'true'
+
+# --- Email ----------------------------------------------------------------
+# Used for password-reset links. The default console backend prints the whole
+# message to the runserver terminal, so local development needs no mail server:
+# request a reset, copy the link out of the terminal. Set EMAIL_BACKEND to
+# django.core.mail.backends.smtp.EmailBackend in production and fill in the rest.
+EMAIL_BACKEND = os.environ.get(
+    'EMAIL_BACKEND', 'django.core.mail.backends.console.EmailBackend'
+)
+EMAIL_HOST = os.environ.get('EMAIL_HOST', '')
+EMAIL_PORT = int(os.environ.get('EMAIL_PORT', '587'))
+EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'True').lower() == 'true'
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'no-reply@small.local')
+
+# How long a password-reset token stays valid, in seconds (default 3 days).
+PASSWORD_RESET_TIMEOUT = int(os.environ.get('PASSWORD_RESET_TIMEOUT', 60 * 60 * 24 * 3))
 
 # Allow credentials to be sent with requests
 CORS_ALLOW_CREDENTIALS = True

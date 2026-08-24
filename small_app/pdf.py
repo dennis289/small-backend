@@ -1,3 +1,15 @@
+"""ReportLab rendering of a roster payload to a printable PDF.
+
+Takes the dict returned by ``RosterGenerator.generate()`` (or the hand-edited version
+of it the frontend holds) and lays out: a title with the date, the leadership line,
+one table per event (NAME | AREA OF DUTY), the special roles, and a fixed list of
+producer responsibilities.
+
+NOTE: the layout is currently hardcoded to one organisation — the "MEDIA DEPT. DUTY
+ROSTER" heading and the producer-responsibilities bullets at the bottom are literals,
+not client data. Any second tenant gets another tenant's wording on their PDF.
+"""
+
 from io import BytesIO
 from datetime import datetime
 
@@ -12,7 +24,10 @@ from reportlab.lib.enums import TA_CENTER, TA_LEFT
 
 
 def _ordinal(n):
-    """Return ordinal string for an integer (1 -> '1st', 2 -> '2nd', etc.)."""
+    """Split an integer into its digits and ordinal suffix: 1 -> ('1', 'st').
+
+    Returned as a pair so the caller can superscript the suffix separately.
+    """
     if 11 <= (n % 100) <= 13:
         suffix = "th"
     else:
@@ -34,7 +49,7 @@ def _format_roster_date(date_str):
 
 def _format_event_heading(event_name):
     """
-    Try to superscript ordinal in event names like '1st Service' -> '1<super>ST</super> SERVICE'.
+    Try to superscript an ordinal in event names like '1st Session' -> '1<super>ST</super> SESSION'.
     Falls back to plain uppercase.
     """
     import re
@@ -144,7 +159,7 @@ def export_roster_pdf(roster_data: dict) -> bytes:
     asst_name = roster_data.get("assistant_producer", {}).get("name", "")
     if producer_name:
         elements.append(
-            Paragraph(f"SERVICE PRODUCER &ndash; {producer_name.upper()}", producer_style)
+            Paragraph(f"PRODUCER &ndash; {producer_name.upper()}", producer_style)
         )
     if asst_name:
         elements.append(
@@ -152,20 +167,20 @@ def export_roster_pdf(roster_data: dict) -> bytes:
         )
     elements.append(Spacer(1, 10))
 
-    # ---- Event / Service tables ----
+    # ---- Event tables ----
     col_name_w = page_width * 0.50
     col_role_w = page_width * 0.50
 
     for event in roster_data.get("events", []):
-        event_name = event.get("event_name", "Service")
+        event_name = event.get("event_name", "Event")
         heading_text = _format_event_heading(event_name)
         elements.append(Paragraph(heading_text, event_heading_style))
 
-        # Table: NAME | AREA OF SERVICE
+        # Table: NAME | AREA OF DUTY
         table_rows = [
             [
                 Paragraph("<b>NAME</b>", styles["Normal"]),
-                Paragraph("<b>AREA OF SERVICE</b>", styles["Normal"]),
+                Paragraph("<b>AREA OF DUTY</b>", styles["Normal"]),
             ]
         ]
         for assignment in event.get("assignments", []):
@@ -214,6 +229,8 @@ def export_roster_pdf(roster_data: dict) -> bytes:
         )
 
     # ---- Producer Responsibilities ----
+    # Hardcoded boilerplate — should move to a per-client setting before onboarding
+    # a second tenant.
     responsibilities = [
         "To coordinate with the service workers to make sure everything is in order.",
         "To ensure proper and smooth running of all services, in-house and online.",
