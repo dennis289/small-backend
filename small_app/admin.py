@@ -69,3 +69,9 @@ class RosterFeedbackAdmin(admin.ModelAdmin):
     list_filter = ['created_at']
     search_fields = ['roster__event__name', 'roster__date']
     ordering = ['-created_at']
+
+@admin.register(User)
+class UserAdmin(admin.ModelAdmin):
+    list_display = ['id', 'username', 'email', 'client', 'role', 'is_active']
+    list_filter = ['role', 'client', 'is_active']
+    search_fields = ['username', 'email', 'first_name', 'last_name']
