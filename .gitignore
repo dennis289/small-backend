@@ -42,3 +42,10 @@ start_backend.sh
 .DS_Store
 *.swp
 *.swo
+
+
+# ignore all the data files in the data directory
+data/*.csv
+datadump.json
+db.datadump.json
+db.sqlite3.backup

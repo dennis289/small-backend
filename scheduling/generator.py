@@ -37,7 +37,10 @@ The allocation rules, in the order they take precedence:
 
 Selection within an eligible pool is *lowest score wins* — see
 ``_calculate_person_priority_score`` — with a tie window so the result varies between
-runs instead of being deterministic.
+runs instead of being deterministic. **Leadership is drawn differently**: producer and
+assistant producer are picked by rank-weighted random choice over the whole eligible
+pool (``_select_leader_for_role``), because a tie window narrow enough to be fair is
+also narrow enough to return the same name on every regeneration of a date.
 
 Nothing here writes to the database. Persistence is a separate, explicit step
 (``save_roster_to_database``), called only once a human has approved the roster.
@@ -297,6 +300,38 @@ class RosterGenerator:
         tied = [person for score, person in scored_people if score <= min_score + self.SCORE_TIE_WINDOW]
         return random.choice(tied)
 
+    def _select_leader_for_role(
+        self, eligible_people: List[Persons], role_name: str
+    ) -> Optional[Persons]:
+        """Pick a leader (producer / assistant producer) with rank-weighted randomness.
+
+        ``_select_best_person_for_role`` is argmin with a 10-point tie window, and that
+        window is easily out of reach: the score is dominated by ``+2 per assignment of
+        any kind``, so someone who works few other jobs sits 15-30 points clear of the
+        rest of the pool and wins every single time. Because ``generate()`` writes
+        nothing, regenerating a date re-runs against byte-identical history — so "wins
+        every time" means the user sees one name no matter how often they regenerate.
+
+        Here the pool is ranked by score and drawn with weights ``n, n-1, … 1``. The
+        fairest candidate stays the most likely — with four candidates they take 40% of
+        draws — but no one is a foregone conclusion, so successive generations offer
+        genuinely different leadership. Long-run fairness does not rest on this draw
+        anyway: the leadership cooldown (``LEADERSHIP_ROLES``, three roster dates) has
+        already removed everyone who recently produced or assisted before we get here.
+        """
+        if not eligible_people:
+            return None
+        # pk is the tiebreak so the ranking is total and reproducible under a seed;
+        # the score itself already carries a small random jitter.
+        ranked = sorted(
+            ((self._calculate_person_priority_score(person, role_name), person.pk, person)
+             for person in eligible_people),
+            key=lambda scored: (scored[0], scored[1]),
+        )
+        people = [person for _, _, person in ranked]
+        weights = list(range(len(people), 0, -1))
+        return random.choices(people, weights=weights, k=1)[0]
+
     # ------------------------------------------------------------------
     # Validation
     # ------------------------------------------------------------------
@@ -317,6 +352,9 @@ class RosterGenerator:
     def _select_producer(self, available_people: QuerySet) -> Persons:
         """Pick the day's producer from people flagged ``is_producer``.
 
+        Drawn with ``_select_leader_for_role`` rather than plain argmin, so two
+        generations of the same date can propose different producers.
+
         Raises ValueError if nobody qualifies — a roster without a producer is
         considered invalid rather than partially generated.
         """
@@ -324,7 +362,7 @@ class RosterGenerator:
         if not producer_pool:
             raise ValueError("No producer available.")
         candidates = self._filter_cooldown(producer_pool, "producer")
-        producer = self._select_best_person_for_role(candidates, "producer")
+        producer = self._select_leader_for_role(candidates, "producer")
         if not producer:
             producer = random.choice(candidates)
         # The producer produces and nothing else — they are never reused to fill a
@@ -334,7 +372,11 @@ class RosterGenerator:
         return producer
 
     def _select_assistant_producer(self, available_people: QuerySet) -> Persons:
-        """Pick the assistant producer, excluding whoever just became producer."""
+        """Pick the assistant producer, excluding whoever just became producer.
+
+        Rank-weighted like the producer draw, and for the same reason — see
+        ``_select_leader_for_role``.
+        """
         assistant_pool = list(
             available_people.filter(is_assistant_producer=True, is_active=True, is_present=True)
             .exclude(pk__in=self.global_assigned)
@@ -342,7 +384,7 @@ class RosterGenerator:
         if not assistant_pool:
             raise ValueError("No assistant producer available.")
         candidates = self._filter_cooldown(assistant_pool, "assistant producer")
-        assistant = self._select_best_person_for_role(candidates, "assistant producer")
+        assistant = self._select_leader_for_role(candidates, "assistant producer")
         if not assistant:
             assistant = random.choice(candidates)
         # The assistant producer supports the producer *and* carries exactly one more
